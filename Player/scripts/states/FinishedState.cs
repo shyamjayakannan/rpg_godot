@@ -4,7 +4,7 @@ public class FinishedState : State
 {
     // Exports
     [Export]
-    private AudioStream exhaustAudio;
+    private readonly AudioStream exhaustAudio;
 
     // private
     private AudioStreamPlayer2D audioStreamPlayer2D;

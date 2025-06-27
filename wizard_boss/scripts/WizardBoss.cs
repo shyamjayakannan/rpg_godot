@@ -9,17 +9,17 @@ public class WizardBoss : Node2D
 
     // Exports
     [Export]
-    private int maxHp = 10;
+    private readonly int maxHp = 10;
     [Export]
-    private AudioStream hurtSound;
+    private readonly AudioStream hurtSound;
     [Export]
-    private float teleportDelay = 1.5f;
+    private readonly float teleportDelay = 1.5f;
 
     // private
     private int hp = 10;
     private int currentPosition;
-    private List<Vector2> positions = new List<Vector2>();
-    private List<EnergyBeam> beams = new List<EnergyBeam>();
+    private readonly List<Vector2> positions = new List<Vector2>();
+    private readonly List<EnergyBeam> beams = new List<EnergyBeam>();
     private Node2D positionTargets;
     private Node2D beamAttacks;
     private Node2D bossNode;
@@ -28,8 +28,8 @@ public class WizardBoss : Node2D
     private AudioStreamPlayer2D audioStreamPlayer2D;
     private HitBox hitBox;
     private HurtBox hurtBox;
-    private PackedScene explosionScene = GD.Load<PackedScene>("res://wizard_boss/EnergyExplosion.tscn");
-    private PackedScene energyOrbScene = GD.Load<PackedScene>("res://wizard_boss/EnergyOrb.tscn");
+    private readonly PackedScene explosionScene = GD.Load<PackedScene>("res://wizard_boss/EnergyExplosion.tscn");
+    private readonly PackedScene energyOrbScene = GD.Load<PackedScene>("res://wizard_boss/EnergyOrb.tscn");
     private Sprite Hand1;
     private Sprite Hand2;
     private int damageCounter = 0;

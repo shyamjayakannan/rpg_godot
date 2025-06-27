@@ -8,7 +8,7 @@ public class NotificationBar : Control
     private AnimationPlayer animationPlayer;
     private Label title;
     private Label message;
-    private Queue<Notification> notifications = new Queue<Notification>();
+    private readonly Queue<Notification> notifications = new Queue<Notification>();
 
     // properties
     public new struct Notification

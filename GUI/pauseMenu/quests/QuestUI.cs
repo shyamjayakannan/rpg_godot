@@ -3,8 +3,8 @@ using Godot;
 public class QuestUI : Control
 {
     // private
-    private PackedScene questItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestItem.tscn");
-    private PackedScene questStepItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestStepItem.tscn");
+    private readonly PackedScene questItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestItem.tscn");
+    private readonly PackedScene questStepItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestStepItem.tscn");
     private ButtonMenu vBoxContainer;
     private VBoxContainer stepContainer;
     private Label title;

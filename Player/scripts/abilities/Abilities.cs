@@ -8,7 +8,7 @@ public class Abilities : Node
         BOOMERANG,
         MAGNET
     }
-    private PlayerAbilities selectedAbility = PlayerAbilities.BOOMERANG;
+    private readonly PlayerAbilities selectedAbility = PlayerAbilities.BOOMERANG;
     private readonly PackedScene boomerangScene = GD.Load<PackedScene>("res://Player/Boomerang.tscn");
     private Boomerang boomerang;
 

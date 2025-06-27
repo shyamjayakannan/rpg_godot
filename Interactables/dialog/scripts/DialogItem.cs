@@ -54,7 +54,7 @@ public abstract partial class DialogItem : Node2D
     public NpcResource npcResource;
 
     // private
-    private PackedScene dialogSystemScene = GD.Load<PackedScene>("res://GUI/dialogSystem/DialogSystem.tscn");
+    private readonly PackedScene dialogSystemScene = GD.Load<PackedScene>("res://GUI/dialogSystem/DialogSystem.tscn");
 
     // properties
     protected DialogSystem ExampleSystem { get; private set; }

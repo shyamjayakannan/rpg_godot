@@ -4,8 +4,8 @@ public class GlobalAudioManager : Node
 {
     // private
     private AudioStreamPlayer musicPlayer;
-    private string musicBus = "Music";
-    private float musicFadeDuration = 0.5f;
+    private readonly string musicBus = "Music";
+    private readonly float musicFadeDuration = 0.5f;
     private AudioStream stream;
     private Timer timer;
 

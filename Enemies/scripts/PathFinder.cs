@@ -5,7 +5,7 @@ using Godot;
 public class PathFinder : Node2D
 {
     // private
-    private Vector2[] vectors = new Vector2[16]{
+    private readonly Vector2[] vectors = new Vector2[16]{
         Vector2.Up,
         new Vector2(1, -2).Normalized(),
         new Vector2(1, -1).Normalized(),
@@ -23,9 +23,9 @@ public class PathFinder : Node2D
         new Vector2(-1, -1).Normalized(),
         new Vector2(-1, -2).Normalized()
     };
-    private float[] interests = new float[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private float[] obstacles = new float[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private List<RayCast2D> rayCasts = new List<RayCast2D>(16);
+    private readonly float[] interests = new float[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private readonly float[] obstacles = new float[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private readonly List<RayCast2D> rayCasts = new List<RayCast2D>(16);
     private Timer timer;
 
     // properties

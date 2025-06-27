@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 public class ShopMenu : CanvasLayer
@@ -12,9 +11,9 @@ public class ShopMenu : CanvasLayer
     // private
     private Button closeButton;
     private AudioStreamPlayer audioStreamPlayer;
-    private AudioStream openShopAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/open_shop.wav");
-    private AudioStream purchaseAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/purchase.wav");
-    private AudioStream errorAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/error.wav");
+    private readonly AudioStream openShopAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/open_shop.wav");
+    private readonly AudioStream purchaseAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/purchase.wav");
+    private readonly AudioStream errorAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/error.wav");
 
     // methods
     public override void _Ready()

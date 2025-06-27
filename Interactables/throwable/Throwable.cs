@@ -4,9 +4,9 @@ public class Throwable : Intercatables
 {
     // Exports
     [Export]
-    private float gravity = 980;
+    private readonly float gravity = 980;
     [Export]
-    private float throwSpeed = 400;
+    private readonly float throwSpeed = 400;
 
     // private
     private bool pickedUp = false;

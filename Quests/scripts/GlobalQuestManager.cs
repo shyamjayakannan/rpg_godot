@@ -8,7 +8,7 @@ public class GlobalQuestManager : Node
     public delegate void QuestUpdated();
 
     // private
-    private List<QuestResource> quests = new List<QuestResource>();
+    private readonly List<QuestResource> quests = new List<QuestResource>();
     private const string QUEST_LOCATION = "res://Quests/quests";
 
     // properties

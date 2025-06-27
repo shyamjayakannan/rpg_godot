@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Godot;
 using MonoCustomResourceRegistry;
@@ -14,7 +13,7 @@ public class DialogSystem : CanvasLayer
     public delegate void LetterAdded(string letter);
 
     // private
-    private float textSpeed = 0.02f;
+    private readonly float textSpeed = 0.02f;
     private int textLength;
     private string plainText;
     private List<DialogItem> dialogItems;
@@ -29,14 +28,14 @@ public class DialogSystem : CanvasLayer
     private float timer = 0;
     private bool timerStarted = false;
     private AudioStreamPlayer audioStreamPlayer;
-    private Vector2[][] uiPositions = new Vector2[][]
+    private readonly Vector2[][] uiPositions = new Vector2[][]
     {
         new Vector2[]{new Vector2(88, 176), new Vector2(128, 176)},
         new Vector2[]{new Vector2(376, 152), new Vector2(128, 152)},
         new Vector2[]{new Vector2(481, 216), new Vector2(64, 216)},
         new Vector2[]{new Vector2(24, 256), new Vector2(481, 256)},
     };
-    private List<Button> choiceButtons = new List<Button>();
+    private readonly List<Button> choiceButtons = new List<Button>();
 
     // properties
     public Button DialogProgressIndicator { get; private set; }

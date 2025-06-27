@@ -7,7 +7,7 @@ public class QuestAdvanceTrigger : QuestNode
 {
     // Exports
     [Export]
-    private string signal;
+    private readonly string signal;
 
     // methods
     public override void _Ready()

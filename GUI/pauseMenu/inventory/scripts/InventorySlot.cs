@@ -16,7 +16,7 @@ public class InventorySlot : Button
 	private Label label;
 	private bool buttonDown = false;
 	private TextureRect dragTexture;
-	private float dragThreshold = 0.2f;
+	private readonly float dragThreshold = 0.2f;
 	private float timer = 0;
 	private bool alreadyEmitted = false;
 

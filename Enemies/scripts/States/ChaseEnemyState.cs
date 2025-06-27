@@ -16,7 +16,7 @@ public class ChaseEnemyState : EnemyState
 	private float timer;
 	private Vector2 direction;
 	private bool canSeePlayer = false;
-	private PackedScene pathFinderScene = GD.Load<PackedScene>("res://Enemies/PathFinder.tscn");
+	private readonly PackedScene pathFinderScene = GD.Load<PackedScene>("res://Enemies/PathFinder.tscn");
 	private PathFinder pathFinder;
 
 	// methods

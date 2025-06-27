@@ -3,7 +3,7 @@ using Godot;
 public class GlobalEffectManager : Node
 {
     // private
-    private PackedScene damageTextScene = GD.Load<PackedScene>("res://AutoLoads/globalEffects/DamageText.tscn");
+    private readonly PackedScene damageTextScene = GD.Load<PackedScene>("res://AutoLoads/globalEffects/DamageText.tscn");
 
     // properties
     public static GlobalEffectManager Instance { get; private set; }

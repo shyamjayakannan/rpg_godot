@@ -4,7 +4,7 @@ public class LiftState : State
 {
     // Exports
     [Export]
-    private AudioStream audioStream;
+    private readonly AudioStream audioStream;
 
     // private
     private CarryState carryState;

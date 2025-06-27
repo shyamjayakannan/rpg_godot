@@ -5,11 +5,11 @@ public class ItemMagnet : Area2D
 {
     // Exports
     [Export]
-    private float magnetStrength = 100.0f;
+    private readonly float magnetStrength = 100.0f;
 
     // private
-    private List<ItemPickup> itemPickups = new List<ItemPickup>();
-    private List<float> speeds = new List<float>();
+    private readonly List<ItemPickup> itemPickups = new List<ItemPickup>();
+    private readonly List<float> speeds = new List<float>();
 
     // methods
     public override void _Ready()

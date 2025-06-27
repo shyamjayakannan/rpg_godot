@@ -21,11 +21,11 @@ public class QuestActivatedSwitch : QuestNode
         }
     }
     [Export]
-    private bool removeWhenActivated = false;
+    private readonly bool removeWhenActivated = false;
     [Export]
-    private bool reactToGlobalSignal = false;
+    private readonly bool reactToGlobalSignal = false;
     [Export]
-    private bool freeOnRemove = false;
+    private readonly bool freeOnRemove = false;
 
     // private
     private CheckType checkType = CheckType.HasQuest;

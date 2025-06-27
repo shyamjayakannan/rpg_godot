@@ -6,7 +6,7 @@ public class AttackState : State
 	[Export(PropertyHint.Range, "0.1, 10.0")]
 	private readonly float deceleration = 5f;
 	[Export]
-	private AudioStream audioStream;
+	private readonly AudioStream audioStream;
 
 	// private
 	private IdleState idleState;

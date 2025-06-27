@@ -4,7 +4,7 @@ public class FootstepAudioPlayer : AudioStreamPlayer2D
 {
     // private
     [Export]
-    private AudioStream[] footstepVariations;
+    private readonly AudioStream[] footstepVariations;
 
     // private
     private LevelTileMap tileMap;

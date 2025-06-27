@@ -4,11 +4,11 @@ public class EnergyOrb : Node2D
 {
 	// Exports
 	[Export]
-	private float speed = 100;
+	private readonly float speed = 100;
 	[Export]
-	private AudioStream shootSound;
+	private readonly AudioStream shootSound;
 	[Export]
-	private AudioStream hitSound;
+	private readonly AudioStream hitSound;
 
 	// private
 	private Vector2 direction = Vector2.Down;
