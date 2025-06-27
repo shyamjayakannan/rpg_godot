@@ -1,0 +1,41 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Npc/Npc.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Npc/npcs/shopKeeper.tres" type="Resource" id=2]
+[ext_resource path="res://Interactables/dialog/DialogInteraction.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Interactables/dialog/scripts/DialogText.cs" type="Script" id=4]
+[ext_resource path="res://Interactables/dialog/scripts/DialogChoice.cs" type="Script" id=5]
+[ext_resource path="res://Interactables/dialog/scripts/DialogBranch.cs" type="Script" id=6]
+[ext_resource path="res://Npc/npcs/hero.tres" type="Resource" id=7]
+[ext_resource path="res://Interactables/shopKeeper/ShopKeeper.cs" type="Script" id=8]
+
+[node name="ShopKeeper" type="Node2D"]
+script = ExtResource( 8 )
+
+[node name="Npc" parent="." instance=ExtResource( 1 )]
+NpcResource = ExtResource( 2 )
+
+[node name="DialogInteraction" parent="Npc" instance=ExtResource( 3 )]
+
+[node name="DialogText" type="Node2D" parent="Npc/DialogInteraction"]
+script = ExtResource( 4 )
+NpcResource = ExtResource( 2 )
+Text = "Hi. Would you be interested to look at some of my wares?"
+
+[node name="DialogChoice" type="Node2D" parent="Npc/DialogInteraction"]
+script = ExtResource( 5 )
+NpcResource = ExtResource( 7 )
+
+[node name="DialogBranch" type="Node2D" parent="Npc/DialogInteraction/DialogChoice"]
+script = ExtResource( 6 )
+NpcResource = ExtResource( 7 )
+
+[node name="DialogBranch2" type="Node2D" parent="Npc/DialogInteraction/DialogChoice"]
+script = ExtResource( 6 )
+NpcResource = ExtResource( 7 )
+Text = "Nah."
+
+[node name="DialogText3" type="Node2D" parent="Npc/DialogInteraction/DialogChoice/DialogBranch2"]
+script = ExtResource( 4 )
+NpcResource = ExtResource( 2 )
+Text = "See you some other time."

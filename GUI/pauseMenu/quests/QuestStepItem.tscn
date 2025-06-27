@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://GUI/pauseMenu/quests/checkbox.png" type="Texture" id=1]
+[ext_resource path="res://GUI/pauseMenu/quests/QuestStepItem.cs" type="Script" id=2]
+
+[node name="QuestStepItem" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = 32.0
+margin_top = 8.0
+margin_right = 72.0
+margin_bottom = 21.0
+custom_colors/font_color = Color( 0.607843, 0.678431, 0.717647, 1 )
+text = "step"
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 16, 16 )
+texture = ExtResource( 1 )
+hframes = 2

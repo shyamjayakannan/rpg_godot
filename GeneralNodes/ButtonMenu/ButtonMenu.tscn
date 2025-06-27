@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://GeneralNodes/ButtonMenu/ButtonMenu.cs" type="Script" id=1]
+[ext_resource path="res://title_screen/menu_select.wav" type="AudioStream" id=2]
+[ext_resource path="res://title_screen/menu_focus.wav" type="AudioStream" id=3]
+
+[node name="ButtonMenu" type="VBoxContainer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+script = ExtResource( 1 )
+buttonFocusSound = ExtResource( 3 )
+buttonPressSound = ExtResource( 2 )

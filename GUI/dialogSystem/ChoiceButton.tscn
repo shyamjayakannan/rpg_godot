@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://GUI/dialogSystem/fonts/Abaddon Bold.ttf" type="DynamicFontData" id=1]
+
+[sub_resource type="DynamicFont" id=11]
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=14]
+bg_color = Color( 0.866667, 0.807843, 0.752941, 1 )
+
+[sub_resource type="StyleBoxFlat" id=15]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+
+[sub_resource type="StyleBoxFlat" id=13]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+
+[node name="ChoiceButton" type="Button"]
+margin_right = 289.0
+margin_bottom = 18.0
+custom_colors/font_color_focus = Color( 0.572549, 0.419608, 0.309804, 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color_hover = Color( 0.572549, 0.419608, 0.309804, 1 )
+custom_fonts/font = SubResource( 11 )
+custom_styles/hover = SubResource( 14 )
+custom_styles/focus = SubResource( 14 )
+custom_styles/disabled = SubResource( 15 )
+custom_styles/normal = SubResource( 13 )
+text = "kjhk"
+align = 0

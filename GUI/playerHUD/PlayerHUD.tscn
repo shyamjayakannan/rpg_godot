@@ -1,0 +1,581 @@
+[gd_scene load_steps=21 format=2]
+
+[ext_resource path="res://GUI/playerHUD/gui-health.png" type="Texture" id=1]
+[ext_resource path="res://GUI/playerHUD/HeartGUI.tscn" type="PackedScene" id=2]
+[ext_resource path="res://GUI/playerHUD/scripts/PlayerHUD.cs" type="Script" id=3]
+[ext_resource path="res://GUI/dialogSystem/fonts/Abaddon Bold.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://GUI/playerHUD/panel_notification.png" type="Texture" id=5]
+[ext_resource path="res://GUI/playerHUD/notification.wav" type="AudioStream" id=6]
+[ext_resource path="res://wizard_boss/sprites/boss-hp.png" type="Texture" id=7]
+[ext_resource path="res://GeneralNodes/ButtonMenu/ButtonMenu.tscn" type="PackedScene" id=8]
+[ext_resource path="res://GUI/playerHUD/NotificationBar.cs" type="Script" id=9]
+
+[sub_resource type="DynamicFont" id=1]
+size = 30
+font_data = ExtResource( 4 )
+
+[sub_resource type="Animation" id=2]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("FadeToBlack:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ) ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "fadeToBlack"
+step = 1.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("FadeToBlack:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Label:rect_position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 167.5, 45 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Label:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "showGameOver"
+length = 4.0
+step = 1.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("FadeToBlack:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Label:rect_position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 2, 4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 167.5, 40 ), Vector2( 167.5, 45 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Label:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 2, 4 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 7 )
+region = Rect2( 9, 40, 14, 15 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 7 )
+region = Rect2( 40, 40, 15, 15 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 0, 64, 32 )
+
+[sub_resource type="StyleBoxTexture" id=8]
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+texture = ExtResource( 5 )
+region_rect = Rect2( 0, 0, 32, 32 )
+margin_left = 12.0
+margin_right = 8.0
+margin_top = 17.0
+margin_bottom = 9.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="DynamicFont" id=9]
+font_data = ExtResource( 4 )
+
+[sub_resource type="Animation" id=10]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("PanelContainer:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 4, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PanelContainer:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PanelContainer:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=11]
+resource_name = "showNotification"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("PanelContainer:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3, 2.7, 3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 4, 0 ), Vector2( 4, 4 ), Vector2( 4, 4 ), Vector2( 4, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("PanelContainer:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.3, 2.7, 3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("PanelContainer:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/3/type = "audio"
+tracks/3/path = NodePath("../../AudioStreamPlayer")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"clips": [ {
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource( 6 )
+} ],
+"times": PoolRealArray( 0 )
+}
+
+[node name="PlayerHUD" type="CanvasLayer"]
+layer = 3
+script = ExtResource( 3 )
+
+[node name="Control" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Sprite" type="Sprite" parent="Control"]
+position = Vector2( 412, 8 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 29, 0, 34, 8 )
+
+[node name="HFlowContainer" type="HFlowContainer" parent="Control"]
+margin_left = 348.0
+margin_top = 16.0
+margin_right = 475.0
+margin_bottom = 48.0
+alignment = 1
+
+[node name="Heart" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 9.0
+margin_bottom = 9.0
+
+[node name="Heart2" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 13.0
+margin_right = 22.0
+margin_bottom = 9.0
+
+[node name="Heart3" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 26.0
+margin_right = 35.0
+margin_bottom = 9.0
+
+[node name="Heart4" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 39.0
+margin_right = 48.0
+margin_bottom = 9.0
+
+[node name="Heart5" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 52.0
+margin_right = 61.0
+margin_bottom = 9.0
+
+[node name="Heart6" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 65.0
+margin_right = 74.0
+margin_bottom = 9.0
+
+[node name="Heart7" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 78.0
+margin_right = 87.0
+margin_bottom = 9.0
+
+[node name="Heart8" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 91.0
+margin_right = 100.0
+margin_bottom = 9.0
+
+[node name="Heart9" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 104.0
+margin_right = 113.0
+margin_bottom = 9.0
+
+[node name="Heart10" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 117.0
+margin_right = 126.0
+margin_bottom = 9.0
+
+[node name="Heart11" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 13.0
+margin_right = 9.0
+margin_bottom = 22.0
+
+[node name="Heart12" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 13.0
+margin_top = 13.0
+margin_right = 22.0
+margin_bottom = 22.0
+
+[node name="Heart13" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 26.0
+margin_top = 13.0
+margin_right = 35.0
+margin_bottom = 22.0
+
+[node name="Heart14" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 39.0
+margin_top = 13.0
+margin_right = 48.0
+margin_bottom = 22.0
+
+[node name="Heart15" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 52.0
+margin_top = 13.0
+margin_right = 61.0
+margin_bottom = 22.0
+
+[node name="Heart16" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 65.0
+margin_top = 13.0
+margin_right = 74.0
+margin_bottom = 22.0
+
+[node name="Heart17" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 78.0
+margin_top = 13.0
+margin_right = 87.0
+margin_bottom = 22.0
+
+[node name="Heart18" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 91.0
+margin_top = 13.0
+margin_right = 100.0
+margin_bottom = 22.0
+
+[node name="Heart19" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 104.0
+margin_top = 13.0
+margin_right = 113.0
+margin_bottom = 22.0
+
+[node name="Heart20" parent="Control/HFlowContainer" instance=ExtResource( 2 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 117.0
+margin_top = 13.0
+margin_right = 126.0
+margin_bottom = 22.0
+
+[node name="GameOver" type="Control" parent="Control"]
+modulate = Color( 1, 1, 1, 0 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ColorRect" type="ColorRect" parent="Control/GameOver"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.8 )
+
+[node name="Label" type="Label" parent="Control/GameOver"]
+modulate = Color( 1, 1, 1, 0 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -69.0
+margin_top = -105.0
+margin_right = 76.0
+margin_bottom = -70.0
+custom_fonts/font = SubResource( 1 )
+text = "GAME OVER"
+
+[node name="FadeToBlack" type="ColorRect" parent="Control/GameOver"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 0, 0, 0, 0 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Control/GameOver"]
+anims/RESET = SubResource( 2 )
+anims/fadeToBlack = SubResource( 4 )
+anims/showGameOver = SubResource( 3 )
+
+[node name="ButtonMenu" parent="Control/GameOver" instance=ExtResource( 8 )]
+margin_left = -55.0
+margin_top = -21.0
+margin_right = 55.0
+margin_bottom = 21.0
+custom_constants/separation = 10
+alignment = 1
+
+[node name="Continue" type="Button" parent="Control/GameOver/ButtonMenu"]
+margin_right = 110.0
+margin_bottom = 19.0
+text = "Continue"
+
+[node name="Menu" type="Button" parent="Control/GameOver/ButtonMenu"]
+margin_top = 29.0
+margin_right = 110.0
+margin_bottom = 48.0
+text = "Back To Main Menu"
+
+[node name="BossHpBar" type="Control" parent="Control"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -43.0
+
+[node name="TextureProgress" type="TextureProgress" parent="Control/BossHpBar"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -84.0
+margin_top = -1.5
+margin_right = 85.0
+margin_bottom = 12.5
+value = 100.0
+texture_under = SubResource( 5 )
+texture_progress = SubResource( 6 )
+nine_patch_stretch = true
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Control/BossHpBar"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -91.5
+margin_top = -11.0
+margin_right = 91.5
+margin_bottom = 21.0
+texture = SubResource( 7 )
+region_rect = Rect2( 0, 0, 64, 32 )
+patch_margin_left = 23
+patch_margin_right = 24
+axis_stretch_horizontal = 1
+
+[node name="Label" type="Label" parent="Control/BossHpBar"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -27.5
+margin_right = 27.5
+margin_bottom = 13.0
+text = "boss name"
+
+[node name="NotificationBar" type="Control" parent="Control"]
+pause_mode = 2
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 9 )
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/NotificationBar"]
+visible = false
+modulate = Color( 1, 1, 1, 0 )
+margin_left = 4.0
+margin_right = 213.0
+margin_bottom = 48.0
+custom_styles/panel = SubResource( 8 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/NotificationBar/PanelContainer"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 201.0
+margin_bottom = 40.0
+custom_constants/separation = 1
+
+[node name="Title" type="Label" parent="Control/NotificationBar/PanelContainer/VBoxContainer"]
+margin_right = 193.0
+margin_bottom = 18.0
+custom_colors/font_color = Color( 0.937255, 0.745098, 0.243137, 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 9 )
+text = "Notification Type"
+autowrap = true
+
+[node name="Message" type="Label" parent="Control/NotificationBar/PanelContainer/VBoxContainer"]
+margin_top = 19.0
+margin_right = 193.0
+margin_bottom = 32.0
+text = "Message"
+autowrap = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Control/NotificationBar"]
+anims/RESET = SubResource( 10 )
+anims/showNotification = SubResource( 11 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 6 )
+bus = "SFX"

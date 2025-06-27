@@ -1,0 +1,195 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://GUI/dialogSystem/scripts/DialogSystem.cs" type="Script" id=1]
+[ext_resource path="res://GUI/dialogSystem/sprites/text-bubble.png" type="Texture" id=2]
+[ext_resource path="res://GUI/dialogSystem/fonts/Abaddon Bold.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://GUI/dialogSystem/ChoiceButton.tscn" type="PackedScene" id=4]
+[ext_resource path="res://GUI/dialogSystem/fonts/m5x7.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://GUI/dialogSystem/audio/voice_blip.wav" type="AudioStream" id=7]
+[ext_resource path="res://GUI/dialogSystem/scripts/PortraitSprite.cs" type="Script" id=8]
+[ext_resource path="res://Npc/sprites/portraits/npc_portrait_01.png" type="Texture" id=9]
+
+[sub_resource type="Gradient" id=2]
+colors = PoolColorArray( 0, 0, 0, 1, 0, 0, 0, 0 )
+
+[sub_resource type="GradientTexture2D" id=1]
+gradient = SubResource( 2 )
+fill_from = Vector2( 0.5, 1 )
+fill_to = Vector2( 0.50845, 0.00492966 )
+
+[sub_resource type="StyleBoxTexture" id=3]
+content_margin_left = 14.0
+content_margin_right = 10.0
+content_margin_top = 14.0
+content_margin_bottom = 10.0
+texture = ExtResource( 2 )
+region_rect = Rect2( 0, 0, 32, 32 )
+margin_left = 16.0
+margin_right = 16.0
+margin_top = 16.0
+margin_bottom = 16.0
+
+[sub_resource type="DynamicFont" id=4]
+extra_spacing_bottom = 2
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=5]
+extra_spacing_bottom = 2
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=6]
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 3 )
+
+[sub_resource type="StyleBoxFlat" id=11]
+bg_color = Color( 0.588235, 0.396078, 0.219608, 1 )
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="DynamicFont" id=8]
+font_data = ExtResource( 6 )
+
+[sub_resource type="Animation" id=9]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=10]
+resource_name = "default"
+length = 0.8
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1.5, 1.5, 1.5, 1 ) ]
+}
+
+[node name="DialogSystem" type="CanvasLayer"]
+pause_mode = 2
+script = ExtResource( 1 )
+
+[node name="DialogUI" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="TextureRect" type="TextureRect" parent="DialogUI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource( 1 )
+expand = true
+
+[node name="Timer" type="Timer" parent="DialogUI"]
+one_shot = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="DialogUI"]
+stream = ExtResource( 7 )
+bus = "SFX"
+
+[node name="PanelContainer" type="PanelContainer" parent="DialogUI"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -416.0
+margin_top = -130.0
+margin_right = -87.0
+margin_bottom = -26.0
+custom_styles/panel = SubResource( 3 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="DialogUI/PanelContainer"]
+margin_left = 14.0
+margin_top = 14.0
+margin_right = 319.0
+margin_bottom = 94.0
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+custom_fonts/bold_font = SubResource( 4 )
+custom_fonts/normal_font = SubResource( 5 )
+bbcode_enabled = true
+scroll_active = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DialogUI/PanelContainer"]
+margin_left = 14.0
+margin_top = 14.0
+margin_right = 319.0
+margin_bottom = 94.0
+custom_constants/separation = 2
+
+[node name="ChoiceButton" parent="DialogUI/PanelContainer/VBoxContainer" instance=ExtResource( 4 )]
+margin_right = 305.0
+text = ""
+
+[node name="ChoiceButton2" parent="DialogUI/PanelContainer/VBoxContainer" instance=ExtResource( 4 )]
+margin_top = 20.0
+margin_right = 305.0
+margin_bottom = 38.0
+text = ""
+
+[node name="ChoiceButton3" parent="DialogUI/PanelContainer/VBoxContainer" instance=ExtResource( 4 )]
+margin_top = 40.0
+margin_right = 305.0
+margin_bottom = 58.0
+text = ""
+
+[node name="ChoiceButton4" parent="DialogUI/PanelContainer/VBoxContainer" instance=ExtResource( 4 )]
+margin_top = 60.0
+margin_right = 305.0
+margin_bottom = 78.0
+text = ""
+
+[node name="NameLabel" type="Label" parent="DialogUI"]
+margin_left = 128.0
+margin_top = 152.0
+margin_right = 168.0
+margin_bottom = 170.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_x = 0
+custom_fonts/font = SubResource( 6 )
+text = "NAME"
+
+[node name="PortraitSprite" type="Sprite" parent="DialogUI"]
+position = Vector2( 64, 216 )
+texture = ExtResource( 9 )
+hframes = 4
+script = ExtResource( 8 )
+
+[node name="DialogProgressIndicator" type="Button" parent="DialogUI"]
+margin_left = 481.0
+margin_top = 256.0
+margin_right = 519.0
+margin_bottom = 278.0
+custom_styles/hover = SubResource( 11 )
+custom_styles/focus = SubResource( 11 )
+custom_styles/normal = SubResource( 11 )
+
+[node name="Label" type="Label" parent="DialogUI/DialogProgressIndicator"]
+margin_left = 7.0
+margin_top = 4.0
+margin_right = 31.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 8 )
+text = "NEXT"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="DialogUI/DialogProgressIndicator"]
+autoplay = "default"
+anims/RESET = SubResource( 9 )
+anims/default = SubResource( 10 )

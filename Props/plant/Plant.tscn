@@ -1,0 +1,78 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Props/plant/Plant.cs" type="Script" id=1]
+[ext_resource path="res://Props/sprites/Props.png" type="Texture" id=2]
+[ext_resource path="res://GeneralNodes/HitBox/HitBox.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Interactables/throwable/Throwable.tscn" type="PackedScene" id=4]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 10, 13 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 12, 8 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 24, 12 )
+
+[sub_resource type="Animation" id=4]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 0 ]
+}
+
+[sub_resource type="Animation" id=5]
+resource_name = "destroy"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 3 ]
+}
+
+[node name="Plant" type="Node2D"]
+position = Vector2( 0, -8 )
+script = ExtResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+hframes = 16
+vframes = 3
+
+[node name="HitBox" parent="." instance=ExtResource( 3 )]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource( 2 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 0, 8 )
+shape = SubResource( 1 )
+
+[node name="Throwable" parent="." instance=ExtResource( 4 )]
+position = Vector2( 0, 8 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Throwable"]
+shape = SubResource( 3 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 4 )
+anims/destroy = SubResource( 5 )

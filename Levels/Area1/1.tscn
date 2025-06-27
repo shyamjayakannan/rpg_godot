@@ -1,0 +1,241 @@
+[gd_scene load_steps=23 format=2]
+
+[ext_resource path="res://TileMaps/Grass.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Levels/PlayerSpawn.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Levels/scripts/Level.cs" type="Script" id=3]
+[ext_resource path="res://Props/plant/Plant.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Levels/LevelTransition.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Props/pot/Pot.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Items/itemPickup/ItemPickup.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Interactables/treasureChest/TreasureChest.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Quests/quests/fluteQuest.tres" type="Resource" id=9]
+[ext_resource path="res://Items/items/apple.tres" type="Resource" id=10]
+[ext_resource path="res://Enemies/Slime/Slime.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Enemies/Goblin/Goblin.tscn" type="PackedScene" id=12]
+[ext_resource path="res://Levels/music/example_music_01.ogg" type="AudioStream" id=13]
+[ext_resource path="res://TileMaps/sprites/Grass-01.png" type="Texture" id=14]
+[ext_resource path="res://TileMaps/sprites/dungeon_entrance.png" type="Texture" id=15]
+[ext_resource path="res://Quests/utilityNodes/QuestActivatedSwitch.tscn" type="PackedScene" id=16]
+[ext_resource path="res://GeneralNodes/HitBox/HitBox.tscn" type="PackedScene" id=17]
+
+[sub_resource type="ConvexPolygonShape2D" id=46]
+points = PoolVector2Array( 0, 0, 160, 0, 160, 128, 0, 128 )
+
+[sub_resource type="ConvexPolygonShape2D" id=47]
+points = PoolVector2Array( 0, 20, 16, 8, 24, 4, 28, 4, 32, 12, 30, 18, 28, 24, 20, 50, 18, 52, 18, 58, 12, 64, 12, 68, 10, 76, 8, 84, 8, 88, 0, 96, 0, 96 )
+
+[sub_resource type="ConvexPolygonShape2D" id=48]
+points = PoolVector2Array( 0, 0, 96, 0, 96, 96, 72, 96, 72, 44, 64, 36, 48, 48, 32, 36, 24, 44, 24, 96, 0, 96, 0, 96 )
+
+[sub_resource type="ConvexPolygonShape2D" id=49]
+points = PoolVector2Array( 0, 32, 96, 32, 96, 96, 0, 96 )
+
+[sub_resource type="TileSet" id=1]
+0/name = "pathway.png"
+0/texture = ExtResource( 14 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 128, 0, 384, 128 )
+0/tile_mode = 1
+0/autotile/bitmask_mode = 1
+0/autotile/bitmask_flags = [ Vector2( 0, 0 ), 144, Vector2( 0, 1 ), 146, Vector2( 0, 2 ), 18, Vector2( 0, 3 ), 16, Vector2( 1, 0 ), 176, Vector2( 1, 1 ), 178, Vector2( 1, 2 ), 50, Vector2( 1, 3 ), 48, Vector2( 2, 0 ), 184, Vector2( 2, 1 ), 186, Vector2( 2, 2 ), 58, Vector2( 2, 3 ), 56, Vector2( 3, 0 ), 152, Vector2( 3, 1 ), 154, Vector2( 3, 2 ), 26, Vector2( 3, 3 ), 24, Vector2( 4, 0 ), 187, Vector2( 4, 1 ), 434, Vector2( 4, 2 ), 182, Vector2( 4, 3 ), 250, Vector2( 5, 0 ), 440, Vector2( 5, 1 ), 510, Vector2( 5, 2 ), 447, Vector2( 5, 3 ), 62, Vector2( 6, 0 ), 248, Vector2( 6, 1 ), 507, Vector2( 6, 2 ), 255, Vector2( 6, 3 ), 59, Vector2( 7, 0 ), 190, Vector2( 7, 1 ), 218, Vector2( 7, 2 ), 155, Vector2( 7, 3 ), 442, Vector2( 8, 0 ), 432, Vector2( 8, 1 ), 438, Vector2( 8, 2 ), 446, Vector2( 8, 3 ), 54, Vector2( 9, 0 ), 506, Vector2( 9, 1 ), 254, Vector2( 9, 2 ), 511, Vector2( 9, 3 ), 63, Vector2( 10, 0 ), 504, Vector2( 10, 2 ), 443, Vector2( 10, 3 ), 191, Vector2( 11, 0 ), 216, Vector2( 11, 1 ), 251, Vector2( 11, 2 ), 507, Vector2( 11, 3 ), 27 ]
+0/autotile/icon_coordinate = Vector2( 0, 0 )
+0/autotile/tile_size = Vector2( 32, 32 )
+0/autotile/spacing = 0
+0/autotile/occluder_map = [  ]
+0/autotile/navpoly_map = [  ]
+0/autotile/priority_map = [  ]
+0/autotile/z_index_map = [  ]
+0/autotile/fallback_mode = 0
+0/occluder_offset = Vector2( 0, 0 )
+0/navigation_offset = Vector2( 0, 0 )
+0/shape_offset = Vector2( 0, 0 )
+0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+0/shape_one_way = false
+0/shape_one_way_margin = 0.0
+0/shapes = [  ]
+0/z_index = 0
+1/name = "mountain.png"
+1/texture = ExtResource( 14 )
+1/tex_offset = Vector2( 0, 0 )
+1/modulate = Color( 1, 1, 1, 1 )
+1/region = Rect2( 320, 128, 160, 128 )
+1/tile_mode = 0
+1/occluder_offset = Vector2( 0, 0 )
+1/navigation_offset = Vector2( 0, 0 )
+1/shape_offset = Vector2( 0, 0 )
+1/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+1/shape = SubResource( 46 )
+1/shape_one_way = false
+1/shape_one_way_margin = 1.0
+1/shapes = [ {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 46 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+} ]
+1/z_index = 0
+2/name = "grass.png"
+2/texture = ExtResource( 14 )
+2/tex_offset = Vector2( 0, 0 )
+2/modulate = Color( 1, 1, 1, 1 )
+2/region = Rect2( 0, 0, 128, 128 )
+2/tile_mode = 2
+2/autotile/icon_coordinate = Vector2( 0, 0 )
+2/autotile/tile_size = Vector2( 32, 32 )
+2/autotile/spacing = 0
+2/autotile/occluder_map = [  ]
+2/autotile/navpoly_map = [  ]
+2/autotile/priority_map = [  ]
+2/autotile/z_index_map = [  ]
+2/occluder_offset = Vector2( 0, 0 )
+2/navigation_offset = Vector2( 0, 0 )
+2/shape_offset = Vector2( 0, 0 )
+2/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+2/shape_one_way = false
+2/shape_one_way_margin = 0.0
+2/shapes = [  ]
+2/z_index = -1
+3/name = "leftIn.png"
+3/texture = ExtResource( 14 )
+3/tex_offset = Vector2( 0, 0 )
+3/modulate = Color( 1, 1, 1, 1 )
+3/region = Rect2( 224, 128, 32, 96 )
+3/tile_mode = 0
+3/occluder_offset = Vector2( 0, 0 )
+3/navigation_offset = Vector2( 0, 0 )
+3/shape_offset = Vector2( 0, 0 )
+3/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+3/shape = SubResource( 47 )
+3/shape_one_way = false
+3/shape_one_way_margin = 1.0
+3/shapes = [ {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 47 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+} ]
+3/z_index = 0
+4/name = "dungeon_entrance.png 4"
+4/texture = ExtResource( 15 )
+4/tex_offset = Vector2( 0, 0 )
+4/modulate = Color( 1, 1, 1, 1 )
+4/region = Rect2( 0, 0, 96, 96 )
+4/tile_mode = 0
+4/occluder_offset = Vector2( 0, 0 )
+4/navigation_offset = Vector2( 0, 0 )
+4/shape_offset = Vector2( 0, 0 )
+4/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+4/shape = SubResource( 48 )
+4/shape_one_way = false
+4/shape_one_way_margin = 1.0
+4/shapes = [ {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 48 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+} ]
+4/z_index = 0
+5/name = "block.png"
+5/texture = ExtResource( 14 )
+5/tex_offset = Vector2( 0, 0 )
+5/modulate = Color( 1, 1, 1, 1 )
+5/region = Rect2( 64, 128, 96, 96 )
+5/tile_mode = 0
+5/occluder_offset = Vector2( 0, 0 )
+5/navigation_offset = Vector2( 0, 0 )
+5/shape_offset = Vector2( 0, 0 )
+5/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+5/shape = SubResource( 49 )
+5/shape_one_way = false
+5/shape_one_way_margin = 1.0
+5/shapes = [ {
+"autotile_coord": Vector2( 0, 0 ),
+"one_way": false,
+"one_way_margin": 1.0,
+"shape": SubResource( 49 ),
+"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
+} ]
+5/z_index = 0
+
+[node name="Level" type="Node2D"]
+position = Vector2( 0, 1 )
+script = ExtResource( 3 )
+music = ExtResource( 13 )
+
+[node name="LevelTransition" parent="." instance=ExtResource( 5 )]
+position = Vector2( 0, 176 )
+level = "res://Levels/Area1/3.tscn"
+targetTransitionArea = "LevelTransition3"
+
+[node name="LevelTransition2" parent="." instance=ExtResource( 5 )]
+position = Vector2( 144, 288 )
+Side = 3
+level = "res://Levels/Area1/2.tscn"
+targetTransitionArea = "LevelTransition4"
+
+[node name="LevelTransition3" parent="." instance=ExtResource( 5 )]
+position = Vector2( 480, 176 )
+Side = 1
+level = "res://Levels/Area1/2.tscn"
+
+[node name="LevelTransition4" parent="." instance=ExtResource( 5 )]
+position = Vector2( 240, 0 )
+Side = 2
+level = "res://Levels/Area1/3.tscn"
+targetTransitionArea = "LevelTransition2"
+
+[node name="LevelTransition5" parent="." instance=ExtResource( 5 )]
+position = Vector2( 176, 80 )
+Side = 2
+level = "res://Levels/Dungeon1/1.tscn"
+
+[node name="HitBox" parent="." instance=ExtResource( 17 )]
+collision_mask = 16
+
+[node name="Grass" parent="HitBox" instance=ExtResource( 1 )]
+tile_data = PoolIntArray( -65529, 0, 0, 0, 2, 131074, 1, 2, 196608, 2, 2, 131074, 3, 2, 196608, 4, 4, 0, 5, 2, 196608, 6, 2, 65536, 7, 0, 65536, 8, 2, 3, 9, 2, 2, 10, 2, 196610, 11, 2, 196608, 12, 2, 3, 13, 2, 131074, 14, 2, 196610, 65536, 2, 131072, 65537, 2, 65537, 65538, 0, 0, 65539, 2, 2, 65540, 2, 65539, 65541, 2, 65536, 65542, 2, 196610, 65543, 0, 65536, 65544, 2, 65536, 65545, 2, 65536, 65546, 2, 131072, 65547, 2, 131075, 65548, 0, 0, 65549, 2, 1, 65550, 2, 196609, 131072, 2, 131075, 131073, 2, 131074, 131074, 0, 65536, 131075, 2, 1, 131076, 2, 131072, 131077, 2, 196608, 131078, 2, 131075, 131079, 0, 65536, 131080, 2, 131074, 131081, 2, 196611, 131082, 2, 131072, 131083, 2, 0, 131084, 0, 65536, 131085, 2, 196610, 131086, 2, 131072, 196608, 2, 196610, 196609, 2, 196611, 196610, 0, 65536, 196611, 2, 196610, 196612, 2, 196610, 196613, 2, 196610, 196614, 2, 131075, 196615, 0, 65536, 196616, 2, 3, 196617, 2, 65536, 196618, 2, 196610, 196619, 0, 1, 196620, 0, 131075, 196621, 2, 65538, 196622, 2, 196609, 262144, 2, 196608, 262145, 2, 65536, 262146, 0, 65536, 262147, 2, 65539, 262148, 2, 1, 262149, 0, 1, 262150, 0, 196610, 262151, 0, 131074, 262152, 0, 196610, 262153, 0, 2, 262154, 0, 196610, 262155, 0, 65539, 262156, 2, 196610, 262157, 2, 196611, 262158, 2, 131075, 393215, 0, 196609, 327680, 0, 196610, 327681, 0, 196610, 327682, 0, 131074, 327683, 0, 5, 327684, 0, 6, 327685, 0, 131075, 327686, 2, 131072, 327687, 2, 196609, 327688, 2, 196608, 327689, 0, 65536, 327690, 2, 196608, 327691, 0, 131073, 327692, 0, 196610, 327693, 0, 196610, 327694, 0, 196610, 327695, 0, 196611, 393216, 2, 65539, 393217, 2, 131074, 393218, 2, 196608, 393219, 0, 196616, 393220, 0, 131079, 393221, 2, 65537, 393222, 2, 1, 393223, 2, 196611, 393224, 2, 65539, 393225, 0, 65536, 393226, 2, 1, 393227, 2, 65538, 393228, 2, 131074, 393229, 2, 65538, 393230, 2, 131073, 458752, 2, 0, 458753, 2, 65538, 458754, 2, 0, 458755, 2, 65538, 458756, 0, 65536, 458757, 2, 196610, 458758, 2, 196609, 458759, 2, 131073, 458760, 2, 1, 458761, 0, 65536, 458762, 2, 65539, 458763, 2, 65539, 458764, 2, 131074, 458765, 2, 65538, 458766, 2, 131075, 524288, 2, 65536, 524289, 2, 65537, 524290, 2, 0, 524291, 2, 65536, 524292, 0, 65536, 524293, 2, 1, 524294, 2, 131075, 524295, 2, 2, 524296, 2, 131074, 524297, 0, 131072, 524298, 2, 131073, 524299, 2, 131074, 524300, 2, 131072, 524301, 2, 65536, 524302, 2, 196611, 589828, 0, 131072 )
+
+[node name="PlayerSpawn" parent="HitBox/Grass" instance=ExtResource( 2 )]
+position = Vector2( 272, 90 )
+
+[node name="Plant" parent="HitBox/Grass" instance=ExtResource( 4 )]
+position = Vector2( 224, 224 )
+
+[node name="Slime" parent="HitBox/Grass" instance=ExtResource( 11 )]
+position = Vector2( 112, 144 )
+
+[node name="TreasureChest" parent="HitBox/Grass" instance=ExtResource( 8 )]
+position = Vector2( 368, 208 )
+Item = ExtResource( 10 )
+
+[node name="ItemPickup" parent="HitBox/Grass" instance=ExtResource( 7 )]
+position = Vector2( 416.041, 80 )
+Item = ExtResource( 10 )
+
+[node name="Goblin" parent="HitBox/Grass" instance=ExtResource( 12 )]
+position = Vector2( 32, 48 )
+
+[node name="Pot" parent="HitBox/Grass" instance=ExtResource( 6 )]
+position = Vector2( 272, 176 )
+
+[node name="QuestActivatedSwitch" parent="HitBox/Grass" instance=ExtResource( 16 )]
+position = Vector2( 128, 32 )
+LinkedQuest = ExtResource( 9 )
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Checking whether player has quest"
+removeWhenActivated = true
+freeOnRemove = true
+
+[node name="Grass2" type="TileMap" parent="HitBox/Grass/QuestActivatedSwitch"]
+tile_set = SubResource( 1 )
+cell_size = Vector2( 32, 32 )
+cell_quadrant_size = 32
+collision_layer = 16
+collision_mask = 0
+format = 1
+tile_data = PoolIntArray( -65536, 5, 0 )

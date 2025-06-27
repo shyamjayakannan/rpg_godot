@@ -1,0 +1,20 @@
+1) if tool scripts use custom resources and need to update in the editor (Ex: the resource has a sprite and on setting the export property, the sprite appears in the editor), then make the resources tool scripts as well.
+
+even custom classes need to be tool scripts if you are referencing them in other tool scripts.
+
+2) when using registeredtype (mono custom resource registry plugin) and setting custom icons, ensure that the third argument is the godot node that the base class inherits from. you can extend the actual class in the normal class definition.
+Ex: 
+[RegisteredType(nameof(QuestAdvanceTrigger), "res://Quests/utilityNodes/icons/quest_advance.png", nameof(Node))]
+public class QuestAdvanceTrigger : QuestNode
+
+3) dont use async void return except in functions like _Ready, _Process, etc. use async Task instead. avoid async and use timers if possible. (only real use case of async i found was when awaiting for idle_frame)
+
+4) signal connect callback methods cannot be async. make a local async function inside them instead.
+
+5) _Ready call order:
+	a) children before parent
+	b) top - to - down order among siblings
+
+6) don't use string as a parameter in signals. for some reason doesn't work. Don't do this:
+	[Signal]
+	public delegate void EquipmentSelected(string value);

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://Npc/scripts/NpcResource.cs" type="Script" id=1]
+[ext_resource path="res://Npc/sprites/portraits/hero_portrait.png" type="Texture" id=2]
+
+[resource]
+script = ExtResource( 1 )
+Name = "Hero"
+Portrait = ExtResource( 2 )
+DialoguePitch = 1.0

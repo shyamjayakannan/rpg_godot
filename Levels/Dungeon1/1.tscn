@@ -1,0 +1,52 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://TileMaps/Dungeon.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Levels/PlayerSpawn.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Levels/scripts/Level.cs" type="Script" id=3]
+[ext_resource path="res://Levels/LevelTransition.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Interactables/dungeon/PressurePlate.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Interactables/dungeon/BarredDoor.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Interactables/dungeon/PushableStatue.tscn" type="PackedScene" id=7]
+[ext_resource path="res://GeneralNodes/persistentDataHandler/PersistentDataHandler.tscn" type="PackedScene" id=8]
+[ext_resource path="res://GeneralNodes/HitBox/HitBox.tscn" type="PackedScene" id=9]
+
+[node name="Level" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="LevelTransition" parent="." instance=ExtResource( 4 )]
+position = Vector2( 224, 240 )
+Side = 3
+level = "res://Levels/Area1/1.tscn"
+targetTransitionArea = "LevelTransition5"
+
+[node name="LevelTransition2" parent="." instance=ExtResource( 4 )]
+position = Vector2( 224, 32 )
+Side = 2
+level = "res://Levels/Dungeon1/2.tscn"
+targetTransitionArea = "LevelTransition2"
+
+[node name="HitBox" parent="." instance=ExtResource( 9 )]
+collision_mask = 16
+
+[node name="Dungeon" parent="HitBox" instance=ExtResource( 1 )]
+tile_data = PoolIntArray( -131062, 8, 196609, -1, 0, 0, -65534, 4, 0, -65533, 4, 0, -65532, 4, 0, -65531, 9, 0, -65530, 15, 0, -65527, 4, 0, -65526, 4, 0, -65525, 4, 0, -65524, 1, 0, 196607, 6, 0, 131074, 8, 131075, 131075, 8, 2, 131076, 8, 3, 131077, 8, 262144, 131078, 8, 131072, 131079, 8, 1, 131080, 8, 1, 131081, 8, 131072, 131082, 8, 65538, 131083, 8, 1, 131084, 5, 0, 262142, 8, 131075, 262143, 6, 0, 196610, 8, 65538, 196611, 8, 131075, 196612, 8, 2, 196613, 8, 3, 196614, 8, 196609, 196615, 8, 1, 196616, 8, 65538, 196617, 8, 131074, 196618, 8, 131074, 196619, 8, 131074, 196620, 5, 0, 327679, 6, 0, 262146, 8, 131073, 262147, 8, 131072, 262148, 8, 131074, 262149, 8, 131074, 262150, 8, 65539, 262151, 8, 65538, 262152, 8, 0, 262153, 8, 131074, 262154, 8, 131074, 262155, 8, 65539, 262156, 5, 0, 393215, 6, 0, 327682, 8, 0, 327683, 8, 131074, 327684, 8, 262144, 327685, 8, 196609, 327686, 8, 65536, 327687, 8, 262145, 327688, 8, 65538, 327689, 8, 262145, 327690, 8, 65537, 327691, 8, 131075, 327692, 5, 0, 458751, 6, 0, 393218, 8, 131074, 393219, 8, 65538, 393220, 8, 1, 393221, 8, 65539, 393222, 8, 3, 393223, 8, 65539, 393224, 8, 65538, 393225, 8, 65538, 393226, 8, 131073, 393227, 8, 65538, 393228, 5, 0, 393231, 8, 262146, 524287, 2, 0, 458754, 7, 0, 458755, 7, 0, 458756, 7, 0, 458757, 10, 0, 458761, 7, 0, 458762, 7, 0, 458763, 7, 0, 458764, 3, 0, 589830, 14, 0, 655366, 8, 196609 )
+
+[node name="PlayerSpawn" parent="HitBox/Dungeon" instance=ExtResource( 2 )]
+position = Vector2( 224, 112 )
+
+[node name="BarredDoor" parent="HitBox/Dungeon" instance=ExtResource( 6 )]
+position = Vector2( 192, 55 )
+
+[node name="PersistentDataHandler" parent="HitBox/Dungeon/BarredDoor" instance=ExtResource( 8 )]
+
+[node name="PressurePlate" parent="HitBox/Dungeon" instance=ExtResource( 5 )]
+position = Vector2( 144, 112 )
+
+[node name="PersistentDataHandler" parent="HitBox/Dungeon/PressurePlate" instance=ExtResource( 8 )]
+
+[node name="PushableStatue" parent="HitBox/Dungeon" instance=ExtResource( 7 )]
+position = Vector2( 176, 112 )
+targetPosition = Vector2( 144, 112 )
+usePersistence = true
+
+[node name="PersistentDataHandler" parent="HitBox/Dungeon/PushableStatue" instance=ExtResource( 8 )]

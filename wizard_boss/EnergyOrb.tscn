@@ -1,0 +1,38 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://wizard_boss/scripts/EnergyOrb.cs" type="Script" id=1]
+[ext_resource path="res://GeneralNodes/HurtBox/HurtBox.tscn" type="PackedScene" id=2]
+[ext_resource path="res://shadersAndMaterials/lightMaterial.tres" type="Material" id=3]
+[ext_resource path="res://wizard_boss/audio/boss_fireball.wav" type="AudioStream" id=4]
+[ext_resource path="res://wizard_boss/audio/boss_fireball_hit.wav" type="AudioStream" id=5]
+
+[sub_resource type="Gradient" id=1]
+offsets = PoolRealArray( 0.280952, 0.490476, 0.661905, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 0.937259, 0.0206112, 1, 1, 0.54902, 0, 1, 1, 0.478431, 0, 1, 0 )
+
+[sub_resource type="GradientTexture2D" id=2]
+gradient = SubResource( 1 )
+width = 24
+height = 24
+fill = 1
+fill_from = Vector2( 0.5, 0.5 )
+fill_to = Vector2( 1, 0.5 )
+
+[sub_resource type="CircleShape2D" id=3]
+
+[node name="EnergyOrb" type="Node2D"]
+script = ExtResource( 1 )
+shootSound = ExtResource( 4 )
+hitSound = ExtResource( 5 )
+
+[node name="Sprite" type="Sprite" parent="."]
+material = ExtResource( 3 )
+texture = SubResource( 2 )
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="HurtBox" parent="." instance=ExtResource( 2 )]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+shape = SubResource( 3 )

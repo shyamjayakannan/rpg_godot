@@ -1,0 +1,29 @@
+[gd_resource type="Resource" load_steps=7 format=2]
+
+[ext_resource path="res://Items/scripts/EquipableItem.cs" type="Script" id=1]
+[ext_resource path="res://Items/sprites/player_equipment/gear.png" type="Texture" id=2]
+[ext_resource path="res://Items/scripts/EquipableItemModifier.cs" type="Script" id=3]
+[ext_resource path="res://Items/sprites/player_equipment/player_sprite_ninja_suit.png" type="Texture" id=4]
+
+[sub_resource type="Resource" id=3]
+script = ExtResource( 3 )
+EquipmentType = 1
+Value = 2
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 2 )
+region = Rect2( 128, 0, 32, 32 )
+
+[resource]
+script = ExtResource( 1 )
+Name = "Ninja Suit"
+Description = "Ninja Suit"
+Texture = SubResource( 2 )
+effects = [  ]
+StatsDescription = "Type: Armor
+
+Attack: +0    Defence: +2
+Health: +0      Speed: +0"
+EquipmentType = 1
+Modifiers = [ SubResource( 3 ) ]
+SpriteTexture = ExtResource( 4 )

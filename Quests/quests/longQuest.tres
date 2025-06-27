@@ -1,0 +1,18 @@
+[gd_resource type="Resource" load_steps=5 format=2]
+
+[ext_resource path="res://Items/items/apple.tres" type="Resource" id=1]
+[ext_resource path="res://Quests/scripts/QuestResource.cs" type="Script" id=2]
+[ext_resource path="res://GUI/pauseMenu/inventory/scripts/SlotData.cs" type="Script" id=3]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 3 )
+Quantity = 2
+Item = ExtResource( 1 )
+
+[resource]
+script = ExtResource( 2 )
+Title = "Long Quest"
+Description = "Long Quest"
+Steps = PoolStringArray( "do", "haha" )
+RewardXp = 19
+RewardItems = [ SubResource( 1 ) ]
