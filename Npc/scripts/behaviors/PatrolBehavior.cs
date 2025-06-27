@@ -7,14 +7,14 @@ public class PatrolBehavior : NPCBehavior
 {
     // Exports
     [Export]
-    private float walkSpeed = 30.0f;
+    private readonly float walkSpeed = 30.0f;
 
     // private
     private bool alreadyCalled = false;
-    private List<PatrolLocation> patrolLocations = new List<PatrolLocation>();
+    private readonly List<PatrolLocation> patrolLocations = new List<PatrolLocation>();
     private PatrolLocation target;
     private int currentIndex = 0;
-    private Color[] colors = new Color[] { new Color(0, 0, 1), new Color(0, 1, 0), new Color(1, 0, 0), new Color(0, 1, 1), new Color(1, 0, 1), new Color(1, 1, 0) };
+    private readonly Color[] colors = new Color[] { new Color(0, 0, 1), new Color(0, 1, 0), new Color(1, 0, 0), new Color(0, 1, 1), new Color(1, 0, 1), new Color(1, 1, 0) };
 
     // methods
     public override void _Ready()

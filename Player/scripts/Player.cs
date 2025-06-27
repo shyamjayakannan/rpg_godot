@@ -81,7 +81,7 @@ public class Player : KinematicBody2D
 			EmitSignal(nameof(AttackAnimationOver));
 	}
 
-	public override void _Process(float delta)
+	public override void _UnhandledInput(InputEvent @event)
 	{
 		Direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
 	}

@@ -98,11 +98,7 @@ public class PauseMenu : CanvasLayer
 		GlobalAudioManager.Instance.PauseMode = PauseModeEnum.Process;
 		Hide();
 		isPaused = false;
-
-		// only unpause if no dialog is already playing
-		if (DialogSystem.Instance == null || !DialogSystem.Instance.IsActive)
-			GetTree().Paused = false;
-
+		GetTree().Paused = false;
 		EmitSignal(nameof(Hidden));
 
 		if (DialogSystem.Instance != null && DialogSystem.Instance.Visible && DialogSystem.Instance.DialogProgressIndicator.Visible)

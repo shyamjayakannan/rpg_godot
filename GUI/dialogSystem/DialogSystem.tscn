@@ -85,7 +85,6 @@ tracks/0/keys = {
 }
 
 [node name="DialogSystem" type="CanvasLayer"]
-pause_mode = 2
 script = ExtResource( 1 )
 
 [node name="DialogUI" type="Control" parent="."]
@@ -97,9 +96,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 texture = SubResource( 1 )
 expand = true
-
-[node name="Timer" type="Timer" parent="DialogUI"]
-one_shot = true
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="DialogUI"]
 stream = ExtResource( 7 )

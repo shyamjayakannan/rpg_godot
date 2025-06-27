@@ -4,7 +4,7 @@ public class TitleScene : Node2D
 {
 	// Exports
 	[Export]
-	private AudioStream music;
+	private readonly AudioStream music;
 
 	// constants
 	private const string START_LEVEL = "res://Levels/Area1/2.tscn";

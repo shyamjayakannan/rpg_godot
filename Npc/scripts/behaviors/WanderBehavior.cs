@@ -5,14 +5,14 @@ public class WanderBehavior : NPCBehavior
 {
     // Exports
     [Export]
-    private float wanderSpeed = 30.0f;
+    private readonly float wanderSpeed = 30.0f;
     [Export]
-    private float wanderDuration = 5.0f;
+    private readonly float wanderDuration = 5.0f;
     [Export]
-    private float idleDuration = 1.0f;
+    private readonly float idleDuration = 1.0f;
 
     // private
-    private Vector2[] directions = new Vector2[] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
+    private readonly Vector2[] directions = new Vector2[] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
     private Area2D area2D;
 
     // methods
@@ -75,6 +75,9 @@ public class WanderBehavior : NPCBehavior
 
     private void Start2()
     {
+        if (!Npc.DoBehavior)
+            return;
+
         // walk
         Npc.State = "walk";
         Vector2 direction = directions[GD.Randi() % directions.Length];

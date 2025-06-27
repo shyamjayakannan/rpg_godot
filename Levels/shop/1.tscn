@@ -1407,7 +1407,6 @@ points = PoolVector2Array( 0, 24.1019, 128, 24.1019, 128, 96, 0, 96 )
 25/z_index = 0
 
 [node name="Level" type="Node2D"]
-position = Vector2( 0, 1 )
 script = ExtResource( 3 )
 music = ExtResource( 13 )
 

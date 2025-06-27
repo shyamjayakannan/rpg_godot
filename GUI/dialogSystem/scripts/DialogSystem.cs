@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using MonoCustomResourceRegistry;
@@ -25,7 +26,8 @@ public class DialogSystem : CanvasLayer
     private Label nameLabel;
     private Label label;
     private PanelContainer panelContainer;
-    private Timer timer;
+    private float timer = 0;
+    private bool timerStarted = false;
     private AudioStreamPlayer audioStreamPlayer;
     private Vector2[][] uiPositions = new Vector2[][]
     {
@@ -39,7 +41,6 @@ public class DialogSystem : CanvasLayer
     // properties
     public Button DialogProgressIndicator { get; private set; }
     public static DialogSystem Instance { get; private set; }
-    public bool IsActive { get; private set; }
 
     // methods
     public override void _Ready()
@@ -52,7 +53,6 @@ public class DialogSystem : CanvasLayer
         DialogProgressIndicator = GetNode<Button>("DialogUI/DialogProgressIndicator");
         panelContainer = GetNode<PanelContainer>("DialogUI/PanelContainer");
         label = GetNode<Label>("DialogUI/DialogProgressIndicator/Label");
-        timer = GetNode<Timer>("DialogUI/Timer");
         audioStreamPlayer = GetNode<AudioStreamPlayer>("DialogUI/AudioStreamPlayer");
         portraitSprite = (PortraitSprite)GetNode<Sprite>("DialogUI/PortraitSprite");
 
@@ -70,11 +70,25 @@ public class DialogSystem : CanvasLayer
 
         SetUIState(false);
         InitializeButtons();
-        timer.Connect("timeout", this, nameof(OnTimerTimeout));
         DialogProgressIndicator.Connect("pressed", this, nameof(OnDialogProgressIndicatorPressed));
 
         // cannot connect in portrait sprite because its onready runs before this
         Connect(nameof(LetterAdded), portraitSprite, nameof(PortraitSprite.OnLetterAdded));
+    }
+
+    public override void _Process(float delta)
+    {
+        if (!timerStarted)
+            return;
+
+        timer += delta;
+
+        if (timer > textSpeed)
+        {
+            timer = 0;
+            timerStarted = false;
+            OnTimerTimeout();
+        }
     }
 
     private void InitializeButtons()
@@ -108,9 +122,8 @@ public class DialogSystem : CanvasLayer
 
     private void SetUIState(bool value)
     {
-        IsActive = value;
         Visible = value;
-        GetTree().Paused = value;
+        GlobalPlayerManager.Instance.Player.SetProcessUnhandledInput(!value);
     }
 
     public void ShowDialog(List<DialogItem> items)
@@ -160,7 +173,7 @@ public class DialogSystem : CanvasLayer
         textLength = richTextLabel.Text.Length;
         richTextLabel.VisibleCharacters = 0;
         plainText = richTextLabel.Text;
-        StartTimer();
+        timerStarted = true;
     }
 
     public void SetTextDisplay(string text)
@@ -188,10 +201,14 @@ public class DialogSystem : CanvasLayer
         {
             choiceButtons[i].Text = dialogBranches[i].Text;
             choiceButtons[i].Disabled = false;
+            choiceButtons[i].FocusMode = Control.FocusModeEnum.All;
         }
 
         for (int j = i; j < choiceButtons.Count; j++)
+        {
             choiceButtons[j].Disabled = true;
+            choiceButtons[j].FocusMode = Control.FocusModeEnum.None;
+        }
     }
 
     private void ShowDialogButtonIndicator(bool isVisible)
@@ -204,12 +221,6 @@ public class DialogSystem : CanvasLayer
         label.Text = dialogItemIndex == dialogItems.Count - 1 ? "END" : "NEXT";
     }
 
-    private void StartTimer()
-    {
-        timer.WaitTime = textSpeed;
-        timer.Start();
-    }
-
     private void OnTimerTimeout()
     {
         if (richTextLabel.VisibleCharacters == textLength)
@@ -220,6 +231,6 @@ public class DialogSystem : CanvasLayer
 
         richTextLabel.VisibleCharacters += 1;
         EmitSignal(nameof(LetterAdded), plainText.Substr(richTextLabel.VisibleCharacters - 1, 1));
-        StartTimer();
+        timerStarted = true;
     }
 }

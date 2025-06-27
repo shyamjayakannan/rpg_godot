@@ -14,11 +14,11 @@ public class DialogInteraction : Intercatables
 
     // Exports
     [Export]
-    private bool enabled = true;
+    private readonly bool enabled = true;
 
     // private
     private AnimationPlayer animationPlayer;
-    private List<DialogItem> dialogItems = new List<DialogItem>();
+    private readonly List<DialogItem> dialogItems = new List<DialogItem>();
     private Area2D area2D;
 
     // methods

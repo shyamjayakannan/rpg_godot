@@ -4,7 +4,7 @@ public class EnergyBeamSprite : Sprite
 {
     // Exports
     [Export]
-    private float speed = 100;
+    private readonly float speed = 100;
 
     // methods
     public override void _Process(float delta)

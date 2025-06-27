@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 public class PressurePlate : Node2D
@@ -13,8 +12,8 @@ public class PressurePlate : Node2D
     private Area2D area2D;
     private AudioStreamPlayer2D audioStreamPlayer2D;
     private Sprite sprite;
-    private AudioStream audioActivate = GD.Load<AudioStream>("res://Interactables/dungeon/lever-01.wav");
-    private AudioStream audioDeactivate = GD.Load<AudioStream>("res://Interactables/dungeon/lever-02.wav");
+    private readonly AudioStream audioActivate = GD.Load<AudioStream>("res://Interactables/dungeon/lever-01.wav");
+    private readonly AudioStream audioDeactivate = GD.Load<AudioStream>("res://Interactables/dungeon/lever-02.wav");
     private PersistentDataHandler persistentDataHandler;
 
     // methods

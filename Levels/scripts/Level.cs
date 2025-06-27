@@ -4,7 +4,7 @@ public class Level : Node2D
 {
 	// Exports
 	[Export]
-	private AudioStream music;
+	private readonly AudioStream music;
 
 	// methods
 	public override void _Ready()

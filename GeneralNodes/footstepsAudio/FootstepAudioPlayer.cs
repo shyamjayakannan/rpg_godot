@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 public class FootstepAudioPlayer : AudioStreamPlayer2D
