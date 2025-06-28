@@ -60,7 +60,8 @@ public class DialogInteraction : Intercatables
             await ToSignal(GetTree(), "idle_frame");
 
             DialogSystem.Instance.ShowDialog(dialogItems);
-            DialogSystem.Instance.Connect(nameof(DialogSystem.Finished), this, nameof(OnFinished));
+            if (!DialogSystem.Instance.IsConnected(nameof(DialogSystem.Finished), this, nameof(OnFinished)))
+                DialogSystem.Instance.Connect(nameof(DialogSystem.Finished), this, nameof(OnFinished));
         }
 
         Wait();
@@ -86,7 +87,6 @@ public class DialogInteraction : Intercatables
 
     private void OnFinished()
     {
-        DialogSystem.Instance.Disconnect(nameof(DialogSystem.Finished), this, nameof(OnFinished));
         EmitSignal(nameof(Finished));
     }
 }

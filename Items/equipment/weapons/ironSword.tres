@@ -20,6 +20,7 @@ Name = "Iron Sword"
 Description = "Basic Sword"
 Texture = SubResource( 2 )
 effects = [  ]
+Cost = 100
 StatsDescription = "Type: Weapon
 
 Attack: +1    Defence: +0

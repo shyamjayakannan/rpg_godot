@@ -13,3 +13,4 @@ Name = "Key"
 Description = "Key"
 Texture = SubResource( 1 )
 effects = [  ]
+Cost = 50

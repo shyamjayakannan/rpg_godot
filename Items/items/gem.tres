@@ -13,3 +13,4 @@ Name = "Gem"
 Description = "Gem"
 Texture = SubResource( 1 )
 effects = [  ]
+Cost = 1

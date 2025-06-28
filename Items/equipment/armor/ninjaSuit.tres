@@ -20,6 +20,7 @@ Name = "Ninja Suit"
 Description = "Ninja Suit"
 Texture = SubResource( 2 )
 effects = [  ]
+Cost = 500
 StatsDescription = "Type: Armor
 
 Attack: +0    Defence: +2

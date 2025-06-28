@@ -20,6 +20,7 @@ Name = ""
 Description = "Simple Clothes"
 Texture = SubResource( 2 )
 effects = [  ]
+Cost = 200
 StatsDescription = "Type: Armor
 
 Attack: +0    Defence: +1

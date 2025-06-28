@@ -7,6 +7,7 @@ public class QuestItem : Button
     private Label step;
     private Label titleEllipsis;
     private Label stepEllipsis;
+    private Font font;
 
     // properties
     public QuestResource Quest { get; private set; }
@@ -18,6 +19,7 @@ public class QuestItem : Button
         titleEllipsis = GetNode<Label>("MarginContainer/VBoxContainer/HBoxContainer/Ellipsis");
         step = GetNode<Label>("MarginContainer/VBoxContainer/HBoxContainer2/Step");
         stepEllipsis = GetNode<Label>("MarginContainer/VBoxContainer/HBoxContainer2/Ellipsis");
+        font = GetFont("m5x7");
     }
 
     public void Initialize(QuestResource _quest, GlobalSaveManager.QuestData questData)
@@ -33,17 +35,7 @@ public class QuestItem : Button
         else
             step.Text = $"stage: {questData.CompletedSteps.Count}/{_quest.Steps.Length}";
 
-        titleEllipsis.Visible = IsLabelClipped(title);
-        stepEllipsis.Visible = IsLabelClipped(step);
-    }
-
-    private bool IsLabelClipped(Label label)
-    {
-        var font = label.GetFont("m5x7");
-
-        if (font == null)
-            return false;
-
-        return font.GetStringSize(label.Text).x > label.RectSize.x;
+        titleEllipsis.Visible = font.GetStringSize(title.Text).x > title.RectSize.x;
+        stepEllipsis.Visible = font.GetStringSize(step.Text).x > step.RectSize.x;
     }
 }

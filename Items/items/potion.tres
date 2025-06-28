@@ -20,3 +20,4 @@ Name = "Potion"
 Description = "Potion"
 Texture = SubResource( 1 )
 effects = [ SubResource( 2 ) ]
+Cost = 20

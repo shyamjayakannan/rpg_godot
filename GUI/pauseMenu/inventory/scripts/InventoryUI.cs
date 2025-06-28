@@ -36,12 +36,8 @@ public class InventoryUI : GridContainer
 		// inventorydata is a class so any instances will be reference types. assignments like below
 		// will make both variables reference the same instance, so updating either will update both.
 		// because of this, we can update playerinventory as much as we want and data will also have the same value!
-		data.Slots = new List<SlotData>(InventoryData.MAX_ITEMS);
+		InitializeInventory();
 		GlobalPlayerManager.Instance.PlayerInventory = data;
-
-		for (int i = 0; i < InventoryData.MAX_ITEMS; i++)
-			data.Slots.Add(null);
-
 		InitializeEquipment();
 		GlobalPlayerManager.Instance.PlayerEquipmentInventory = equipment;
 
@@ -57,6 +53,15 @@ public class InventoryUI : GridContainer
 		InitializeEquipment();
 		int[] statModifiers = CalculateModifiers();
 		PauseMenu.Instance.Stats.UpdateStats(statModifiers[0], statModifiers[1]);
+	}
+
+	private void InitializeInventory()
+	{
+		if (data.Slots == null)
+			data.Slots = new List<SlotData>(InventoryData.MAX_ITEMS);
+
+		for (int i = data.Slots.Count; i < InventoryData.MAX_ITEMS; i++)
+			data.Slots.Add(null);
 	}
 
 	private void InitializeEquipment()
@@ -107,7 +112,7 @@ public class InventoryUI : GridContainer
 
 			// here we need to add child slot first before setting slotData because slotData's setter
 			// requires texture and label data that will only be loaded once its _Ready runs
-			if (data is null)
+			if (data == null)
 				continue;
 
 			equipmentContainers[(int)((EquipableItem)data.Item).EquipmentType].AddChild(slot);
@@ -146,7 +151,7 @@ public class InventoryUI : GridContainer
 		int equipmentIndex = (int)item.EquipmentType;
 		InventorySlot equipmentSlot = equipmentContainers[equipmentIndex].GetChild<InventorySlot>(1);
 
-		int[] currentEquipment = equipmentSlot.SlotData is null ? new int[4] { 0, 0, 0, 0 } : CalculateSingleModifier((EquipableItem)equipmentSlot.SlotData.Item);
+		int[] currentEquipment = equipmentSlot.SlotData == null ? new int[4] { 0, 0, 0, 0 } : CalculateSingleModifier((EquipableItem)equipmentSlot.SlotData.Item);
 		int[] newEquipment = CalculateSingleModifier(item);
 
 		for (int i = 0; i < 4; i++)
@@ -200,7 +205,7 @@ public class InventoryUI : GridContainer
 
 		foreach (SlotData data in equipment.Slots)
 		{
-			if (data is null)
+			if (data == null)
 				continue;
 
 			foreach (EquipableItemModifier modifier in ((EquipableItem)data.Item).Modifiers)

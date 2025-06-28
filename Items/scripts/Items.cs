@@ -14,6 +14,8 @@ public class Items : Resource
 	public Texture Texture { get; private set; }
 	[Export]
 	private readonly ItemEffects[] effects;
+	[Export]
+	public readonly int Cost = 1;
 
 	// methods
 	public virtual void Use()

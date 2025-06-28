@@ -1,4 +1,4 @@
-[gd_scene load_steps=120 format=2]
+[gd_scene load_steps=127 format=2]
 
 [ext_resource path="res://Interactables/shopKeeper/ShopKeeper.tscn" type="PackedScene" id=1]
 [ext_resource path="res://TileMaps/Shop.tscn" type="PackedScene" id=2]
@@ -6,7 +6,14 @@
 [ext_resource path="res://Levels/PlayerSpawn.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Levels/LevelTransition.tscn" type="PackedScene" id=5]
 [ext_resource path="res://TileMaps/sprites/shopkeeper/shop.png" type="Texture" id=6]
+[ext_resource path="res://Items/items/potion.tres" type="Resource" id=7]
+[ext_resource path="res://Items/items/key.tres" type="Resource" id=8]
+[ext_resource path="res://Items/items/stone.tres" type="Resource" id=9]
+[ext_resource path="res://Items/equipment/weapons/katana.tres" type="Resource" id=10]
+[ext_resource path="res://Items/equipment/armor/ninjaSuit.tres" type="Resource" id=11]
+[ext_resource path="res://Items/items/flute.tres" type="Resource" id=12]
 [ext_resource path="res://Levels/music/example_music_01.ogg" type="AudioStream" id=13]
+[ext_resource path="res://Items/items/apple.tres" type="Resource" id=15]
 [ext_resource path="res://GeneralNodes/HitBox/HitBox.tscn" type="PackedScene" id=17]
 
 [sub_resource type="ConvexPolygonShape2D" id=43]
@@ -1418,6 +1425,7 @@ tile_data = PoolIntArray( -1, 25, 0, -65536, 25, 0, -65535, 25, 0, -65534, 25, 0
 
 [node name="ShopKeeper" parent="HitBox/Shop" instance=ExtResource( 1 )]
 position = Vector2( 416, 123 )
+shopInventory = [ ExtResource( 15 ), ExtResource( 12 ), ExtResource( 8 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ) ]
 
 [node name="PlayerSpawn" parent="HitBox/Shop" instance=ExtResource( 4 )]
 position = Vector2( 368, 207 )

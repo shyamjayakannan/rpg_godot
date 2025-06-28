@@ -13,3 +13,4 @@ Name = "Flute"
 Description = "Flute"
 Texture = SubResource( 1 )
 effects = [  ]
+Cost = 1

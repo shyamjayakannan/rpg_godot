@@ -17,10 +17,14 @@ public class InventoryData : Resource
 	{
 		(int index, bool full, int firstNullIndex) = SearchItem(item);
 
-		if (item is EquipableItem)
-			quantity = 0;
-		else if (index >= 0)
+		if (index >= 0)
 		{
+			if (item is EquipableItem)
+			{
+				PlayerHUD.Instance.QueueNotification("Equipment Duplicate Found!", "This equipment is already present in the inventory.");
+				return false;
+			}
+
 			Slots[index].Quantity += quantity;
 			return true;
 		}
@@ -55,7 +59,7 @@ public class InventoryData : Resource
 
 		foreach (SlotData slot in Slots)
 		{
-			if (slot is null)
+			if (slot == null)
 			{
 				list.Add(new GlobalSaveManager.ItemData
 				{
@@ -95,6 +99,13 @@ public class InventoryData : Resource
 		}
 
 		Slots = slots;
+	}
+
+	public int GetQuantity(Items item)
+	{
+		(int index, _, _) = SearchItem(item);
+
+		return index < 0 ? 0 : Slots[index].Quantity;
 	}
 
 	private (int, bool, int) SearchItem(Items item)

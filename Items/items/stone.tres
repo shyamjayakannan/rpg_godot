@@ -13,3 +13,4 @@ Name = "Stone"
 Description = "Stone"
 Texture = SubResource( 1 )
 effects = [  ]
+Cost = 5

@@ -31,7 +31,7 @@ public class PlayerHUD : CanvasLayer
 		animationPlayer = GetNode<AnimationPlayer>("Control/GameOver/AnimationPlayer");
 		audioStreamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
 		BossHpBar = GetNode<Control>("Control/BossHpBar");
-		notificationBar = GetNode<NotificationBar>("Control/NotificationBar");
+		notificationBar = GetNode<NotificationBar>("Control/CanvasLayer/NotificationBar");
 		textureProgress = GetNode<TextureProgress>("Control/BossHpBar/TextureProgress");
 		BossNameLabel = GetNode<Label>("Control/BossHpBar/Label");
 
@@ -126,11 +126,6 @@ public class PlayerHUD : CanvasLayer
 		animationPlayer.Play("fadeToBlack");
 		GlobalPlayerManager.Instance.Player.RevivePlayer();
 		return animationPlayer.CurrentAnimationLength;
-	}
-
-	private void LoadMenu()
-	{
-		throw new NotImplementedException();
 	}
 
 	public void UpdateHP(int hp, int maxHp)

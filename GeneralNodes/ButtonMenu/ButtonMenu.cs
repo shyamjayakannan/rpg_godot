@@ -4,20 +4,20 @@ public class ButtonMenu : VBoxContainer
 {
     // Exports
     [Export]
-    public AudioStream buttonFocusSound;
+    public AudioStream ButtonFocusSound;
     [Export]
-    public AudioStream buttonPressSound;
+    public AudioStream ButtonPressSound;
 
     // methods
     public void PlayFocus(AudioStreamPlayer audioStreamPlayer)
     {
-        audioStreamPlayer.Stream = buttonFocusSound;
+        audioStreamPlayer.Stream = ButtonFocusSound;
         audioStreamPlayer.Play();
     }
 
     public void PlayPress(AudioStreamPlayer audioStreamPlayer)
     {
-        audioStreamPlayer.Stream = buttonPressSound;
+        audioStreamPlayer.Stream = ButtonPressSound;
         audioStreamPlayer.Play();
     }
 

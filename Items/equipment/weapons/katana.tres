@@ -20,6 +20,7 @@ Name = "Katana"
 Description = "Highly Sharp"
 Texture = SubResource( 2 )
 effects = [  ]
+Cost = 400
 StatsDescription = "Type: Weapon
 
 Attack: +2    Defence: +0

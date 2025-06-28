@@ -13,3 +13,4 @@ Name = "Apple"
 Description = "Apple"
 Texture = SubResource( 1 )
 effects = [  ]
+Cost = 10

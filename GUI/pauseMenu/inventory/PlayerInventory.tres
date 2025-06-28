@@ -1,7 +1,14 @@
-[gd_resource type="Resource" load_steps=2 format=2]
+[gd_resource type="Resource" load_steps=5 format=2]
 
 [ext_resource path="res://GUI/pauseMenu/inventory/scripts/InventoryData.cs" type="Script" id=1]
+[ext_resource path="res://Items/items/gem.tres" type="Resource" id=2]
+[ext_resource path="res://GUI/pauseMenu/inventory/scripts/SlotData.cs" type="Script" id=3]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 3 )
+Quantity = 1000
+Item = ExtResource( 2 )
 
 [resource]
 script = ExtResource( 1 )
-Slots = null
+Slots = [ SubResource( 1 ) ]

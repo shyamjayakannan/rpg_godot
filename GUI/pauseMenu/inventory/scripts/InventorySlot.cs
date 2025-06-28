@@ -37,7 +37,7 @@ public class InventorySlot : Button
 			}
 
 			textureRect.Texture = slotData.Item.Texture;
-			label.Text = slotData.Quantity > 0 ? slotData.Quantity.ToString() : "";
+			label.Text = slotData.Item is EquipableItem ? "" : slotData.Quantity.ToString();
 		}
 	}
 	public static AudioStreamPlayer AudioStreamPlayer { get; set; }

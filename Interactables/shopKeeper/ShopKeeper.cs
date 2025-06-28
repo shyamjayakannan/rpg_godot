@@ -23,6 +23,7 @@ public class ShopKeeper : Node2D
     {
         shopMenu = (ShopMenu)shopMenuScene.Instance();
         AddChild(shopMenu);
+        shopMenu.PopulateItemList(shopInventory);
         shopMenu.SetMenu(true);
     }
 }

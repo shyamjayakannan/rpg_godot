@@ -280,7 +280,6 @@ margin_right = 186.0
 margin_bottom = 126.0
 size_flags_vertical = 1
 autowrap = true
-clip_text = true
 
 [node name="Equipment" type="PanelContainer" parent="Control/TabContainer/Inventory"]
 margin_left = 48.0
@@ -426,6 +425,7 @@ margin_bottom = 192.0
 rect_min_size = Vector2( 224, 192 )
 
 [node name="QuestItem" parent="Control/TabContainer/Quests/ScrollContainer/ButtonMenu" instance=ExtResource( 7 )]
+margin_bottom = 19.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Quests"]
 margin_left = 304.0

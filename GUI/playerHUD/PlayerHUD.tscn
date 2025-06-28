@@ -269,7 +269,6 @@ tracks/3/keys = {
 }
 
 [node name="PlayerHUD" type="CanvasLayer"]
-layer = 3
 script = ExtResource( 3 )
 
 [node name="Control" type="Control" parent="."]
@@ -534,13 +533,16 @@ margin_right = 27.5
 margin_bottom = 13.0
 text = "boss name"
 
-[node name="NotificationBar" type="Control" parent="Control"]
+[node name="CanvasLayer" type="CanvasLayer" parent="Control"]
+layer = 3
+
+[node name="NotificationBar" type="Control" parent="Control/CanvasLayer"]
 pause_mode = 2
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 9 )
 
-[node name="PanelContainer" type="PanelContainer" parent="Control/NotificationBar"]
+[node name="PanelContainer" type="PanelContainer" parent="Control/CanvasLayer/NotificationBar"]
 visible = false
 modulate = Color( 1, 1, 1, 0 )
 margin_left = 4.0
@@ -548,14 +550,14 @@ margin_right = 213.0
 margin_bottom = 48.0
 custom_styles/panel = SubResource( 8 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/NotificationBar/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/CanvasLayer/NotificationBar/PanelContainer"]
 margin_left = 8.0
 margin_top = 8.0
 margin_right = 201.0
 margin_bottom = 40.0
 custom_constants/separation = 1
 
-[node name="Title" type="Label" parent="Control/NotificationBar/PanelContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="Control/CanvasLayer/NotificationBar/PanelContainer/VBoxContainer"]
 margin_right = 193.0
 margin_bottom = 18.0
 custom_colors/font_color = Color( 0.937255, 0.745098, 0.243137, 1 )
@@ -564,14 +566,14 @@ custom_fonts/font = SubResource( 9 )
 text = "Notification Type"
 autowrap = true
 
-[node name="Message" type="Label" parent="Control/NotificationBar/PanelContainer/VBoxContainer"]
+[node name="Message" type="Label" parent="Control/CanvasLayer/NotificationBar/PanelContainer/VBoxContainer"]
 margin_top = 19.0
 margin_right = 193.0
 margin_bottom = 32.0
 text = "Message"
 autowrap = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Control/NotificationBar"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Control/CanvasLayer/NotificationBar"]
 anims/RESET = SubResource( 10 )
 anims/showNotification = SubResource( 11 )
 

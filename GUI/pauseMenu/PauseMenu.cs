@@ -41,8 +41,8 @@ public class PauseMenu : CanvasLayer
 		AudioStreamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
 		Stats = GetNode<Stats>("Control/TabContainer/Inventory/Stats");
 		InventorySlot.AudioStreamPlayer = AudioStreamPlayer;
-		InventorySlot.FocusSound = buttonMenu.buttonFocusSound;
-		InventorySlot.PressSound = buttonMenu.buttonPressSound;
+		InventorySlot.FocusSound = buttonMenu.ButtonFocusSound;
+		InventorySlot.PressSound = buttonMenu.ButtonPressSound;
 
 		load.Connect("pressed", this, nameof(OnLoadPressed));
 		menu.Connect("pressed", this, nameof(OnMenuPressed));

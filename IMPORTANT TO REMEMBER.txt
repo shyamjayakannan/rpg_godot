@@ -15,6 +15,8 @@ public class QuestAdvanceTrigger : QuestNode
 	a) children before parent
 	b) top - to - down order among siblings
 
-6) don't use string as a parameter in signals. for some reason doesn't work. Don't do this:
+6) don't use string or char as a parameter in signals. for some reason doesn't work. Don't do this:
 	[Signal]
 	public delegate void EquipmentSelected(string value);
+
+7) Always do addchild before setting other data or calling functions because some onready variables may be required which will only be available once _Ready has run. this will run only after add child.

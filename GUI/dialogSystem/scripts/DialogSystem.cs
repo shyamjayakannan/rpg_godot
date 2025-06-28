@@ -123,6 +123,7 @@ public class DialogSystem : CanvasLayer
     {
         Visible = value;
         GlobalPlayerManager.Instance.Player.SetProcessUnhandledInput(!value);
+        GlobalPlayerManager.Instance.Player.ChangeStateToIdle();
     }
 
     public void ShowDialog(List<DialogItem> items)

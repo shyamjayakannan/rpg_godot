@@ -206,4 +206,9 @@ public class Player : KinematicBody2D
 		UpdateHP(MaxHp);
 		stateMachine.ChangeState(idleState);
 	}
+
+	public void ChangeStateToIdle()
+	{
+		Direction = Vector2.Zero;
+	}
 }
