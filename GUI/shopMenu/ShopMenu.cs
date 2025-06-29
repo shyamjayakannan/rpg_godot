@@ -82,13 +82,32 @@ public class ShopMenu : CanvasLayer
             return;
         }
 
-        PlayAudio(purchaseAudio);
-        int remaining = gems.Text.ToInt() - total.Text.ToInt();
         int added = lineEdit.Text.ToInt();
-        gems.Text = remaining.ToString();
-        GlobalPlayerManager.Instance.PlayerInventory.RemoveItem(gem, remaining);
+
+        if (!GlobalPlayerManager.Instance.PlayerInventory.AddItem(currentItem, added))
+        {
+            if (currentItem is EquipableItem equipableItem && GlobalPlayerManager.Instance.IsEquipmentPresent(equipableItem))
+            {
+                acceptDialog.DialogText = "The equipment is already present in the inventory";
+                acceptDialog.WindowTitle = "Equipment Duplicate Found!";
+            }
+            else
+            {
+                acceptDialog.DialogText = "The Inventory is full";
+                acceptDialog.WindowTitle = "Alert!";
+            }
+
+            acceptDialog.Popup_();
+            colorRect.Show();
+            PlayAudio(errorAudio);
+            return;
+        }
+
+        PlayAudio(purchaseAudio);
+        int totalCost = total.Text.ToInt();
+        gems.Text = (gems.Text.ToInt() - totalCost).ToString();
+        GlobalPlayerManager.Instance.PlayerInventory.RemoveItem(gem, totalCost);
         inInventory.Text = (inInventory.Text.ToInt() + added).ToString();
-        GlobalPlayerManager.Instance.PlayerInventory.AddItem(currentItem, added);
     }
 
     private void OnLineEditTextChanged(string newText)
@@ -171,17 +190,8 @@ public class ShopMenu : CanvasLayer
         total.Text = price.Text;
         int quantity = GlobalPlayerManager.Instance.PlayerInventory.GetQuantity(item);
 
-        if (item is EquipableItem)
-        {
-            if (quantity == 0 && GlobalPlayerManager.Instance.PlayerEquipmentInventory.GetQuantity(item) == 0)
-            {
-                inInventory.Text = "0";
-                return;
-            }
-
-            colorRect.Show();
-            acceptDialog.Popup_();
-        }
+        if (quantity == 0 && item is EquipableItem)
+            quantity = GlobalPlayerManager.Instance.PlayerEquipmentInventory.GetQuantity(item);
 
         inInventory.Text = quantity.ToString();
     }

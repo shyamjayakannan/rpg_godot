@@ -46,4 +46,9 @@ public class GlobalPlayerManager : Node
     {
         Player.GetParent()?.RemoveChild(Player);
     }
+
+    public bool IsEquipmentPresent(EquipableItem equipableItem)
+    {
+        return PlayerInventory.IsEquipmentPresent(equipableItem) || PlayerEquipmentInventory.IsEquipmentPresent(equipableItem);
+    }
 }

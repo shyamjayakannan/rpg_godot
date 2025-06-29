@@ -23,7 +23,7 @@ public class ItemMagnet : Area2D
 
         for (int i = 0; i < itemPickups.Count; i++)
         {
-            if (!IsInstanceValid(itemPickups[i]))
+            if (!IsInstanceValid(itemPickups[i]) || itemPickups[i].DontPickup)
                 continue;
 
             allNull = false;
@@ -46,7 +46,7 @@ public class ItemMagnet : Area2D
 
     private void OnItemMagnetBodyEntered(Node2D body)
     {
-        if (!(body is ItemPickup))
+        if (!(body is ItemPickup pickup) || (pickup.Item is EquipableItem equipableItem && GlobalPlayerManager.Instance.IsEquipmentPresent(equipableItem)))
             return;
 
         // we want the player to be able to pull items that may be on the other side of a collision object

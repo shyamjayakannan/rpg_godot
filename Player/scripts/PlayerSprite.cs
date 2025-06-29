@@ -13,13 +13,20 @@ public class PlayerSprite : Sprite
         below = GetNode<Sprite>("WeaponBelowSprite");
         above = GetNode<Sprite>("WeaponAboveSprite");
 
-        PauseMenu.Instance.Connect(nameof(PauseMenu.EquipmentChanged), this, nameof(OnEquipmentChanged));
+        PauseMenu.Instance.Connect(nameof(PauseMenu.EquipmentsChanged), this, nameof(OnEquipmentChanged));
     }
 
     private void OnEquipmentChanged(EquipableItem equipableItem)
     {
+        if (equipableItem == null)
+            // continue;
+            return;
+
         if (equipableItem.EquipmentType == EquipableItem.Type.Armor)
+        {
+
             Texture = equipableItem.SpriteTexture;
+        }
         else
         {
             above.Texture = equipableItem.SpriteTexture;

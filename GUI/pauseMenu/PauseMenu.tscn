@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://GUI/pauseMenu/PauseMenu.cs" type="Script" id=1]
 [ext_resource path="res://Items/sprites/items.png" type="Texture" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://GUI/pauseMenu/stats/Stats.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Items/sprites/player_equipment/gear.png" type="Texture" id=12]
 [ext_resource path="res://GUI/pauseMenu/inventory/PlayerEquipmentInventory.tres" type="Resource" id=13]
+[ext_resource path="res://GUI/pauseMenu/inventory/scripts/EquipmentUI.cs" type="Script" id=14]
 
 [sub_resource type="StyleBoxFlat" id=2]
 content_margin_left = 16.0
@@ -113,7 +114,6 @@ margin_bottom = 150.0
 columns = 5
 script = ExtResource( 4 )
 data = ExtResource( 5 )
-equipment = ExtResource( 13 )
 
 [node name="InventorySlot" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
@@ -294,6 +294,8 @@ margin_top = 10.0
 margin_right = 186.0
 margin_bottom = 78.0
 custom_constants/separation = 40
+script = ExtResource( 14 )
+Equipment = ExtResource( 13 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer"]
 margin_right = 68.0

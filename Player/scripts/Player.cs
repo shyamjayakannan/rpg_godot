@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Godot;
 
@@ -71,8 +72,16 @@ public class Player : KinematicBody2D
 
 		hitBox.Connect(nameof(HitBox.Damaged), this, nameof(OnHitBoxDamaged));
 		AnimationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
+		GlobalLevelManager.Instance.Connect(nameof(GlobalLevelManager.LevelLoaded), this, nameof(OnLevelLoaded));
 
 		stateMachine.Initialize(this);
+	}
+
+	private void OnLevelLoaded()
+	{
+		// VERY IMPORTANT
+		// needed for level transition direction reset on new level load
+		Direction = Vector2.Zero;
 	}
 
 	private void OnAnimationPlayerAnimationFinished(string animationName)

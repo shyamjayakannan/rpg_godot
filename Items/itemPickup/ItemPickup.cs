@@ -29,6 +29,7 @@ public class ItemPickup : KinematicBody2D
 
 	// properties
 	public Vector2 Velocity { get; set; }
+	public bool DontPickup { get; private set; } = false;
 
 	// methods
 	public override void _Ready()
@@ -76,8 +77,12 @@ public class ItemPickup : KinematicBody2D
 
 	private void OnArea2DBodyEntered(object body)
 	{
-		if (body is Player)
-			if (GlobalPlayerManager.Instance.PlayerInventory.AddItem(Item))
-				ItemPickedUp();
+		if (!(body is Player))
+			return;
+
+		if (GlobalPlayerManager.Instance.PlayerInventory.AddItem(Item))
+			ItemPickedUp();
+		else
+			DontPickup = true;
 	}
 }

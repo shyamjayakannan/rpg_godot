@@ -15,30 +15,53 @@ public class InventoryData : Resource
 	// methods
 	public bool AddItem(Items item, int quantity = 1)
 	{
-		(int index, bool full, int firstNullIndex) = SearchItem(item);
+		if (item is EquipableItem)
+		{
+			(int index1, int firstNullIndex1) = GlobalPlayerManager.Instance.PlayerInventory.SearchItem(item);
+			(int index2, int firstNullIndex2) = GlobalPlayerManager.Instance.PlayerEquipmentInventory.SearchItem(item);
+
+			if (index1 >= 0 || index2 >= 0)
+				return false;
+
+			if (firstNullIndex1 >= 0)
+			{
+				Slots[firstNullIndex1] = new SlotData(quantity, item);
+				return true;
+			}
+
+			if (firstNullIndex2 >= 0)
+			{
+				Slots[firstNullIndex2] = new SlotData(quantity, item);
+				return true;
+			}
+
+			return false;
+		}
+
+		(int index, int firstNullIndex) = SearchItem(item);
 
 		if (index >= 0)
 		{
-			if (item is EquipableItem)
-			{
-				PlayerHUD.Instance.QueueNotification("Equipment Duplicate Found!", "This equipment is already present in the inventory.");
-				return false;
-			}
-
 			Slots[index].Quantity += quantity;
 			return true;
 		}
 
-		if (full)
+		if (firstNullIndex < 0)
 			return false;
 
 		Slots[firstNullIndex] = new SlotData(quantity, item);
 		return true;
 	}
 
+	public bool IsEquipmentPresent(EquipableItem equipableItem)
+	{
+		(int index, int _) = SearchItem(equipableItem);
+		return index >= 0;
+	}
+
 	public bool RemoveItem(Items item, int quantity = 1)
 	{
-		(int index, bool _, int _) = SearchItem(item);
+		(int index, int _) = SearchItem(item);
 
 		if (index >= 0)
 		{
@@ -103,22 +126,19 @@ public class InventoryData : Resource
 
 	public int GetQuantity(Items item)
 	{
-		(int index, _, _) = SearchItem(item);
+		(int index, _) = SearchItem(item);
 
 		return index < 0 ? 0 : Slots[index].Quantity;
 	}
 
-	private (int, bool, int) SearchItem(Items item)
+	private (int, int) SearchItem(Items item)
 	{
-		bool full = true;
 		int firstNullIndex = -1;
 
 		for (int i = 0; i < Slots.Count; i++)
 		{
 			if (Slots[i] == null)
 			{
-				full = false;
-
 				if (firstNullIndex == -1)
 					firstNullIndex = i;
 
@@ -126,9 +146,9 @@ public class InventoryData : Resource
 			}
 
 			if (item.Name == Slots[i].Item.Name)
-				return (i, false, -1); // last two don't matter here
+				return (i, -1); // last two don't matter here
 		}
 
-		return (-1, full, firstNullIndex);
+		return (-1, firstNullIndex);
 	}
 }

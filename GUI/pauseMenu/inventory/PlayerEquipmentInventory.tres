@@ -2,7 +2,7 @@
 
 [ext_resource path="res://GUI/pauseMenu/inventory/scripts/InventoryData.cs" type="Script" id=1]
 [ext_resource path="res://Items/equipment/weapons/ironSword.tres" type="Resource" id=2]
-[ext_resource path="res://Items/equipment/armor/ninjaSuit.tres" type="Resource" id=3]
+[ext_resource path="res://Items/equipment/armor/tunic.tres" type="Resource" id=3]
 [ext_resource path="res://GUI/pauseMenu/inventory/scripts/SlotData.cs" type="Script" id=4]
 
 [sub_resource type="Resource" id=2]

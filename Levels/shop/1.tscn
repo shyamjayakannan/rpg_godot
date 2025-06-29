@@ -1,4 +1,4 @@
-[gd_scene load_steps=127 format=2]
+[gd_scene load_steps=129 format=2]
 
 [ext_resource path="res://Interactables/shopKeeper/ShopKeeper.tscn" type="PackedScene" id=1]
 [ext_resource path="res://TileMaps/Shop.tscn" type="PackedScene" id=2]
@@ -13,7 +13,9 @@
 [ext_resource path="res://Items/equipment/armor/ninjaSuit.tres" type="Resource" id=11]
 [ext_resource path="res://Items/items/flute.tres" type="Resource" id=12]
 [ext_resource path="res://Levels/music/example_music_01.ogg" type="AudioStream" id=13]
+[ext_resource path="res://Items/equipment/armor/tunic.tres" type="Resource" id=14]
 [ext_resource path="res://Items/items/apple.tres" type="Resource" id=15]
+[ext_resource path="res://Items/itemPickup/ItemPickup.tscn" type="PackedScene" id=16]
 [ext_resource path="res://GeneralNodes/HitBox/HitBox.tscn" type="PackedScene" id=17]
 
 [sub_resource type="ConvexPolygonShape2D" id=43]
@@ -1428,7 +1430,7 @@ position = Vector2( 416, 123 )
 shopInventory = [ ExtResource( 15 ), ExtResource( 12 ), ExtResource( 8 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ) ]
 
 [node name="PlayerSpawn" parent="HitBox/Shop" instance=ExtResource( 4 )]
-position = Vector2( 368, 207 )
+position = Vector2( 410, 212 )
 
 [node name="Shop2" type="TileMap" parent="HitBox/Shop"]
 tile_set = SubResource( 1 )
@@ -1436,6 +1438,22 @@ cell_size = Vector2( 32, 32 )
 cell_quadrant_size = 32
 format = 1
 tile_data = PoolIntArray( -131062, 25, 0, 196620, 2, 0, 327678, 25, 0, 327698, 25, 0, 720904, 25, 0 )
+
+[node name="ItemPickup" parent="HitBox/Shop" instance=ExtResource( 16 )]
+position = Vector2( 192, 176 )
+Item = ExtResource( 8 )
+
+[node name="ItemPickup2" parent="HitBox/Shop" instance=ExtResource( 16 )]
+position = Vector2( 160, 212 )
+Item = ExtResource( 11 )
+
+[node name="ItemPickup3" parent="HitBox/Shop" instance=ExtResource( 16 )]
+position = Vector2( 247, 219 )
+Item = ExtResource( 14 )
+
+[node name="ItemPickup4" parent="HitBox/Shop" instance=ExtResource( 16 )]
+position = Vector2( 331, 219 )
+Item = ExtResource( 14 )
 
 [node name="LevelTransition" parent="." instance=ExtResource( 5 )]
 position = Vector2( 416, 271 )

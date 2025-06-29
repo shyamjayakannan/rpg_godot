@@ -53,7 +53,7 @@ tracks/3/keys = {
 "times": PoolRealArray( 0 ),
 "transitions": PoolRealArray( 1 ),
 "update": 1,
-"values": [ false ]
+"values": [ true ]
 }
 tracks/4/type = "value"
 tracks/4/path = NodePath("Sprite:visible")
@@ -118,10 +118,10 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.1 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 1.5 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
 "update": 1,
-"values": [ false, true ]
+"values": [ false, true, false ]
 }
 tracks/2/type = "audio"
 tracks/2/path = NodePath("AudioStreamPlayer2D")
@@ -219,7 +219,6 @@ custom_constants/shadow_offset_x = 0
 text = "x1"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-autoplay = "closed"
 anims/RESET = SubResource( 7 )
 anims/closed = SubResource( 4 )
 anims/openChest = SubResource( 6 )

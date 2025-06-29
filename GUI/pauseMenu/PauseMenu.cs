@@ -8,7 +8,7 @@ public class PauseMenu : CanvasLayer
 	[Signal]
 	public delegate void Hidden();
 	[Signal]
-	public delegate void EquipmentChanged(EquipableItem equipableItem);
+	public delegate void EquipmentsChanged(EquipableItem equipableItem);
 	[Signal]
 	public delegate void ItemRemoved();
 

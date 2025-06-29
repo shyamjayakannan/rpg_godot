@@ -6,7 +6,7 @@ public class InventorySlot : Button
 	[Signal]
 	public delegate void EquipmentSelected(EquipableItem item);
 	[Signal]
-	public delegate void EquipmentFocused(EquipableItem item);
+	public delegate void EquipmentFocused(EquipableItem item, bool update);
 	[Signal]
 	public delegate void MouseEntered();
 

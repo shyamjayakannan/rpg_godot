@@ -46,13 +46,17 @@ public class TreasureChest : Intercatables
         label = GetNode<Label>("ItemSprite/Label");
         animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
         area2D = GetNode<Area2D>("Area2D");
-        persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
         UpdateTexture();
         UpdateQuantity();
 
         if (Engine.EditorHint)
             return;
+
+        // VERY IMPORTANT
+        // since persistentdata handler isnt a tool script, it wont be recognized in the editor and we anyway dont need it
+        // when code runs in editor so thats why declaring it here. otherwise, we have to make it a tool script too.
+        persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
         area2D.Connect("area_entered", this, nameof(OnArea2DAreaEntered));
         area2D.Connect("area_exited", this, nameof(OnArea2DAreaExited));
