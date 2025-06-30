@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -16,6 +15,9 @@ public class PlayerHUD : CanvasLayer
 	private NotificationBar notificationBar;
 	private TextureProgress textureProgress;
 	private Label BossNameLabel;
+	private Label arrowLabel;
+	private Label bombLabel;
+	private HBoxContainer abilities;
 
 	// properties
 	public static PlayerHUD Instance { get; private set; }
@@ -34,6 +36,9 @@ public class PlayerHUD : CanvasLayer
 		notificationBar = GetNode<NotificationBar>("Control/CanvasLayer/NotificationBar");
 		textureProgress = GetNode<TextureProgress>("Control/BossHpBar/TextureProgress");
 		BossNameLabel = GetNode<Label>("Control/BossHpBar/Label");
+		abilities = GetNode<HBoxContainer>("Control/Abilities");
+		arrowLabel = abilities.GetNode<Label>("Panel3/Label");
+		bombLabel = abilities.GetNode<Label>("Panel4/Label2");
 
 		foreach (Node child in GetNode<HFlowContainer>("./Control/HFlowContainer").GetChildren())
 		{
@@ -145,5 +150,28 @@ public class PlayerHUD : CanvasLayer
 	{
 		for (int i = 0; i < hearts.Count; i++)
 			hearts[i].Visible = i < Mathf.Round(maxHp / 2);
+	}
+
+	public void UpdateArrows(int count)
+	{
+		arrowLabel.Text = count.ToString();
+	}
+
+	public void UpdateBombs(int count)
+	{
+		bombLabel.Text = count.ToString();
+	}
+
+	public void UpdateAbilityUI(int index)
+	{
+		for (int i = 0; i < abilities.GetChildCount(); i++)
+		{
+			if (i != index)
+				abilities.GetChild<Panel>(i).SelfModulate = new Color(1, 1, 1, 0);
+			else
+				abilities.GetChild<Panel>(i).SelfModulate = new Color(1, 1, 1, 1);
+		}
+
+		buttonMenu.PlayFocus(audioStreamPlayer);
 	}
 }

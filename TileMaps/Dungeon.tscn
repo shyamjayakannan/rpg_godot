@@ -1078,7 +1078,6 @@ tile_set = SubResource( 1 )
 cell_size = Vector2( 32, 32 )
 cell_quadrant_size = 32
 cell_y_sort = true
-collision_use_parent = true
 collision_layer = 16
 collision_mask = 0
 format = 1

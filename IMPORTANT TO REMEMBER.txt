@@ -20,3 +20,5 @@ public class QuestAdvanceTrigger : QuestNode
 	public delegate void EquipmentSelected(string value);
 
 7) Always do addchild before setting other data or calling functions because some onready variables may be required which will only be available once _Ready has run. this will run only after add child.
+
+8) to detect tilemap collision shaped in area2d body entered, you need to set the area2d's monitorable to true as well.

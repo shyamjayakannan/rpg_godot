@@ -9,12 +9,14 @@ public class WalkState : State
 	// private
 	private IdleState idleState;
 	private AttackState attackState;
+	private DashState dashState;
 
 	// methods
 	public override void _Ready()
 	{
 		idleState = GetNode<IdleState>("../IdleState");
 		attackState = GetNode<AttackState>("../AttackState");
+		dashState = GetNode<DashState>("../DashState");
 	}
 
 	public override void Enter()
@@ -38,6 +40,9 @@ public class WalkState : State
 	{
 		if (_event.IsActionPressed("attack"))
 			return attackState;
+
+		if (_event.IsActionPressed("dash"))
+			return dashState;
 
 		if (_event.IsActionPressed("interact"))
 			GlobalPlayerManager.Instance.EmitSignal(nameof(GlobalPlayerManager.InteractPressed));

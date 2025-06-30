@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://TileMaps/Grass.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Levels/PlayerSpawn.tscn" type="PackedScene" id=2]
@@ -7,7 +7,6 @@
 [ext_resource path="res://Levels/LevelTransition.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Enemies/Goblin/Goblin.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Props/pot/Pot.tscn" type="PackedScene" id=7]
-[ext_resource path="res://GeneralNodes/HitBox/HitBox.tscn" type="PackedScene" id=8]
 
 [node name="Level" type="Node2D"]
 script = ExtResource( 3 )
@@ -36,35 +35,32 @@ Side = 2
 level = "res://Levels/Area1/2.tscn"
 targetTransitionArea = "LevelTransition2"
 
-[node name="HitBox" parent="." instance=ExtResource( 8 )]
-collision_mask = 16
-
-[node name="TileMap" parent="HitBox" instance=ExtResource( 1 )]
+[node name="TileMap" parent="." instance=ExtResource( 1 )]
 tile_data = PoolIntArray( -65522, 0, 0, 0, 2, 131075, 1, 2, 131072, 2, 2, 3, 3, 2, 196608, 4, 2, 196609, 5, 2, 196611, 6, 2, 131075, 7, 2, 0, 8, 2, 65538, 9, 2, 65539, 10, 2, 196608, 11, 2, 196611, 12, 2, 131074, 13, 2, 196611, 14, 0, 65536, 65536, 2, 3, 65537, 2, 65536, 65538, 2, 131074, 65539, 2, 131075, 65540, 2, 65537, 65541, 0, 0, 65542, 2, 3, 65543, 2, 196608, 65544, 2, 196611, 65545, 2, 65538, 65546, 2, 0, 65547, 2, 65536, 65548, 2, 0, 65549, 0, 1, 65550, 0, 131075, 131072, 2, 196608, 131073, 2, 65537, 131074, 2, 0, 131075, 2, 196610, 131076, 0, 8, 131077, 0, 9, 131078, 0, 10, 131079, 0, 10, 131080, 0, 10, 131081, 0, 11, 131082, 2, 65536, 131083, 2, 131075, 131084, 2, 3, 131085, 0, 65536, 131086, 2, 131073, 196608, 2, 0, 196609, 2, 2, 196610, 0, 196609, 196611, 0, 196610, 196612, 0, 131080, 196613, 0, 131081, 196614, 0, 131081, 196615, 0, 131081, 196616, 0, 131081, 196617, 0, 65542, 196618, 0, 11, 196619, 2, 131072, 196620, 2, 196608, 196621, 0, 65536, 196622, 2, 1, 327679, 0, 8, 262144, 0, 6, 262145, 0, 196611, 262146, 2, 196610, 262147, 2, 131074, 262148, 0, 196616, 262149, 0, 131077, 262150, 0, 131081, 262151, 0, 131078, 262152, 0, 196617, 262153, 0, 131077, 262154, 0, 131083, 262155, 0, 10, 262156, 0, 10, 262157, 0, 65543, 262158, 2, 131072, 393215, 0, 65544, 327680, 0, 65543, 327681, 2, 0, 327682, 2, 1, 327683, 2, 3, 327684, 2, 3, 327685, 0, 196616, 327686, 0, 131077, 327687, 0, 65543, 327688, 2, 131075, 327689, 0, 65544, 327690, 0, 131078, 327691, 0, 196617, 327692, 0, 196617, 327693, 0, 196614, 327694, 0, 3, 458751, 0, 196616, 393216, 0, 131079, 393217, 2, 196609, 393218, 2, 196608, 393219, 2, 1, 393220, 2, 131074, 393221, 2, 3, 393222, 0, 65544, 393223, 0, 65547, 393224, 0, 196610, 393225, 0, 196613, 393226, 0, 196619, 393227, 2, 0, 393228, 2, 131072, 393229, 2, 1, 393230, 0, 131073, 393231, 0, 196611, 458752, 0, 131073, 458753, 0, 196610, 458754, 0, 196610, 458755, 0, 196610, 458756, 0, 5, 458757, 0, 10, 458758, 0, 65541, 458759, 0, 65543, 458760, 2, 196610, 458761, 2, 196609, 458762, 2, 1, 458763, 2, 196609, 458764, 2, 1, 458765, 2, 196610, 458766, 2, 196608, 524288, 2, 196611, 524289, 2, 196609, 524290, 2, 131075, 524291, 2, 2, 524292, 0, 65544, 524293, 0, 131081, 524294, 0, 131078, 524295, 0, 196614, 524296, 0, 196611, 524297, 2, 65537, 524298, 2, 3, 524299, 2, 65537, 524300, 2, 196610, 524301, 2, 131074, 524302, 2, 196611, 589828, 0, 196616, 589829, 0, 196617, 589830, 0, 196619 )
 
-[node name="PlayerSpawn" parent="HitBox/TileMap" instance=ExtResource( 2 )]
+[node name="PlayerSpawn" parent="TileMap" instance=ExtResource( 2 )]
 position = Vector2( 224, 176 )
 
-[node name="Plant" parent="HitBox/TileMap" instance=ExtResource( 4 )]
+[node name="Plant" parent="TileMap" instance=ExtResource( 4 )]
 position = Vector2( 384, 256 )
 
-[node name="Goblin" parent="HitBox/TileMap" instance=ExtResource( 6 )]
+[node name="Goblin" parent="TileMap" instance=ExtResource( 6 )]
 position = Vector2( 304, 82 )
 
-[node name="Goblin2" parent="HitBox/TileMap" instance=ExtResource( 6 )]
+[node name="Goblin2" parent="TileMap" instance=ExtResource( 6 )]
 position = Vector2( 208, 80 )
 
-[node name="Pot" parent="HitBox/TileMap" instance=ExtResource( 7 )]
+[node name="Pot" parent="TileMap" instance=ExtResource( 7 )]
 position = Vector2( 256, 128 )
 
-[node name="Pot2" parent="HitBox/TileMap" instance=ExtResource( 7 )]
+[node name="Pot2" parent="TileMap" instance=ExtResource( 7 )]
 position = Vector2( 272, 136 )
 
-[node name="Pot3" parent="HitBox/TileMap" instance=ExtResource( 7 )]
+[node name="Pot3" parent="TileMap" instance=ExtResource( 7 )]
 position = Vector2( 240, 136 )
 
-[node name="Pot4" parent="HitBox/TileMap" instance=ExtResource( 7 )]
+[node name="Pot4" parent="TileMap" instance=ExtResource( 7 )]
 position = Vector2( 240, 112 )
 
-[node name="Pot5" parent="HitBox/TileMap" instance=ExtResource( 7 )]
+[node name="Pot5" parent="TileMap" instance=ExtResource( 7 )]
 position = Vector2( 272, 112 )

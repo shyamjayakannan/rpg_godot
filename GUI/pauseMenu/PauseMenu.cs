@@ -21,6 +21,8 @@ public class PauseMenu : CanvasLayer
 	private bool isPaused = false;
 	private Label itemDescription;
 	private Control system;
+	private AbilityButton arrowButton;
+	private AbilityButton bombButton;
 
 	// properties
 	public AudioStreamPlayer AudioStreamPlayer { get; private set; }
@@ -33,6 +35,8 @@ public class PauseMenu : CanvasLayer
 		Instance = this;
 		tabContainer = GetNode<TabContainer>("Control/TabContainer");
 		buttonMenu = GetNode<ButtonMenu>("Control/TabContainer/System/ButtonMenu");
+		arrowButton = GetNode<AbilityButton>("Control/TabContainer/Inventory/Abilities/VBoxContainer/AbilityButton3");
+		bombButton = GetNode<AbilityButton>("Control/TabContainer/Inventory/Abilities/VBoxContainer/AbilityButton4");
 		system = GetNode<Control>("Control/TabContainer/System");
 		save = buttonMenu.GetNode<Button>("Save");
 		load = buttonMenu.GetNode<Button>("Load");
@@ -41,8 +45,6 @@ public class PauseMenu : CanvasLayer
 		AudioStreamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
 		Stats = GetNode<Stats>("Control/TabContainer/Inventory/Stats");
 		InventorySlot.AudioStreamPlayer = AudioStreamPlayer;
-		InventorySlot.FocusSound = buttonMenu.ButtonFocusSound;
-		InventorySlot.PressSound = buttonMenu.ButtonPressSound;
 
 		load.Connect("pressed", this, nameof(OnLoadPressed));
 		menu.Connect("pressed", this, nameof(OnMenuPressed));
@@ -88,6 +90,8 @@ public class PauseMenu : CanvasLayer
 		isPaused = true;
 		GetTree().Paused = true;
 		tabContainer.CurrentTab = 0;
+		arrowButton.UpdateLabel(GlobalPlayerManager.Instance.Player.Arrows);
+		bombButton.UpdateLabel(GlobalPlayerManager.Instance.Player.Bombs);
 
 		EmitSignal(nameof(Shown));
 	}

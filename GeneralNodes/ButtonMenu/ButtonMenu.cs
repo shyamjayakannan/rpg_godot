@@ -2,11 +2,9 @@ using Godot;
 
 public class ButtonMenu : VBoxContainer
 {
-    // Exports
-    [Export]
-    public AudioStream ButtonFocusSound;
-    [Export]
-    public AudioStream ButtonPressSound;
+    // properties
+    public static AudioStream ButtonFocusSound { get; private set; } = GD.Load<AudioStream>("res://title_screen/menu_focus.wav");
+    public static AudioStream ButtonPressSound { get; private set; } = GD.Load<AudioStream>("res://title_screen/menu_select.wav");
 
     // methods
     public void PlayFocus(AudioStreamPlayer audioStreamPlayer)

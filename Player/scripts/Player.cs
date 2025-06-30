@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Godot;
 
@@ -14,7 +13,6 @@ public class Player : KinematicBody2D
 
 	// private
 	private AnimationPlayer attackAnimationPlayer;
-	private Sprite sprite;
 	private HurtBox attackHurtBox;
 	private HurtBox chargeAttackHurtBox;
 	public Vector2 CardinalDirection { get; private set; } = Vector2.Down;
@@ -27,6 +25,7 @@ public class Player : KinematicBody2D
 	private int attack = 1;
 
 	// properties
+	public Sprite Sprite { get; private set; }
 	public int[] LevelUpXpRequirements { get; private set; } = new int[4] { 0, 50, 100, 200 };
 	public AnimationPlayer AnimationPlayer { get; private set; }
 	public int Hp { get; private set; } = 4;
@@ -48,10 +47,12 @@ public class Player : KinematicBody2D
 				chargeAttackHurtBox.Damage = attack * 2;
 		}
 	}
+	public int Bombs = 0;
+	public int Arrows = 0;
 	public Vector2 Direction { get; private set; } = Vector2.Zero;
 	public Vector2 Velocity { get; set; } = Vector2.Zero;
 	public AnimationPlayer EffectAnimationPlayer { get; private set; }
-	public Throwable Throwable { get; private set; }
+	public Throwable Throwable { get; set; }
 
 	// methods
 	public override void _Ready()
@@ -61,9 +62,9 @@ public class Player : KinematicBody2D
 		AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
 		attackAnimationPlayer = GetNode<AnimationPlayer>("Sprite/AttackEffects/AnimationPlayer");
 		EffectAnimationPlayer = GetNode<AnimationPlayer>("EffectAnimationPlayer");
-		sprite = GetNode<Sprite>("Sprite");
-		attackHurtBox = sprite.GetNode<HurtBox>("HurtBox");
-		chargeAttackHurtBox = sprite.GetNode<HurtBox>("ChargeHurtBox");
+		Sprite = GetNode<Sprite>("Sprite");
+		attackHurtBox = Sprite.GetNode<HurtBox>("HurtBox");
+		chargeAttackHurtBox = Sprite.GetNode<HurtBox>("ChargeHurtBox");
 		stateMachine = GetNode<PlayerStateMachine>("PlayerStateMachine");
 		liftState = GetNode<LiftState>("PlayerStateMachine/LiftState");
 		idleState = GetNode<IdleState>("PlayerStateMachine/IdleState");
@@ -81,7 +82,8 @@ public class Player : KinematicBody2D
 	{
 		// VERY IMPORTANT
 		// needed for level transition direction reset on new level load
-		Direction = Vector2.Zero;
+		if (!(Input.IsActionPressed("ui_right") || Input.IsActionPressed("ui_left") || Input.IsActionPressed("ui_down") || Input.IsActionPressed("ui_up")))
+			Direction = Vector2.Zero;
 	}
 
 	private void OnAnimationPlayerAnimationFinished(string animationName)
@@ -139,9 +141,9 @@ public class Player : KinematicBody2D
 		EmitSignal(nameof(PlayerDirectionChanged), CardinalDirection);
 
 		if (CardinalDirection.x < 0)
-			sprite.Scale = new Vector2(-1, 1);
+			Sprite.Scale = new Vector2(-1, 1);
 		else
-			sprite.Scale = new Vector2(1, 1);
+			Sprite.Scale = new Vector2(1, 1);
 
 		return true;
 	}

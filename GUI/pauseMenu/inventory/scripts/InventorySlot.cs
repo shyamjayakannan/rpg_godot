@@ -41,8 +41,6 @@ public class InventorySlot : Button
 		}
 	}
 	public static AudioStreamPlayer AudioStreamPlayer { get; set; }
-	public static AudioStream FocusSound { get; set; }
-	public static AudioStream PressSound { get; set; }
 
 	// methods
 	public override void _Ready()
@@ -117,9 +115,9 @@ public class InventorySlot : Button
 	private void OnInventorySlotFocusEntered()
 	{
 		if (AudioStreamPlayer.Playing)
-			AudioStreamPlayer.Connect("finished", this, nameof(PlayAudio), new Godot.Collections.Array(FocusSound));
+			AudioStreamPlayer.Connect("finished", this, nameof(PlayAudio), new Godot.Collections.Array(ButtonMenu.ButtonFocusSound));
 		else
-			PlayAudio(FocusSound);
+			PlayAudio(ButtonMenu.ButtonFocusSound);
 
 		if (slotData == null)
 			return;
@@ -145,7 +143,7 @@ public class InventorySlot : Button
 		if (slotData == null || Dragging)
 			return;
 
-		PlayAudio(PressSound);
+		PlayAudio(ButtonMenu.ButtonPressSound);
 		slotData.Item.Use();
 
 		if (slotData.Item is EquipableItem equipableItem)

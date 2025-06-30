@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=2]
+[gd_scene load_steps=85 format=2]
 
 [ext_resource path="res://Player/scripts/PlayerCamera.cs" type="Script" id=1]
 [ext_resource path="res://Player/sprites/player_sprite.png" type="Texture" id=2]
@@ -30,6 +30,8 @@
 [ext_resource path="res://Items/sprites/player_equipment/player_sprite_sword.png" type="Texture" id=28]
 [ext_resource path="res://Player/scripts/PlayerSprite.cs" type="Script" id=29]
 [ext_resource path="res://GeneralNodes/footstepsAudio/FootstepAudioPlayer.tscn" type="PackedScene" id=30]
+[ext_resource path="res://Player/scripts/states/DashState.cs" type="Script" id=31]
+[ext_resource path="res://Player/audio/hyah.wav" type="AudioStream" id=32]
 
 [sub_resource type="Animation" id=15]
 resource_name = "attackDown"
@@ -878,6 +880,54 @@ tracks/2/keys = {
 } ]
 }
 
+[sub_resource type="Animation" id=57]
+resource_name = "dashDown"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 9 ]
+}
+
+[sub_resource type="Animation" id=58]
+resource_name = "dashSide"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 17 ]
+}
+
+[sub_resource type="Animation" id=59]
+resource_name = "dashUp"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ 13 ]
+}
+
 [sub_resource type="Animation" id=52]
 resource_name = "finished"
 length = 0.4
@@ -1517,6 +1567,9 @@ anims/chargeUp = SubResource( 33 )
 anims/chargeWalkDown = SubResource( 34 )
 anims/chargeWalkSide = SubResource( 35 )
 anims/chargeWalkUp = SubResource( 36 )
+anims/dashDown = SubResource( 57 )
+anims/dashSide = SubResource( 58 )
+anims/dashUp = SubResource( 59 )
 anims/finished = SubResource( 52 )
 anims/idleDown = SubResource( 2 )
 anims/idleSide = SubResource( 4 )
@@ -1570,6 +1623,10 @@ script = ExtResource( 13 )
 [node name="FinishedState" type="Node" parent="PlayerStateMachine"]
 script = ExtResource( 25 )
 exhaustAudio = ExtResource( 26 )
+
+[node name="DashState" type="Node" parent="PlayerStateMachine"]
+script = ExtResource( 31 )
+dashSound = ExtResource( 32 )
 
 [node name="PlayerCamera" type="Camera2D" parent="."]
 current = true

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://GUI/pauseMenu/PauseMenu.cs" type="Script" id=1]
 [ext_resource path="res://Items/sprites/items.png" type="Texture" id=2]
@@ -14,6 +14,8 @@
 [ext_resource path="res://Items/sprites/player_equipment/gear.png" type="Texture" id=12]
 [ext_resource path="res://GUI/pauseMenu/inventory/PlayerEquipmentInventory.tres" type="Resource" id=13]
 [ext_resource path="res://GUI/pauseMenu/inventory/scripts/EquipmentUI.cs" type="Script" id=14]
+[ext_resource path="res://Player/sprites/ability-icons.png" type="Texture" id=15]
+[ext_resource path="res://GUI/pauseMenu/inventory/AbilityButton.tscn" type="PackedScene" id=16]
 
 [sub_resource type="StyleBoxFlat" id=2]
 content_margin_left = 16.0
@@ -40,6 +42,22 @@ margin_left = 16.0
 margin_right = 16.0
 margin_top = 16.0
 margin_bottom = 16.0
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 15 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 15 )
+region = Rect2( 96, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=14]
+atlas = ExtResource( 15 )
+region = Rect2( 64, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 15 )
+region = Rect2( 0, 0, 32, 32 )
 
 [sub_resource type="AtlasTexture" id=6]
 atlas = ExtResource( 12 )
@@ -100,9 +118,9 @@ anchor_bottom = 1.0
 margin_top = 23.0
 
 [node name="Items" type="PanelContainer" parent="Control/TabContainer/Inventory"]
-margin_left = 48.0
+margin_left = 96.0
 margin_top = 9.0
-margin_right = 244.0
+margin_right = 292.0
 margin_bottom = 169.0
 custom_styles/panel = SubResource( 1 )
 
@@ -266,10 +284,41 @@ margin_top = 108.0
 margin_right = 176.0
 margin_bottom = 140.0
 
+[node name="Abilities" type="PanelContainer" parent="Control/TabContainer/Inventory"]
+margin_left = 24.0
+margin_top = 57.0
+margin_right = 76.0
+margin_bottom = 217.0
+custom_styles/panel = SubResource( 1 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Inventory/Abilities"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 42.0
+margin_bottom = 150.0
+
+[node name="AbilityButton" parent="Control/TabContainer/Inventory/Abilities/VBoxContainer" instance=ExtResource( 16 )]
+Texture = SubResource( 12 )
+
+[node name="AbilityButton2" parent="Control/TabContainer/Inventory/Abilities/VBoxContainer" instance=ExtResource( 16 )]
+margin_top = 36.0
+margin_bottom = 68.0
+Texture = SubResource( 13 )
+
+[node name="AbilityButton3" parent="Control/TabContainer/Inventory/Abilities/VBoxContainer" instance=ExtResource( 16 )]
+margin_top = 72.0
+margin_bottom = 104.0
+Texture = SubResource( 14 )
+
+[node name="AbilityButton4" parent="Control/TabContainer/Inventory/Abilities/VBoxContainer" instance=ExtResource( 16 )]
+margin_top = 108.0
+margin_bottom = 140.0
+Texture = SubResource( 15 )
+
 [node name="Description" type="PanelContainer" parent="Control/TabContainer/Inventory"]
-margin_left = 304.0
+margin_left = 320.0
 margin_top = 137.0
-margin_right = 500.0
+margin_right = 516.0
 margin_bottom = 273.0
 custom_styles/panel = SubResource( 1 )
 
@@ -282,9 +331,9 @@ size_flags_vertical = 1
 autowrap = true
 
 [node name="Equipment" type="PanelContainer" parent="Control/TabContainer/Inventory"]
-margin_left = 48.0
+margin_left = 96.0
 margin_top = 185.0
-margin_right = 244.0
+margin_right = 292.0
 margin_bottom = 273.0
 custom_styles/panel = SubResource( 1 )
 
@@ -381,22 +430,22 @@ margin_right = 68.0
 margin_bottom = 32.0
 
 [node name="Stats" parent="Control/TabContainer/Inventory" instance=ExtResource( 11 )]
-margin_left = 304.0
+margin_left = 320.0
 margin_top = 23.0
-margin_right = 500.0
+margin_right = 516.0
 margin_bottom = 107.0
 
 [node name="StatsLabel" type="Label" parent="Control/TabContainer/Inventory"]
-margin_left = 312.0
+margin_left = 328.0
 margin_top = 9.0
-margin_right = 352.0
+margin_right = 368.0
 margin_bottom = 22.0
 text = "Stats"
 
 [node name="DescriptionLabel" type="Label" parent="Control/TabContainer/Inventory"]
-margin_left = 314.0
+margin_left = 330.0
 margin_top = 121.0
-margin_right = 371.0
+margin_right = 387.0
 margin_bottom = 134.0
 text = "Description"
 

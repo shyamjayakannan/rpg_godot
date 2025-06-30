@@ -4,93 +4,129 @@ public class Throwable : Intercatables
 {
     // Exports
     [Export]
-    private readonly float gravity = 980;
+    protected float Gravity { get; private set; } = 980;
     [Export]
-    private readonly float throwSpeed = 400;
+    protected float ThrowDistance { get; private set; } = 2; // in terms no. of of tiles
 
-    // private
-    private bool pickedUp = false;
-    private Node2D throwable;
-    private HurtBox hurtBox;
-    private Vector2 throwVelocity;
-    private AnimationPlayer animationPlayer;
-    private Timer timer;
-    private StaticBody2D staticBody2D;
+    // protected
+    protected Area2D WallDetect { get; private set; }
+    protected float ThrowSpeedWallDetect { get; set; } = 0;
+    protected float SpeedAtTouchDown { get; set; }
+    protected Timer Timer { get; private set; }
+    protected Node2D ThrowableParent { get; private set; }
+    protected AnimationPlayer AnimationPlayer { get; private set; }
+    protected Vector2 ThrowVelocity { get; set; }
+    protected Vector2 ThrowDirection { get; set; }
+    protected HurtBox HurtBox { get; private set; }
 
     // methods
     public override void _Ready()
     {
-        hurtBox = GetNode<HurtBox>("HurtBox");
-        timer = GetNode<Timer>("Timer");
-        throwable = (Node2D)GetParent();
-        staticBody2D = throwable.GetNode<StaticBody2D>("StaticBody2D");
-        animationPlayer = throwable.GetNode<AnimationPlayer>("AnimationPlayer");
-        SetupHurtBox();
+        HurtBox = GetNode<HurtBox>("HurtBox");
+        WallDetect = GetNode<Area2D>("WallDetect");
+        Timer = GetNode<Timer>("Timer");
+        ThrowableParent = (Node2D)GetParent();
+        AnimationPlayer = ThrowableParent.GetNode<AnimationPlayer>("AnimationPlayer");
+        SetupAreas();
         SetPhysicsProcess(false);
 
-        timer.Connect("timeout", this, nameof(OnTimerTimeout));
-        animationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
+        Timer.Connect("timeout", this, nameof(OnTimeout));
+        AnimationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
         Connect("area_entered", this, nameof(OnArea2DAreaEntered));
         Connect("area_exited", this, nameof(OnArea2DAreaExited));
     }
 
     protected override void OnInteractPressed()
     {
-        if (pickedUp)
+        if (GlobalPlayerManager.Instance.Player.Throwable != null)
             return;
 
-        pickedUp = true;
-        SetCollisionBodies(throwable, true);
-        throwable.GetParent()?.RemoveChild(throwable);
-        GlobalPlayerManager.Instance.Player.PickupItem(this, throwable);
+        SetCollisionBodies(ThrowableParent, true);
+        ThrowableParent.GetParent()?.RemoveChild(ThrowableParent);
+        GlobalPlayerManager.Instance.Player.PickupItem(this, ThrowableParent);
 
         Disconnect("area_entered", this, nameof(OnArea2DAreaEntered));
         Disconnect("area_exited", this, nameof(OnArea2DAreaExited));
-        hurtBox.Connect(nameof(HurtBox.DidDamage), this, nameof(OnHurtBoxDidDamage));
+
+        if (!HurtBox.IsConnected(nameof(HurtBox.DidDamage), this, nameof(OnCollision)))
+            HurtBox.Connect(nameof(HurtBox.DidDamage), this, nameof(OnCollision));
+
+        if (!WallDetect.IsConnected("body_entered", this, nameof(OnWallDetected)))
+            WallDetect.Connect("body_entered", this, nameof(OnWallDetected));
     }
 
     public override void _PhysicsProcess(float delta)
     {
-        throwVelocity.y += gravity * delta;
-        throwable.Position += throwVelocity * delta;
+        ThrowVelocity = new Vector2(ThrowVelocity.x, ThrowVelocity.y + Gravity * delta);
+        ThrowableParent.Position += ThrowVelocity * delta;
+        ThrowSpeedWallDetect += Gravity * delta;
+        WallDetect.Position = new Vector2(WallDetect.Position.x, WallDetect.Position.y - ThrowSpeedWallDetect * delta);
     }
 
-    public async void SetState(string state, Vector2 ThrowDirection)
+    public async void SetState(string state, Vector2 throwDirection)
     {
-        Vector2 globalPosition = throwable.GlobalPosition;
+        ThrowDirection = throwDirection;
+        Vector2 globalPosition = ThrowableParent.GlobalPosition;
         SceneTree sceneTree = GetTree();
-        throwable.GetParent().RemoveChild(throwable);
+        ThrowableParent.GetParent().RemoveChild(ThrowableParent);
 
-        // add child needs to be deferred but on doing that, the onready variables like timer become null because the
+        // add child needs to be deferred but on doing that, the onready variables like Timer become null because the
         // add child is happening later. so better to wait for the idle frame and do everything after that so that the
-        // add child happens first before accessing the node variables like timer
+        // add child happens first before accessing the node variables like Timer
         await ToSignal(sceneTree, "idle_frame");
 
-        GlobalPlayerManager.Instance.Player.GetParent().AddChild(throwable);
-        SetCollisionBodies(throwable, false);
-        throwable.GlobalPosition = globalPosition;
-        timer.WaitTime = Mathf.Sqrt(2 * staticBody2D.GlobalPosition.DistanceTo(GlobalPlayerManager.Instance.Player.GlobalPosition) / gravity);
-        timer.Start();
+        GlobalPlayerManager.Instance.Player.GetParent().AddChild(ThrowableParent);
+
+        // VERY IMPORTANT
+        // set only throwable's shapes to active not the static body of throwable parent otherwise the walldetect will
+        // will detect the parent also
+        SetCollisionBodies(this, false);
+        ThrowableParent.GlobalPosition = globalPosition;
+
+        // let wall detect move on the ground
+        WallDetect.GlobalPosition = GlobalPlayerManager.Instance.Player.GlobalPosition;
+
+        float playerToItemVectorMagnitude = GlobalPlayerManager.Instance.Player.GlobalPosition.DistanceTo(globalPosition);
+        Timer.WaitTime = Mathf.Sqrt(2 * playerToItemVectorMagnitude / Gravity);
+        SpeedAtTouchDown = Gravity * Timer.WaitTime;
+        Timer.Start();
 
         SetPhysicsProcess(true);
+        GlobalPlayerManager.Instance.Player.Throwable = null;
 
         if (state == "throw")
         {
-            hurtBox.Monitorable = true;
-            throwVelocity = ThrowDirection * throwSpeed;
+            HurtBox.Monitorable = true;
+            WallDetect.Monitoring = true;
+
+            // VERY IMPORTANT
+            // i dont know but for tilemap detection its not sufficient to put monitoring true, we need monitorable too
+            WallDetect.Monitorable = true;
+
+            Vector2 playerToItemVector = playerToItemVectorMagnitude * GlobalPlayerManager.Instance.Player.GlobalPosition.DirectionTo(globalPosition);
+            Vector2 landLocationFromPlayerFeet = ThrowDistance * 32 * ThrowDirection;
+            Vector2 finalVector = landLocationFromPlayerFeet - playerToItemVector;
+            ThrowVelocity = new Vector2(finalVector.x, finalVector.y - 0.5f * Gravity * Mathf.Pow(Timer.WaitTime, 2)) / Timer.WaitTime;
             return;
         }
 
-        throwVelocity = Vector2.Zero;
+        ThrowVelocity = Vector2.Zero;
     }
 
-    private void SetupHurtBox()
+    private void SetupAreas()
     {
-        hurtBox.Monitorable = false;
+        HurtBox.Monitorable = false;
+        WallDetect.Monitoring = false;
+        WallDetect.Monitorable = false;
 
         foreach (Node child in GetChildren())
+        {
             if (child is CollisionShape2D collisionShape2D)
-                hurtBox.AddChild(collisionShape2D.Duplicate());
+            {
+                WallDetect.AddChild(collisionShape2D.Duplicate());
+                HurtBox.AddChild(collisionShape2D.Duplicate());
+            }
+        }
     }
 
     private void SetCollisionBodies(Node parent, bool value)
@@ -106,24 +142,35 @@ public class Throwable : Intercatables
         }
     }
 
-    private void OnTimerTimeout()
+    private void Destroy()
+    {
+        SetPhysicsProcess(false);
+        AnimationPlayer.Play("destroy");
+    }
+
+    protected virtual void OnCollision()
     {
         Destroy();
     }
 
-    private void Destroy()
+    protected virtual void OnTimeout()
     {
-        SetPhysicsProcess(false);
-        animationPlayer.Play("destroy");
+        Destroy();
     }
 
     private void OnAnimationPlayerAnimationFinished(string animName)
     {
-        throwable.QueueFree();
+        if (IsConnected("area_entered", this, nameof(OnArea2DAreaEntered)))
+            Disconnect("area_entered", this, nameof(OnArea2DAreaEntered));
+
+        if (IsConnected("area_exited", this, nameof(OnArea2DAreaExited)))
+            Disconnect("area_exited", this, nameof(OnArea2DAreaExited));
+
+        ThrowableParent.QueueFree();
     }
 
-    private void OnHurtBoxDidDamage()
+    private void OnWallDetected(Node body)
     {
-        Destroy();
+        OnCollision();
     }
 }

@@ -1404,6 +1404,5 @@ points = PoolVector2Array( 0, 24.1019, 128, 24.1019, 128, 96, 0, 96 )
 tile_set = SubResource( 1 )
 cell_size = Vector2( 32, 32 )
 cell_quadrant_size = 32
-collision_use_parent = true
 format = 1
 script = ExtResource( 2 )
