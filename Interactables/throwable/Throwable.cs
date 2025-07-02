@@ -1,6 +1,6 @@
 using Godot;
 
-public class Throwable : Intercatables
+public class Throwable : Interactables
 {
     // Exports
     [Export]
@@ -36,7 +36,7 @@ public class Throwable : Intercatables
         Connect("area_exited", this, nameof(OnArea2DAreaExited));
     }
 
-    protected override void OnInteractPressed()
+    public override void OnInteractPressed()
     {
         if (GlobalPlayerManager.Instance.Player.Throwable != null)
             return;

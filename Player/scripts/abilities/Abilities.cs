@@ -14,11 +14,16 @@ public class Abilities : Node
     private readonly PackedScene boomerangScene = GD.Load<PackedScene>("res://Player/Boomerang.tscn");
     private readonly PackedScene bombScene = GD.Load<PackedScene>("res://Interactables/bomb/Bomb.tscn");
     private Boomerang boomerang;
+    private IdleState idleState;
+    private WalkState walkState;
+    private LiftState liftState;
 
     // methods
-
     public override void _Ready()
     {
+        idleState = GetNode<IdleState>("../PlayerStateMachine/IdleState");
+        walkState = GetNode<WalkState>("../PlayerStateMachine/WalkState");
+        liftState = GetNode<LiftState>("../PlayerStateMachine/LiftState");
         PlayerHUD.Instance.UpdateArrows(GlobalPlayerManager.Instance.Player.Arrows);
         PlayerHUD.Instance.UpdateBombs(GlobalPlayerManager.Instance.Player.Bombs);
     }
@@ -57,11 +62,16 @@ public class Abilities : Node
     private void BombAbility()
     {
         Player player = GlobalPlayerManager.Instance.Player;
+        State currentState = player.GetCurrentState();
 
-        if (player.Bombs <= 0)
+        if (player.Bombs <= 0 || player.Throwable != null || (currentState != idleState && currentState != walkState))
             return;
 
+        liftState.SetStartLate(true);
         PlayerHUD.Instance.UpdateBombs(--player.Bombs);
+        Node2D bomb = (Node2D)bombScene.Instance();
+        player.GetParent().AddChild(bomb);
+        bomb.GetNode<Bomb>("Throwable").OnInteractPressed();
     }
 
     private void BowAbility()

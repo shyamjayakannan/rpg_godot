@@ -22,6 +22,7 @@ public class GlobalSaveManager : Node
 		public string Title { get; set; }
 		public bool IsComplete { get; set; }
 		public List<string> CompletedSteps { get; set; }
+		public List<(string, int)> InCompleteSteps { get; set; }
 	}
 
 	// private

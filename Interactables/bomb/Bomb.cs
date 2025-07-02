@@ -46,12 +46,14 @@ public class Bomb : Throwable
             ThrowSpeedWallDetect = -1 * SpeedAtTouchDown;
             Timer.WaitTime = 2 * SpeedAtTouchDown / Gravity;
             Vector2 landLocation = throwDistance * 32 * ThrowDirection;
+            GD.Print(landLocation);
             ThrowVelocity = new Vector2(landLocation.x, landLocation.y - 0.5f * Gravity * Mathf.Pow(Timer.WaitTime, 2)) / Timer.WaitTime;
             Timer.Start();
         }
         else
         {
             bounceCount = 0;
+            throwDistance = ThrowDistance;
             SetPhysicsProcess(false);
             HurtBox.Monitorable = false;
             WallDetect.Monitoring = false;

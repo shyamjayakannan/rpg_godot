@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Godot;
+using Newtonsoft.Json;
 
 public class GlobalQuestManager : Node
 {
@@ -10,6 +11,7 @@ public class GlobalQuestManager : Node
     // private
     private readonly List<QuestResource> quests = new List<QuestResource>();
     private const string QUEST_LOCATION = "res://Quests/quests";
+    private Dictionary<string, string> questTitleToFile = new Dictionary<string, string>();
 
     // properties
     public static GlobalQuestManager Instance { get; private set; }
@@ -21,31 +23,30 @@ public class GlobalQuestManager : Node
         Instance = this;
     }
 
+    private void LoadQuestMapping()
+    {
+        File file = new File();
+        file.Open($"{QUEST_LOCATION}/questMap.json", File.ModeFlags.Read);
+        string json = file.GetAsText();
+        file.Close();
+        questTitleToFile = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+    }
+
     public void LoadQuests()
     {
-        // Open the directory at QUEST_LOCATION and get all files
-        Directory dir = new Directory();
+        LoadQuestMapping();
+        quests.Clear();
 
-        if (dir.Open(QUEST_LOCATION) != Error.Ok)
-            return;
-
-        dir.ListDirBegin(skipNavigational: true, skipHidden: true);
-        string fileName = dir.GetNext();
-
-        while (!string.IsNullOrEmpty(fileName))
+        foreach (GlobalSaveManager.QuestData questData in CurrentQuests)
         {
-            if (dir.CurrentIsDir())
-                continue;
+            if (questTitleToFile.TryGetValue(questData.Title, out string fileName))
+            {
+                QuestResource questResource = GD.Load<QuestResource>($"{QUEST_LOCATION}/{fileName}");
 
-            QuestResource questResource = GD.Load<QuestResource>($"{QUEST_LOCATION}/{fileName}");
-
-            foreach (GlobalSaveManager.QuestData questData in CurrentQuests)
-                if (questResource.Title == questData.Title)
+                if (questResource != null)
                     quests.Add(questResource);
-
-            fileName = dir.GetNext();
+            }
         }
-        dir.ListDirEnd();
     }
 
     public void UpdateQuest(string title, QuestResource questResource, string completedStep = "")
@@ -57,35 +58,78 @@ public class GlobalQuestManager : Node
             if (completedStep != "" && !CurrentQuests[i].CompletedSteps.Contains(completedStep))
                 CurrentQuests[i].CompletedSteps.Add(completedStep);
 
-            // important
-            GlobalSaveManager.QuestData quest = CurrentQuests[i];
-            quest.IsComplete = CurrentQuests[i].CompletedSteps.Count == questResource.Steps.Length;
-            CurrentQuests[i] = quest;
-            EmitSignal(nameof(QuestUpdated));
-
-            if (quest.IsComplete)
-            {
-                SortQuests(i);
-                PlayerHUD.Instance.QueueNotification("Quest Complete!", title);
-                DisperseRewards(questResource);
-            }
-            else
-                PlayerHUD.Instance.QueueNotification("Quest Updated", $"{title}: {completedStep}");
-
+            CheckComplete(title, questResource, i, completedStep);
             return;
         }
 
+        AddQuest(title, questResource);
+    }
+
+    public void UpdateItemDeliverSteps(string title, QuestResource questResource, int inInventory, ItemDeliverQuestStepResource itemDeliverQuestStepResource)
+    {
+        int i = GetQuestIndexByTitle(title);
+
+        if (i > -1)
+        {
+            int index = CurrentQuests[i].InCompleteSteps.FindIndex(stepTuple => stepTuple.Item1 == itemDeliverQuestStepResource.Step);
+
+            if (index < 0)
+            {
+                CurrentQuests[i].InCompleteSteps.Add((itemDeliverQuestStepResource.Step, 0));
+                index = CurrentQuests[i].InCompleteSteps.Count - 1;
+            }
+
+            // important
+            (string step, int quantity) = CurrentQuests[i].InCompleteSteps[index];
+
+            if (inInventory >= itemDeliverQuestStepResource.Quantity - quantity)
+            {
+                GlobalPlayerManager.Instance.PlayerInventory.RemoveItem(itemDeliverQuestStepResource.Item, itemDeliverQuestStepResource.Quantity - quantity);
+                CurrentQuests[i].CompletedSteps.Add(step);
+                CurrentQuests[i].InCompleteSteps.RemoveAt(index);
+            }
+            else
+            {
+                GlobalPlayerManager.Instance.PlayerInventory.RemoveItem(itemDeliverQuestStepResource.Item, inInventory);
+                quantity += inInventory;
+                CurrentQuests[i].InCompleteSteps[index] = (step, quantity);
+            }
+
+            CheckComplete(title, questResource, i, itemDeliverQuestStepResource.Step);
+            return;
+        }
+
+        AddQuest(title, questResource);
+    }
+
+    private void CheckComplete(string title, QuestResource questResource, int i, string step)
+    {
+        // important
+        GlobalSaveManager.QuestData quest = CurrentQuests[i];
+        quest.IsComplete = questResource.Steps.Length == quest.CompletedSteps.Count;
+        CurrentQuests[i] = quest;
+        EmitSignal(nameof(QuestUpdated));
+        PlayerHUD.Instance.QueueNotification("Quest Updated", $"{title}: {step}");
+
+        if (quest.IsComplete)
+        {
+            SortQuests(i);
+            PlayerHUD.Instance.QueueNotification("Quest Complete!", title);
+            DisperseRewards(questResource);
+        }
+    }
+
+    private void AddQuest(string title, QuestResource questResource)
+    {
         quests.Add(questResource);
 
         GlobalSaveManager.QuestData questData = new GlobalSaveManager.QuestData
         {
             Title = title,
             IsComplete = false,
-            CompletedSteps = new List<string>()
+            CompletedSteps = new List<string>(),
+            InCompleteSteps = new List<(string, int)>()
         };
-
-        if (completedStep != "")
-            questData.CompletedSteps.Add(completedStep);
 
         CurrentQuests.Add(questData);
         EmitSignal(nameof(QuestUpdated));

@@ -4,8 +4,9 @@
 [ext_resource path="res://GUI/pauseMenu/quests/QuestStepItem.cs" type="Script" id=2]
 
 [node name="QuestStepItem" type="Control"]
-anchor_right = 1.0
-anchor_bottom = 1.0
+margin_right = 64.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 64, 32 )
 script = ExtResource( 2 )
 
 [node name="Label" type="Label" parent="."]

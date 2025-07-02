@@ -1,6 +1,6 @@
 using Godot;
 
-public class LockedDoor : Intercatables
+public class LockedDoor : Interactables
 {
     // Exports
     [Export]
@@ -26,7 +26,7 @@ public class LockedDoor : Intercatables
         persistentDataHandler.GetValue();
     }
 
-    protected override void OnInteractPressed()
+    public override void OnInteractPressed()
     {
         if (isOpen)
             return;

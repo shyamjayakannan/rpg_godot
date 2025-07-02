@@ -48,8 +48,8 @@ public class DialogChoice : DialogItem
 			return "";
 	}
 
-	public override void SetEditorDisplay()
-	{
-		ExampleSystem.SetChoiceDisplay(DialogBranches);
-	}
+	// public override void SetEditorDisplay()
+	// {
+	// 	ExampleSystem.SetChoiceDisplay(DialogBranches);
+	// }
 }

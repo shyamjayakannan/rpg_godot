@@ -5,6 +5,7 @@ public class QuestUI : Control
     // private
     private readonly PackedScene questItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestItem.tscn");
     private readonly PackedScene questStepItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestStepItem.tscn");
+    private readonly PackedScene itemDeliverQuestStepItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/ItemDeliverQuestStepItem.tscn");
     private ButtonMenu vBoxContainer;
     private VBoxContainer stepContainer;
     private Label title;
@@ -16,7 +17,7 @@ public class QuestUI : Control
         vBoxContainer = GetNode<ButtonMenu>("ScrollContainer/ButtonMenu");
         title = GetNode<Label>("VBoxContainer/Title");
         description = GetNode<Label>("VBoxContainer/Description");
-        stepContainer = GetNode<VBoxContainer>("VBoxContainer/VBoxContainer");
+        stepContainer = GetNode<VBoxContainer>("VBoxContainer/ScrollContainer/VBoxContainer");
 
         Connect("visibility_changed", this, nameof(OnVisibilityChanged));
     }
@@ -78,15 +79,30 @@ public class QuestUI : Control
         if (questData.Title == "not found")
             return;
 
-        foreach (string questStep in quest.Steps)
+        foreach (QuestStepResource questStep in quest.Steps)
         {
-            QuestStepItem questStepItem = (QuestStepItem)questStepItemScene.Instance();
-
             // VERY IMPORTANT
             // do addchild before initialize because initialize required onready variables
-            stepContainer.AddChild(questStepItem);
-            questStepItem.Initialize(questStep, questData.CompletedSteps.Contains(questStep));
+            if (questStep is ItemDeliverQuestStepResource itemDeliverQuestStepResource)
+            {
+                ItemDeliverQuestStepItem itemDeliverQuestStepItem = (ItemDeliverQuestStepItem)itemDeliverQuestStepItemScene.Instance();
+                stepContainer.AddChild(itemDeliverQuestStepItem);
+                bool isComplete = questData.CompletedSteps.Contains(itemDeliverQuestStepResource.Step);
+                int stepCount;
+
+                if (isComplete)
+                    stepCount = itemDeliverQuestStepResource.Quantity;
+                else
+                    stepCount = questData.InCompleteSteps.Find(tuple => tuple.Item1 == itemDeliverQuestStepResource.Step).Item2;
+
+                itemDeliverQuestStepItem.Initialize(isComplete, stepCount, itemDeliverQuestStepResource.Quantity, itemDeliverQuestStepResource.Item);
+            }
+            else
+            {
+                QuestStepItem questStepItem = (QuestStepItem)questStepItemScene.Instance();
+                stepContainer.AddChild(questStepItem);
+                questStepItem.Initialize(questData.CompletedSteps.Contains(questStep.Step), questStep.Step);
+            }
         }
     }
-
 }

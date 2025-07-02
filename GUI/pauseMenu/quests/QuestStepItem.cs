@@ -2,20 +2,20 @@ using Godot;
 
 public class QuestStepItem : Control
 {
-    // private
-    private Label label;
-    private Sprite sprite;
+    // properties
+    protected Label Label { get; set; }
+    protected Sprite Sprite { get; set; }
 
     // methods
     public override void _Ready()
     {
-        label = GetNode<Label>("Label");
-        sprite = GetNode<Sprite>("Sprite");
+        Label = GetNode<Label>("Label");
+        Sprite = GetNode<Sprite>("Sprite");
     }
 
-    public void Initialize(string step, bool isComplete)
+    public void Initialize(bool isComplete, string step)
     {
-        label.Text = step;
-        sprite.Frame = isComplete ? 1 : 0;
+        Label.Text = step;
+        Sprite.Frame = isComplete ? 1 : 0;
     }
 }

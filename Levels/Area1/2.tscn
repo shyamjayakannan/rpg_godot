@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=50 format=2]
 
 [ext_resource path="res://TileMaps/Grass.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Levels/PlayerSpawn.tscn" type="PackedScene" id=2]
@@ -17,9 +17,138 @@
 [ext_resource path="res://TileMaps/sprites/dungeon_entrance.png" type="Texture" id=15]
 [ext_resource path="res://Quests/utilityNodes/QuestActivatedSwitch.tscn" type="PackedScene" id=16]
 [ext_resource path="res://Enemies/Slime/Slime.tscn" type="PackedScene" id=17]
-[ext_resource path="res://Interactables/dialog/scripts/DialogText.cs" type="Script" id=18]
+[ext_resource path="res://Npc/npcs/hero.tres" type="Resource" id=18]
 [ext_resource path="res://Items/items/apple.tres" type="Resource" id=19]
 [ext_resource path="res://Interactables/bomb/Bomb.tscn" type="PackedScene" id=20]
+[ext_resource path="res://Interactables/dialog/scripts/DialogTextResource.cs" type="Script" id=21]
+[ext_resource path="res://Interactables/dialog/scripts/DialogChoiceResource.cs" type="Script" id=22]
+[ext_resource path="res://Interactables/dialog/scripts/DialogBranchResource.cs" type="Script" id=23]
+[ext_resource path="res://Quests/scripts/QuestAdvanceResource.cs" type="Script" id=24]
+[ext_resource path="res://Quests/scripts/QuestConditionResource.cs" type="Script" id=25]
+
+[sub_resource type="Resource" id=61]
+script = ExtResource( 25 )
+LinkedQuest = ExtResource( 9 )
+QuestStep = 0
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Checking whether player has quest"
+CheckTypeInstance = 0
+removeWhenActivated = true
+
+[sub_resource type="Resource" id=50]
+script = ExtResource( 21 )
+NpcResource = ExtResource( 12 )
+QuestConditionResource = SubResource( 61 )
+Text = "Hi Hero."
+
+[sub_resource type="Resource" id=51]
+script = ExtResource( 21 )
+NpcResource = ExtResource( 12 )
+Text = "please find the flute."
+
+[sub_resource type="Resource" id=55]
+script = ExtResource( 21 )
+NpcResource = ExtResource( 12 )
+Text = "thanks so much!"
+
+[sub_resource type="Resource" id=56]
+script = ExtResource( 24 )
+LinkedQuest = ExtResource( 9 )
+QuestStep = 0
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Step: 0 - [Resource:204423]
+Complete: False"
+
+[sub_resource type="Resource" id=57]
+script = ExtResource( 23 )
+QuestAdvanceResource = SubResource( 56 )
+Text = "Ok..."
+DialogItemResources = [ SubResource( 55 ) ]
+
+[sub_resource type="Resource" id=58]
+script = ExtResource( 21 )
+NpcResource = ExtResource( 12 )
+Text = "What a useless hero!"
+
+[sub_resource type="Resource" id=59]
+script = ExtResource( 23 )
+Text = "Sorry."
+DialogItemResources = [ SubResource( 58 ) ]
+
+[sub_resource type="Resource" id=60]
+script = ExtResource( 22 )
+DialogBranchResources = [ SubResource( 57 ), SubResource( 59 ) ]
+
+[sub_resource type="Resource" id=52]
+script = ExtResource( 23 )
+Text = "Hi."
+DialogItemResources = [ SubResource( 51 ), SubResource( 60 ) ]
+
+[sub_resource type="Resource" id=53]
+script = ExtResource( 23 )
+Text = "Bye."
+DialogItemResources = [  ]
+
+[sub_resource type="Resource" id=54]
+script = ExtResource( 22 )
+NpcResource = ExtResource( 18 )
+QuestConditionResource = SubResource( 61 )
+DialogBranchResources = [ SubResource( 52 ), SubResource( 53 ) ]
+
+[sub_resource type="Resource" id=63]
+script = ExtResource( 25 )
+LinkedQuest = ExtResource( 9 )
+QuestStep = 0
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Checking whether player has quest"
+CheckTypeInstance = 0
+removeWhenActivated = false
+
+[sub_resource type="Resource" id=62]
+script = ExtResource( 21 )
+NpcResource = ExtResource( 12 )
+QuestConditionResource = SubResource( 63 )
+Text = "did you find the items i requested?"
+
+[sub_resource type="Resource" id=68]
+script = ExtResource( 24 )
+LinkedQuest = ExtResource( 9 )
+QuestStep = 2
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Step: 2 - deliver 3 Apples
+Complete: True"
+
+[sub_resource type="Resource" id=64]
+script = ExtResource( 25 )
+LinkedQuest = ExtResource( 9 )
+QuestStep = 0
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Checking whether player has the required items"
+CheckTypeInstance = 4
+removeWhenActivated = false
+
+[sub_resource type="Resource" id=65]
+script = ExtResource( 23 )
+QuestConditionResource = SubResource( 64 )
+QuestAdvanceResource = SubResource( 68 )
+Text = "give items"
+DialogItemResources = [  ]
+
+[sub_resource type="Resource" id=67]
+script = ExtResource( 23 )
+Text = "Not yet"
+DialogItemResources = [  ]
+
+[sub_resource type="Resource" id=66]
+script = ExtResource( 22 )
+NpcResource = ExtResource( 18 )
+QuestConditionResource = SubResource( 63 )
+DialogBranchResources = [ SubResource( 65 ), SubResource( 67 ) ]
 
 [sub_resource type="ConvexPolygonShape2D" id=46]
 points = PoolVector2Array( 0, 0, 160, 0, 160, 128, 0, 128 )
@@ -213,6 +342,14 @@ Item = ExtResource( 19 )
 position = Vector2( 416.041, 80 )
 Item = ExtResource( 19 )
 
+[node name="ItemPickup2" parent="Grass" instance=ExtResource( 11 )]
+position = Vector2( 432, 176 )
+Item = ExtResource( 19 )
+
+[node name="ItemPickup3" parent="Grass" instance=ExtResource( 11 )]
+position = Vector2( 416, 128 )
+Item = ExtResource( 19 )
+
 [node name="Pot" parent="Grass" instance=ExtResource( 6 )]
 position = Vector2( 272, 176 )
 
@@ -221,11 +358,7 @@ position = Vector2( 336, 111 )
 NpcResource = ExtResource( 12 )
 
 [node name="DialogInteraction" parent="Grass/Npc" instance=ExtResource( 10 )]
-
-[node name="DialogText" type="Node2D" parent="Grass/Npc/DialogInteraction"]
-script = ExtResource( 18 )
-NpcResource = ExtResource( 12 )
-Text = "jiji"
+dialogItemResources = [ SubResource( 50 ), SubResource( 54 ), SubResource( 62 ), SubResource( 66 ) ]
 
 [node name="QuestActivatedSwitch" parent="Grass" instance=ExtResource( 16 )]
 position = Vector2( 128, 32 )

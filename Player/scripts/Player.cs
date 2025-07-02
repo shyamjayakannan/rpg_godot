@@ -47,7 +47,7 @@ public class Player : KinematicBody2D
 				chargeAttackHurtBox.Damage = attack * 2;
 		}
 	}
-	public int Bombs = 0;
+	public int Bombs = 10;
 	public int Arrows = 0;
 	public Vector2 Direction { get; private set; } = Vector2.Zero;
 	public Vector2 Velocity { get; set; } = Vector2.Zero;
@@ -221,5 +221,10 @@ public class Player : KinematicBody2D
 	public void ChangeStateToIdle()
 	{
 		Direction = Vector2.Zero;
+	}
+
+	public State GetCurrentState()
+	{
+		return stateMachine.GetCurrentState();
 	}
 }

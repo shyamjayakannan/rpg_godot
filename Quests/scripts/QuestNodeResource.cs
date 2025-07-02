@@ -1,7 +1,7 @@
 using Godot;
 
 [Tool]
-public class QuestNode : Node2D
+public class QuestNodeResource : Resource
 {
     // Exports
     [Export]
@@ -35,14 +35,14 @@ public class QuestNode : Node2D
     // methods
     protected virtual void UpdateSummary()
     {
-        SettingsSummary = $"UPDATE QUEST\nQuest: {LinkedQuest.Title}\nStep: {QuestStep} - {GetStep()}\nComplete: {questStep == linkedQuest.Steps.Length}";
+        SettingsSummary = $"UPDATE QUEST\nQuest: {LinkedQuest.Title}\nStep: {QuestStep} - {GetStep().Step}\nComplete: {questStep == linkedQuest.Steps.Length}";
 
         // needed
         PropertyListChangedNotify();
     }
 
-    protected string GetStep()
+    protected QuestStepResource GetStep()
     {
-        return QuestStep != 0 ? LinkedQuest.Steps[QuestStep - 1].Step : "N/A";
+        return QuestStep != 0 ? LinkedQuest.Steps[QuestStep - 1] : new QuestStepResource() { Step = "N/A" };
     }
 }

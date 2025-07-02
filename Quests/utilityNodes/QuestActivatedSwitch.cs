@@ -5,10 +5,6 @@ using MonoCustomResourceRegistry;
 [RegisteredType(nameof(QuestActivatedSwitch), "res://Quests/utilityNodes/icons/quest_switch.png", nameof(Node2D))]
 public class QuestActivatedSwitch : QuestNode
 {
-    // Signals
-    [Signal]
-    private delegate void IsActivatedChanged(bool value);
-
     // Exports
     [Export]
     private CheckType CheckTypeInstance
@@ -29,7 +25,7 @@ public class QuestActivatedSwitch : QuestNode
 
     // private
     private CheckType checkType = CheckType.HasQuest;
-    private bool IsActivated = false;
+    private bool isActivated = false;
     private enum CheckType
     {
         HasQuest,
@@ -64,50 +60,46 @@ public class QuestActivatedSwitch : QuestNode
     {
         GlobalSaveManager.QuestData questData = GlobalQuestManager.Instance.FindQuest(LinkedQuest);
 
-        if (questData.Title != "not found")
+        if (questData.Title == "not found")
         {
-            switch (CheckTypeInstance)
-            {
-                case CheckType.HasQuest:
-                    SetIsActivated(true);
-                    break;
-
-                case CheckType.QuestComplete:
-                    SetIsActivated(questData.IsComplete);
-                    break;
-
-                case CheckType.QuestStepComplete:
-                    SetIsActivated(QuestStep > 0 && questData.CompletedSteps.Contains(GetStep()));
-                    break;
-
-                case CheckType.OnCurrentQuestStep:
-                    string step = GetStep();
-
-                    if (step == "N/A")
-                        SetIsActivated(false);
-                    else
-                    {
-                        if (questData.CompletedSteps.Contains(step))
-                            SetIsActivated(false);
-                        else
-                        {
-                            string previousStep = QuestStep <= LinkedQuest.Steps.Length && QuestStep > 1 ? LinkedQuest.Steps[QuestStep - 2] : "N/A";
-                            SetIsActivated(previousStep == "N/A" || questData.CompletedSteps.Contains(previousStep));
-                        }
-                    }
-                    break;
-            }
-        }
-        else
             SetIsActivated(false);
+            return;
+        }
+
+        switch (CheckTypeInstance)
+        {
+            case CheckType.HasQuest:
+                SetIsActivated(true);
+                break;
+
+            case CheckType.QuestComplete:
+                SetIsActivated(questData.IsComplete);
+                break;
+
+            case CheckType.QuestStepComplete:
+                SetIsActivated(QuestStep > 0 && questData.CompletedSteps.Contains(GetStep()));
+                break;
+
+            case CheckType.OnCurrentQuestStep:
+                string step = GetStep();
+
+                if (step == "N/A" || questData.CompletedSteps.Contains(step))
+                {
+                    SetIsActivated(false);
+                    return;
+                }
+
+                string previousStep = QuestStep <= LinkedQuest.Steps.Length && QuestStep > 1 ? LinkedQuest.Steps[QuestStep - 2].Step : "N/A";
+                SetIsActivated(previousStep == "N/A" || questData.CompletedSteps.Contains(previousStep));
+                break;
+        }
     }
 
     private void SetIsActivated(bool value)
     {
-        IsActivated = value;
-        EmitSignal(nameof(IsActivatedChanged), value);
+        isActivated = value;
 
-        if (IsActivated)
+        if (isActivated)
         {
             if (removeWhenActivated)
                 HideChildren();

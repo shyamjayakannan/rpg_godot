@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://GUI/pauseMenu/PauseMenu.cs" type="Script" id=1]
 [ext_resource path="res://Items/sprites/items.png" type="Texture" id=2]
@@ -16,6 +16,7 @@
 [ext_resource path="res://GUI/pauseMenu/inventory/scripts/EquipmentUI.cs" type="Script" id=14]
 [ext_resource path="res://Player/sprites/ability-icons.png" type="Texture" id=15]
 [ext_resource path="res://GUI/pauseMenu/inventory/AbilityButton.tscn" type="PackedScene" id=16]
+[ext_resource path="res://GUI/pauseMenu/quests/ItemDeliverQuestStepItem.tscn" type="PackedScene" id=17]
 
 [sub_resource type="StyleBoxFlat" id=2]
 content_margin_left = 16.0
@@ -476,13 +477,12 @@ margin_bottom = 192.0
 rect_min_size = Vector2( 224, 192 )
 
 [node name="QuestItem" parent="Control/TabContainer/Quests/ScrollContainer/ButtonMenu" instance=ExtResource( 7 )]
-margin_bottom = 19.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Quests"]
 margin_left = 304.0
 margin_top = 25.0
 margin_right = 518.0
-margin_bottom = 217.0
+margin_bottom = 249.0
 
 [node name="Title" type="Label" parent="Control/TabContainer/Quests/VBoxContainer"]
 margin_right = 214.0
@@ -498,19 +498,37 @@ margin_top = 22.0
 margin_right = 214.0
 margin_bottom = 35.0
 rect_min_size = Vector2( 200, 0 )
-text = "Quest Step"
+text = "Description"
 autowrap = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Quests/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/TabContainer/Quests/VBoxContainer"]
 margin_top = 39.0
 margin_right = 214.0
-margin_bottom = 39.0
-custom_constants/separation = 25
+margin_bottom = 224.0
+size_flags_vertical = 3
 
-[node name="QuestStepItem" parent="Control/TabContainer/Quests/VBoxContainer/VBoxContainer" instance=ExtResource( 9 )]
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 214.0
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer"]
+margin_right = 168.0
+margin_bottom = 176.0
+
+[node name="QuestStepItem" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 9 )]
+margin_right = 168.0
+
+[node name="ItemDeliverQuestStepItem" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 17 )]
+margin_top = 36.0
+margin_bottom = 68.0
+
+[node name="ItemDeliverQuestStepItem2" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 17 )]
+margin_top = 72.0
+margin_bottom = 104.0
+
+[node name="ItemDeliverQuestStepItem3" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 17 )]
+margin_top = 108.0
+margin_bottom = 140.0
+
+[node name="ItemDeliverQuestStepItem4" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 17 )]
+margin_top = 144.0
+margin_bottom = 176.0
 
 [node name="System" type="Control" parent="Control/TabContainer"]
 visible = false

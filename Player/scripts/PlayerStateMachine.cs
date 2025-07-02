@@ -64,4 +64,9 @@ public class PlayerStateMachine : Node
 		currentState = newState;
 		currentState.Enter();
 	}
+
+	public State GetCurrentState()
+	{
+		return currentState;
+	}
 }

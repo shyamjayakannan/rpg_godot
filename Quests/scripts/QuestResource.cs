@@ -11,7 +11,7 @@ public class QuestResource : Resource
     [Export(PropertyHint.MultilineText)]
     public string Description { get; private set; }
     [Export]
-    public string[] Steps { get; private set; }
+    public QuestStepResource[] Steps { get; private set; }
     [Export]
     public int RewardXp { get; private set; }
     [Export]

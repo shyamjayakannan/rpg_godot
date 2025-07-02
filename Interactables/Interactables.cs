@@ -1,9 +1,9 @@
 using Godot;
 
-public abstract class Intercatables : Node2D
+public abstract class Interactables : Node2D
 {
     // methods
-    protected abstract void OnInteractPressed();
+    public abstract void OnInteractPressed();
 
     protected virtual void OnArea2DAreaEntered(Area2D area = null)
     {

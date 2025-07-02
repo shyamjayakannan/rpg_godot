@@ -9,6 +9,7 @@ public class LiftState : State
     // private
     private CarryState carryState;
     private AudioStreamPlayer2D audioStreamPlayer2D;
+    private bool startLate = false;
 
     // methods
     public override void _Ready()
@@ -20,14 +21,28 @@ public class LiftState : State
     public override void Enter()
     {
         Player.UpdateAnimation("lift");
+
+        if (startLate)
+            Player.AnimationPlayer.Seek(0.19f); // just before end of lift animation (immediate carry for bomb)
+
         Player.AnimationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
         audioStreamPlayer2D.Stream = audioStream;
         audioStreamPlayer2D.Play();
+    }
+
+    public override void Exit()
+    {
+        startLate = false;
     }
 
     private void OnAnimationPlayerAnimationFinished(string animname)
     {
         Player.AnimationPlayer.Disconnect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
         StateMachine.ChangeState(carryState);
+    }
+
+    public void SetStartLate(bool value)
+    {
+        startLate = value;
     }
 }

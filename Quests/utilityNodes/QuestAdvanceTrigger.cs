@@ -26,9 +26,5 @@ public class QuestAdvanceTrigger : QuestNode
 
         string step = GetStep();
         GlobalQuestManager.Instance.UpdateQuest(LinkedQuest.Title, LinkedQuest, step == "N/A" ? "" : step);
-
-        foreach (Node child in GetChildren())
-            if (child is RemoveInventoryItem removeInventoryItem)
-                removeInventoryItem.RemoveItemFromInventory();
     }
 }

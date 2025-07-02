@@ -1,7 +1,7 @@
 using Godot;
 
 [Tool]
-public class TreasureChest : Intercatables
+public class TreasureChest : Interactables
 {
     // Exports
     [Export]
@@ -77,7 +77,7 @@ public class TreasureChest : Intercatables
             label.Text = $"x{Quantity}";
     }
 
-    protected override void OnInteractPressed()
+    public override void OnInteractPressed()
     {
         if (isOpened)
             return;
