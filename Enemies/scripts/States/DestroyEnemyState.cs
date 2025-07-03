@@ -67,7 +67,6 @@ public class DestroyEnemyState : EnemyState
 				itemPickup.Item = drop.item;
 				itemPickup.GlobalPosition = Enemy.GlobalPosition;
 				itemPickup.Velocity = new Vector2(2, 2).Rotated((float)GD.RandRange(-1.5, 1.5)) * (float)GD.RandRange(0.9, 1.5);
-				itemPickup.GetNode<AnimationPlayer>("AnimationPlayer").Play("default");
 				Enemy.GetParent().CallDeferred("add_child", itemPickup);
 			}
 		}

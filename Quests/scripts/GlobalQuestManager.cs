@@ -6,7 +6,7 @@ public class GlobalQuestManager : Node
 {
     // Signals
     [Signal]
-    public delegate void QuestUpdated();
+    public delegate void QuestUpdated(string title, bool isStarted);
 
     // private
     private readonly List<QuestResource> quests = new List<QuestResource>();
@@ -108,7 +108,7 @@ public class GlobalQuestManager : Node
         GlobalSaveManager.QuestData quest = CurrentQuests[i];
         quest.IsComplete = questResource.Steps.Length == quest.CompletedSteps.Count;
         CurrentQuests[i] = quest;
-        EmitSignal(nameof(QuestUpdated));
+        EmitSignal(nameof(QuestUpdated), title, false);
         PlayerHUD.Instance.QueueNotification("Quest Updated", $"{title}: {step}");
 
         if (quest.IsComplete)
@@ -132,7 +132,7 @@ public class GlobalQuestManager : Node
         };
 
         CurrentQuests.Add(questData);
-        EmitSignal(nameof(QuestUpdated));
+        EmitSignal(nameof(QuestUpdated), title, true);
 
         PlayerHUD.Instance.QueueNotification("Quest Added", title);
     }
@@ -172,6 +172,15 @@ public class GlobalQuestManager : Node
                 return quest;
 
         return null;
+    }
+
+    public string FindQuestForNpc(Dictionary<string, string> questMap)
+    {
+        foreach (GlobalSaveManager.QuestData questData in CurrentQuests)
+            if (questMap.TryGetValue(questData.Title, out string fileName))
+                return fileName;
+
+        return "not found";
     }
 
     private int GetQuestIndexByTitle(string title)

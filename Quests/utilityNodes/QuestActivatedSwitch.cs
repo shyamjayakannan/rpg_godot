@@ -51,7 +51,7 @@ public class QuestActivatedSwitch : QuestNode
         CheckIsActivated();
     }
 
-    private void OnQuestUpdated()
+    private void OnQuestUpdated(string title, bool isStarted)
     {
         CheckIsActivated();
     }

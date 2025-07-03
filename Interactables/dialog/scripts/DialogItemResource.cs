@@ -20,8 +20,6 @@ public abstract partial class DialogItemResource : Resource
     public QuestConditionResource QuestConditionResource { get; set; }
     [Export]
     public QuestAdvanceResource QuestAdvanceResource { get; private set; }
-    [Export]
-    public string NewDialogPath { get; private set; }
 
     // private
     private NpcResource npcResource;

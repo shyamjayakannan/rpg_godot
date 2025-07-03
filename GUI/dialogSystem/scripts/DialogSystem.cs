@@ -109,9 +109,6 @@ public class DialogSystem : CanvasLayer
     {
         if (++dialogItemIndex == dialogItemResources.Count)
         {
-            if (dialogItemResources[dialogItemIndex - 1].NewDialogPath != null && dialogItemResources[dialogItemIndex - 1].NewDialogPath != "")
-                dialogInteraction.ChangeDialog(dialogItemResources[dialogItemIndex - 1].NewDialogPath);
-
             EmitSignal(nameof(Finished));
             SetUIState(false);
         }

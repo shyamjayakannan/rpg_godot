@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 using MonoCustomResourceRegistry;
+using Newtonsoft.Json;
 
 [Tool]
 [RegisteredType(nameof(DialogInteraction), "res://GUI/dialogSystem/icons/chat_bubbles.png", nameof(Node2D))]
@@ -46,7 +48,7 @@ public class DialogInteraction : Interactables
         }
     }
     [Export]
-    private string firstDialogPath;
+    private string npcDialogFolder;
 
     // private
     private DialogInteractionResource dialogInteractionResource;
@@ -56,6 +58,7 @@ public class DialogInteraction : Interactables
     private AnimationPlayer animationPlayer;
     private Area2D area2D;
     private bool enabled;
+    private Dictionary<string, string> questTitleToFile = new Dictionary<string, string>();
 
     // methods
     public override void _Ready()
@@ -66,11 +69,41 @@ public class DialogInteraction : Interactables
         if (Engine.EditorHint)
             return;
 
-        if (DialogInteractionResource == null || dialogInteractionResource.DialogItemResources.Count == 0)
-            DialogInteractionResource = GD.Load<DialogInteractionResource>(firstDialogPath);
+        OnGameLoaded();
 
         area2D.Connect("area_entered", this, nameof(OnArea2DAreaEntered));
         area2D.Connect("area_exited", this, nameof(OnArea2DAreaExited));
+        GlobalQuestManager.Instance.Connect(nameof(GlobalQuestManager.QuestUpdated), this, nameof(ChangeDialog));
+        GlobalSaveManager.Instance.Connect(nameof(GlobalSaveManager.GameLoaded), this, nameof(OnGameLoaded));
+    }
+
+    private void OnGameLoaded()
+    {
+        LoadQuestMapping();
+        string fileName = GlobalQuestManager.Instance.FindQuestForNpc(questTitleToFile);
+
+        if (fileName == "not found")
+            DialogInteractionResource = GD.Load<DialogInteractionResource>($"{npcDialogFolder}0.tres");
+        else
+            DialogInteractionResource = GD.Load<DialogInteractionResource>($"{npcDialogFolder}{fileName}");
+    }
+
+    private void LoadQuestMapping()
+    {
+        File file = new File();
+        file.Open($"{npcDialogFolder}questMap.json", File.ModeFlags.Read);
+        string json = file.GetAsText();
+        file.Close();
+        questTitleToFile = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+    }
+
+    public void ChangeDialog(string title, bool isStarted)
+    {
+        if (!isStarted)
+            return;
+
+        if (questTitleToFile.TryGetValue(title, out string fileName))
+            DialogInteractionResource = GD.Load<DialogInteractionResource>($"{npcDialogFolder}{fileName}");
     }
 
     public override string _GetConfigurationWarning()
@@ -87,10 +120,10 @@ public class DialogInteraction : Interactables
         if (DialogInteractionResource != null && DialogInteractionResource.DialogItemResources.Count > 0)
             return "";
 
-        if (firstDialogPath != null && firstDialogPath != "")
+        if (npcDialogFolder != null && npcDialogFolder != "")
             return "";
 
-        return "please add at least one DialogItem/DialogItemResource or set first dialog path";
+        return "please add at least one DialogItem/DialogItemResource or set npc dialog folder path";
     }
 
     public override void OnInteractPressed()
@@ -177,10 +210,12 @@ public class DialogInteraction : Interactables
             return;
 
         // need to make local copy if the reference changes in each iteration (the resources dont change but the variable referencing them changes in each iteration)
-        List<DialogItemResource> items = new List<DialogItemResource>(((DialogChoiceResource)dialogItem.DialogItemResource).DialogBranchResources);
+        List<DialogItemResource> items = null;
 
         if (dialogItem is DialogBranch)
             items = new List<DialogItemResource>(((DialogBranchResource)dialogItem.DialogItemResource).DialogItemResources);
+        else if (dialogItem is DialogChoice)
+            items = new List<DialogItemResource>(((DialogChoiceResource)dialogItem.DialogItemResource).DialogBranchResources);
 
         foreach (DialogItemResource dialogItemResource in items)
             AddDialogItem(dialogItemResource, dialogItem);
@@ -217,10 +252,4 @@ public class DialogInteraction : Interactables
 
         return null;
     }
-
-    public void ChangeDialog(string path)
-    {
-        DialogInteractionResource = GD.Load<DialogInteractionResource>(path);
-    }
-
 }

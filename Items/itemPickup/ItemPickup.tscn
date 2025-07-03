@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Items/itemPickup/ItemPickup.cs" type="Script" id=1]
 [ext_resource path="res://Items/itemPickup/item_pickup.wav" type="AudioStream" id=2]
 [ext_resource path="res://Player/sprites/Shadow.png" type="Texture" id=3]
+[ext_resource path="res://GeneralNodes/persistentDataHandler/PersistentDataHandler.tscn" type="PackedScene" id=4]
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 16.0
@@ -34,3 +35,5 @@ texture = ExtResource( 3 )
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 2 )
+
+[node name="PersistentDataHandler" parent="." instance=ExtResource( 4 )]

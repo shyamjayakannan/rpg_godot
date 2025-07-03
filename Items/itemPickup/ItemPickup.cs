@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 [Tool]
@@ -26,6 +27,7 @@ public class ItemPickup : KinematicBody2D
 	private Sprite sprite;
 	private AudioStreamPlayer2D audioStreamPlayer2D;
 	private Area2D area2D;
+	private PersistentDataHandler persistentDataHandler;
 
 	// properties
 	public Vector2 Velocity { get; set; }
@@ -43,7 +45,20 @@ public class ItemPickup : KinematicBody2D
 		if (Engine.EditorHint)
 			return;
 
+		// VERY IMPORTANT
+		// since persistentdata handler isnt a tool script, it wont be recognized in the editor and we anyway dont need it
+		// when code runs in editor so thats why declaring it here. otherwise, we have to make it a tool script too.
+		persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
+
 		area2D.Connect("body_entered", this, nameof(OnArea2DBodyEntered));
+		persistentDataHandler.Connect(nameof(PersistentDataHandler.DataLoaded), this, nameof(SetState));
+		persistentDataHandler.GetValue();
+	}
+
+	private void SetState(bool value)
+	{
+		if (value)
+			QueueFree();
 	}
 
 	public override void _PhysicsProcess(float delta)
@@ -72,6 +87,7 @@ public class ItemPickup : KinematicBody2D
 
 	private void ItemPickedUp2()
 	{
+		persistentDataHandler.SetValue();
 		QueueFree();
 	}
 

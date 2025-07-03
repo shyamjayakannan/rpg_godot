@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=2]
+[gd_scene load_steps=41 format=2]
 
 [ext_resource path="res://TileMaps/Grass.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Levels/PlayerSpawn.tscn" type="PackedScene" id=2]
@@ -17,176 +17,76 @@
 [ext_resource path="res://TileMaps/sprites/dungeon_entrance.png" type="Texture" id=15]
 [ext_resource path="res://Quests/utilityNodes/QuestActivatedSwitch.tscn" type="PackedScene" id=16]
 [ext_resource path="res://Enemies/Slime/Slime.tscn" type="PackedScene" id=17]
-[ext_resource path="res://Interactables/dialog/DialogBranch.tscn" type="PackedScene" id=18]
+[ext_resource path="res://Interactables/dialog/scripts/DialogInteractionResource.cs" type="Script" id=18]
 [ext_resource path="res://Items/items/apple.tres" type="Resource" id=19]
 [ext_resource path="res://Interactables/bomb/Bomb.tscn" type="PackedScene" id=20]
-[ext_resource path="res://Interactables/dialog/DialogText.tscn" type="PackedScene" id=21]
-[ext_resource path="res://Interactables/dialog/DialogChoice.tscn" type="PackedScene" id=22]
-[ext_resource path="res://Interactables/dialog/scripts/DialogInteractionResource.cs" type="Script" id=23]
-[ext_resource path="res://Interactables/dialog/scripts/DialogBranchResource.cs" type="Script" id=24]
-[ext_resource path="res://Npc/npcs/hero.tres" type="Resource" id=25]
-[ext_resource path="res://Interactables/dialog/scripts/DialogChoiceResource.cs" type="Script" id=26]
-[ext_resource path="res://Interactables/dialog/scripts/DialogTextResource.cs" type="Script" id=27]
-[ext_resource path="res://Quests/scripts/QuestAdvanceResource.cs" type="Script" id=28]
-[ext_resource path="res://Interactables/dialog/scripts/DialogText.cs" type="Script" id=29]
-[ext_resource path="res://Interactables/dialog/scripts/DialogBranch.cs" type="Script" id=30]
-[ext_resource path="res://Interactables/dialog/scripts/DialogChoice.cs" type="Script" id=31]
+[ext_resource path="res://Quests/scripts/QuestConditionResource.cs" type="Script" id=21]
+[ext_resource path="res://Quests/scripts/QuestAdvanceResource.cs" type="Script" id=23]
+[ext_resource path="res://Interactables/dialog/scripts/DialogChoiceResource.cs" type="Script" id=24]
+[ext_resource path="res://Interactables/dialog/scripts/DialogTextResource.cs" type="Script" id=25]
+[ext_resource path="res://Interactables/dialog/scripts/DialogBranchResource.cs" type="Script" id=26]
+[ext_resource path="res://Npc/npcs/hero.tres" type="Resource" id=28]
 [ext_resource path="res://Items/items/stone.tres" type="Resource" id=32]
 
-[sub_resource type="Resource" id=74]
-script = ExtResource( 27 )
-NpcResource = ExtResource( 12 )
-NewDialogPath = null
-Text = "Hi hero."
-
-[sub_resource type="Resource" id=75]
-script = ExtResource( 27 )
-NpcResource = ExtResource( 12 )
-NewDialogPath = null
-Text = "Will you help me find my flute?"
-
-[sub_resource type="Resource" id=76]
-script = ExtResource( 27 )
-NpcResource = ExtResource( 12 )
-NewDialogPath = "res://Npc/npcs/oren/2.tres"
-Text = "Thanks so much!"
-
-[sub_resource type="Resource" id=73]
-script = ExtResource( 28 )
+[sub_resource type="Resource" id=81]
+script = ExtResource( 21 )
 LinkedQuest = ExtResource( 9 )
 QuestStep = 0
 SettingsSummary = "UPDATE QUEST
 Quest: Retrieve flute
-Step: 0 - N/A
-Complete: False"
-
-[sub_resource type="Resource" id=77]
-script = ExtResource( 24 )
-NpcResource = ExtResource( 25 )
-QuestAdvanceResource = SubResource( 73 )
-NewDialogPath = null
-Text = "Sure."
-DialogItemResources = [ SubResource( 76 ) ]
-
-[sub_resource type="Resource" id=78]
-script = ExtResource( 27 )
-NpcResource = ExtResource( 12 )
-NewDialogPath = null
-Text = "What a useless hero!"
-
-[sub_resource type="Resource" id=79]
-script = ExtResource( 24 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-Text = "Sorry."
-DialogItemResources = [ SubResource( 78 ) ]
-
-[sub_resource type="Resource" id=80]
-script = ExtResource( 26 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-DialogBranchResources = [ SubResource( 77 ), SubResource( 79 ) ]
-
-[sub_resource type="Resource" id=81]
-script = ExtResource( 24 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-Text = "Hi."
-DialogItemResources = [ SubResource( 75 ), SubResource( 80 ) ]
-
-[sub_resource type="Resource" id=82]
-script = ExtResource( 24 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-Text = "Bye."
-DialogItemResources = [  ]
-
-[sub_resource type="Resource" id=83]
-script = ExtResource( 26 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-DialogBranchResources = [ SubResource( 81 ), SubResource( 82 ) ]
+Checking whether player has quest"
+CheckTypeInstance = 0
+removeWhenActivated = false
 
 [sub_resource type="Resource" id=84]
+script = ExtResource( 25 )
+NpcResource = ExtResource( 12 )
+QuestConditionResource = SubResource( 81 )
+Text = "Have you brought what I requested?"
+
+[sub_resource type="Resource" id=83]
 script = ExtResource( 23 )
-DialogItemResources = [ SubResource( 74 ), SubResource( 83 ) ]
+LinkedQuest = ExtResource( 9 )
+QuestStep = 1
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Step: 1 - deliver 3 Apples
+Complete: False"
+
+[sub_resource type="Resource" id=88]
+script = ExtResource( 21 )
+LinkedQuest = ExtResource( 9 )
+QuestStep = 0
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Checking whether player has the required items"
+CheckTypeInstance = 4
+removeWhenActivated = false
 
 [sub_resource type="Resource" id=85]
-script = ExtResource( 27 )
-NpcResource = ExtResource( 12 )
-NewDialogPath = null
-Text = "Hi hero."
+script = ExtResource( 26 )
+NpcResource = ExtResource( 28 )
+QuestConditionResource = SubResource( 88 )
+QuestAdvanceResource = SubResource( 83 )
+Text = "Yes."
+DialogItemResources = [  ]
 
 [sub_resource type="Resource" id=86]
-script = ExtResource( 24 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-Text = "Hi."
-DialogItemResources = [ SubResource( 75 ), SubResource( 80 ) ]
+script = ExtResource( 26 )
+NpcResource = ExtResource( 28 )
+QuestConditionResource = SubResource( 81 )
+Text = "No, not yet."
+DialogItemResources = [  ]
 
 [sub_resource type="Resource" id=87]
 script = ExtResource( 24 )
-NewDialogPath = null
-Text = ""
-DialogItemResources = [  ]
-
-[sub_resource type="Resource" id=88]
-script = ExtResource( 26 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-DialogBranchResources = [ SubResource( 86 ), SubResource( 87 ) ]
+NpcResource = ExtResource( 28 )
+QuestConditionResource = SubResource( 81 )
+DialogBranchResources = [ SubResource( 85 ), SubResource( 86 ) ]
 
 [sub_resource type="Resource" id=89]
-script = ExtResource( 27 )
-NpcResource = ExtResource( 12 )
-NewDialogPath = null
-Text = "Will you help me find my flute?"
-
-[sub_resource type="Resource" id=90]
-script = ExtResource( 24 )
-NpcResource = ExtResource( 25 )
-QuestAdvanceResource = SubResource( 73 )
-NewDialogPath = null
-Text = "Sure."
-DialogItemResources = [ SubResource( 76 ) ]
-
-[sub_resource type="Resource" id=91]
-script = ExtResource( 24 )
-NewDialogPath = null
-Text = ""
-DialogItemResources = [  ]
-
-[sub_resource type="Resource" id=92]
-script = ExtResource( 26 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-DialogBranchResources = [ SubResource( 90 ), SubResource( 91 ) ]
-
-[sub_resource type="Resource" id=93]
-script = ExtResource( 27 )
-NpcResource = ExtResource( 12 )
-NewDialogPath = "res://Npc/npcs/oren/2.tres"
-Text = "Thanks so much!"
-
-[sub_resource type="Resource" id=94]
-script = ExtResource( 24 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-Text = "Sorry."
-DialogItemResources = [ SubResource( 78 ) ]
-
-[sub_resource type="Resource" id=95]
-script = ExtResource( 27 )
-NpcResource = ExtResource( 12 )
-NewDialogPath = null
-Text = "What a useless hero!"
-
-[sub_resource type="Resource" id=96]
-script = ExtResource( 24 )
-NpcResource = ExtResource( 25 )
-NewDialogPath = null
-Text = "Bye."
-DialogItemResources = [  ]
+script = ExtResource( 18 )
+DialogItemResources = [ SubResource( 84 ), SubResource( 87 ) ]
 
 [sub_resource type="ConvexPolygonShape2D" id=46]
 points = PoolVector2Array( 0, 0, 160, 0, 160, 128, 0, 128 )
@@ -408,48 +308,8 @@ position = Vector2( 336, 111 )
 NpcResource = ExtResource( 12 )
 
 [node name="DialogInteraction" parent="Grass/Npc" instance=ExtResource( 10 )]
-DialogInteractionResource = SubResource( 84 )
-firstDialogPath = "res://Npc/npcs/oren/1.tres"
-
-[node name="DialogText" type="Node2D" parent="Grass/Npc/DialogInteraction" instance=ExtResource( 21 )]
-script = ExtResource( 29 )
-DialogItemResource = SubResource( 85 )
-
-[node name="DialogChoice" type="Node2D" parent="Grass/Npc/DialogInteraction" instance=ExtResource( 22 )]
-script = ExtResource( 31 )
-DialogItemResource = SubResource( 88 )
-
-[node name="DialogBranch" type="Node2D" parent="Grass/Npc/DialogInteraction/DialogChoice" instance=ExtResource( 18 )]
-script = ExtResource( 30 )
-DialogItemResource = SubResource( 86 )
-
-[node name="DialogText" type="Node2D" parent="Grass/Npc/DialogInteraction/DialogChoice/DialogBranch" instance=ExtResource( 21 )]
-script = ExtResource( 29 )
-DialogItemResource = SubResource( 89 )
-
-[node name="DialogChoice" type="Node2D" parent="Grass/Npc/DialogInteraction/DialogChoice/DialogBranch" instance=ExtResource( 22 )]
-script = ExtResource( 31 )
-DialogItemResource = SubResource( 92 )
-
-[node name="DialogBranch" type="Node2D" parent="Grass/Npc/DialogInteraction/DialogChoice/DialogBranch/DialogChoice" instance=ExtResource( 18 )]
-script = ExtResource( 30 )
-DialogItemResource = SubResource( 90 )
-
-[node name="DialogText" type="Node2D" parent="Grass/Npc/DialogInteraction/DialogChoice/DialogBranch/DialogChoice/DialogBranch" instance=ExtResource( 21 )]
-script = ExtResource( 29 )
-DialogItemResource = SubResource( 93 )
-
-[node name="DialogBranch2" type="Node2D" parent="Grass/Npc/DialogInteraction/DialogChoice/DialogBranch/DialogChoice" instance=ExtResource( 18 )]
-script = ExtResource( 30 )
-DialogItemResource = SubResource( 94 )
-
-[node name="DialogText" type="Node2D" parent="Grass/Npc/DialogInteraction/DialogChoice/DialogBranch/DialogChoice/DialogBranch2" instance=ExtResource( 21 )]
-script = ExtResource( 29 )
-DialogItemResource = SubResource( 95 )
-
-[node name="DialogBranch2" type="Node2D" parent="Grass/Npc/DialogInteraction/DialogChoice" instance=ExtResource( 18 )]
-script = ExtResource( 30 )
-DialogItemResource = SubResource( 96 )
+DialogInteractionResource = SubResource( 89 )
+npcDialogFolder = "res://Npc/npcs/oren/"
 
 [node name="QuestActivatedSwitch" parent="Grass" instance=ExtResource( 16 )]
 position = Vector2( 128, 32 )

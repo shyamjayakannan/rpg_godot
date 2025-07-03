@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=20 format=2]
+[gd_resource type="Resource" load_steps=17 format=2]
 
 [ext_resource path="res://Npc/npcs/hero.tres" type="Resource" id=1]
 [ext_resource path="res://Quests/scripts/QuestAdvanceResource.cs" type="Script" id=2]
@@ -8,81 +8,64 @@
 [ext_resource path="res://Interactables/dialog/scripts/DialogInteractionResource.cs" type="Script" id=6]
 [ext_resource path="res://Interactables/dialog/scripts/DialogTextResource.cs" type="Script" id=7]
 [ext_resource path="res://Interactables/dialog/scripts/DialogBranchResource.cs" type="Script" id=8]
+[ext_resource path="res://Quests/scripts/QuestConditionResource.cs" type="Script" id=9]
 
-[sub_resource type="Resource" id=74]
-script = ExtResource( 7 )
-NpcResource = ExtResource( 4 )
-NewDialogPath = null
-Text = "Hi hero."
-
-[sub_resource type="Resource" id=75]
-script = ExtResource( 7 )
-NpcResource = ExtResource( 4 )
-NewDialogPath = null
-Text = "Will you help me find my flute?"
-
-[sub_resource type="Resource" id=76]
-script = ExtResource( 7 )
-NpcResource = ExtResource( 4 )
-NewDialogPath = "res://Npc/npcs/oren/2.tres"
-Text = "Thanks so much!"
-
-[sub_resource type="Resource" id=73]
-script = ExtResource( 2 )
+[sub_resource type="Resource" id=81]
+script = ExtResource( 9 )
 LinkedQuest = ExtResource( 3 )
 QuestStep = 0
 SettingsSummary = "UPDATE QUEST
 Quest: Retrieve flute
-Step: 0 - N/A
-Complete: False"
+Checking whether player has quest"
+CheckTypeInstance = 0
+removeWhenActivated = false
 
-[sub_resource type="Resource" id=77]
-script = ExtResource( 8 )
-NpcResource = ExtResource( 1 )
-QuestAdvanceResource = SubResource( 73 )
-NewDialogPath = null
-Text = "Sure."
-DialogItemResources = [ SubResource( 76 ) ]
-
-[sub_resource type="Resource" id=78]
+[sub_resource type="Resource" id=84]
 script = ExtResource( 7 )
 NpcResource = ExtResource( 4 )
-NewDialogPath = null
-Text = "What a useless hero!"
-
-[sub_resource type="Resource" id=79]
-script = ExtResource( 8 )
-NpcResource = ExtResource( 1 )
-NewDialogPath = null
-Text = "Sorry."
-DialogItemResources = [ SubResource( 78 ) ]
-
-[sub_resource type="Resource" id=80]
-script = ExtResource( 5 )
-NpcResource = ExtResource( 1 )
-NewDialogPath = null
-DialogBranchResources = [ SubResource( 77 ), SubResource( 79 ) ]
-
-[sub_resource type="Resource" id=81]
-script = ExtResource( 8 )
-NpcResource = ExtResource( 1 )
-NewDialogPath = null
-Text = "Hi."
-DialogItemResources = [ SubResource( 75 ), SubResource( 80 ) ]
-
-[sub_resource type="Resource" id=82]
-script = ExtResource( 8 )
-NpcResource = ExtResource( 1 )
-NewDialogPath = null
-Text = "Bye."
-DialogItemResources = [  ]
+QuestConditionResource = SubResource( 81 )
+Text = "Have you brought what I requested?"
 
 [sub_resource type="Resource" id=83]
+script = ExtResource( 2 )
+LinkedQuest = ExtResource( 3 )
+QuestStep = 1
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Step: 1 - deliver 3 Apples
+Complete: False"
+
+[sub_resource type="Resource" id=88]
+script = ExtResource( 9 )
+LinkedQuest = ExtResource( 3 )
+QuestStep = 0
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Checking whether player has the required items"
+CheckTypeInstance = 4
+removeWhenActivated = false
+
+[sub_resource type="Resource" id=85]
+script = ExtResource( 8 )
+NpcResource = ExtResource( 1 )
+QuestConditionResource = SubResource( 88 )
+QuestAdvanceResource = SubResource( 83 )
+Text = "Yes."
+DialogItemResources = [  ]
+
+[sub_resource type="Resource" id=86]
+script = ExtResource( 8 )
+NpcResource = ExtResource( 1 )
+QuestConditionResource = SubResource( 81 )
+Text = "No, not yet."
+DialogItemResources = [  ]
+
+[sub_resource type="Resource" id=87]
 script = ExtResource( 5 )
 NpcResource = ExtResource( 1 )
-NewDialogPath = null
-DialogBranchResources = [ SubResource( 81 ), SubResource( 82 ) ]
+QuestConditionResource = SubResource( 81 )
+DialogBranchResources = [ SubResource( 85 ), SubResource( 86 ) ]
 
 [resource]
 script = ExtResource( 6 )
-DialogItemResources = [ SubResource( 74 ), SubResource( 83 ) ]
+DialogItemResources = [ SubResource( 84 ), SubResource( 87 ) ]
