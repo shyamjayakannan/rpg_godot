@@ -15,8 +15,27 @@ public abstract partial class DialogItem : Node2D
 
         Godot.Collections.Array selectedNodes = editorSelection.GetSelectedNodes();
 
-        if (IsInstanceValid(ExampleSystem))
-            ExampleSystem.QueueFree();
+        // not this because in case of duplication, the duplicate also references the same examplesystem.
+        // because of this, when on duplication the duplicate receives a child examplesystem, the examplesystem is not
+        // quefreed because the parent's examplesystem variable references the original's examplesystem which is
+        // already quefreed.
+        // if (IsInstanceValid(ExampleSystem))
+        // {
+        //     GD.Print(this);
+        //     ExampleSystem.QueueFree();
+        //     ExampleSystem = null;
+        // }
+
+        foreach (Node child in GetChildren())
+        {
+            if (child is DialogSystem)
+            {
+                child.QueueFree();
+
+                // need to set the referencing variable to null (not done automatically on quefree)
+                ExampleSystem = null;
+            }
+        }
 
         if (selectedNodes.Count == 0 || this != selectedNodes[0])
             return;
@@ -26,7 +45,7 @@ public abstract partial class DialogItem : Node2D
         AddChild(ExampleSystem);
 
         CheckNpcResource();
-        ExampleSystem.CommonDisplay(NpcResource);
+        CheckQuestConditionResource();
         SetEditorDisplay();
     }
 }
@@ -38,20 +57,20 @@ public abstract partial class DialogItem : Node2D
 {
     //Exports
     [Export]
-    public NpcResource NpcResource
+    public DialogItemResource DialogItemResource
     {
-        get => npcResource;
+        get => dialogItemResource;
         set
         {
-            npcResource = value;
+            dialogItemResource = (DialogItemResource)value?.Duplicate();
 
-            if (Engine.EditorHint && ExampleSystem != null)
-                SetEditorDisplay();
+            if (dialogItemResource != null)
+                OnResourceLoaded();
         }
     }
 
     // private
-    private NpcResource npcResource;
+    private DialogItemResource dialogItemResource;
     private readonly PackedScene dialogSystemScene = GD.Load<PackedScene>("res://GUI/dialogSystem/DialogSystem.tscn");
 
     // properties
@@ -71,27 +90,40 @@ public abstract partial class DialogItem : Node2D
 #endif
 
         CheckNpcResource();
+        CheckQuestConditionResource();
     }
 
     private void CheckNpcResource()
     {
-        if (NpcResource != null)
+        if (DialogItemResource.NpcResource != null)
             return;
 
         for (Node p = GetParent(); p != null; p = p.GetParent())
         {
-            if (p is DialogItem dialogItem && dialogItem.NpcResource != null)
+            if (p is DialogItem dialogItem)
             {
-                NpcResource = dialogItem.NpcResource;
+                if (dialogItem.DialogItemResource.NpcResource != null)
+                    DialogItemResource.NpcResource = dialogItem.DialogItemResource.NpcResource;
+
                 return;
             }
 
             if (p is Npc npc && npc.NpcResource != null)
             {
-                NpcResource = npc.NpcResource;
+                DialogItemResource.NpcResource = npc.NpcResource;
                 return;
             }
         }
+    }
+
+    private void CheckQuestConditionResource()
+    {
+        if (DialogItemResource.QuestConditionResource != null)
+            return;
+
+        for (Node p = GetParent(); p != null; p = p.GetParent())
+            if (p is DialogItem dialogItem && dialogItem.DialogItemResource.QuestConditionResource != null)
+                DialogItemResource.QuestConditionResource = dialogItem.DialogItemResource.QuestConditionResource;
     }
 
     private Vector2 GetParentGlobalPosition()
@@ -107,6 +139,12 @@ public abstract partial class DialogItem : Node2D
 
     public virtual void SetEditorDisplay()
     {
+        ExampleSystem?.CommonDisplay(DialogItemResource.NpcResource);
+    }
 
+    public virtual void OnResourceLoaded()
+    {
+        if (!DialogItemResource.IsConnected("changed", this, nameof(SetEditorDisplay)))
+            DialogItemResource.Connect("changed", this, nameof(SetEditorDisplay));
     }
 }

@@ -7,20 +7,20 @@ public class ShopKeeper : Node2D
     private readonly Items[] shopInventory;
 
     // private
-    private DialogBranch dialogBranch;
     private ShopMenu shopMenu;
     private readonly PackedScene shopMenuScene = GD.Load<PackedScene>("res://GUI/shopMenu/ShopMenu.tscn");
 
     // methods
     public override void _Ready()
     {
-        dialogBranch = GetNode<DialogBranch>("Npc/DialogInteraction/DialogChoice/DialogBranch");
-
-        dialogBranch.Connect(nameof(DialogBranch.Selected), this, nameof(OnDialogBranchSelected));
+        DialogSystem.Instance.Connect(nameof(DialogSystem.BranchSelected), this, nameof(OnDialogBranchSelected));
     }
 
-    private void OnDialogBranchSelected()
+    private void OnDialogBranchSelected(int index)
     {
+        if (index != 0)
+            return;
+
         shopMenu = (ShopMenu)shopMenuScene.Instance();
         AddChild(shopMenu);
         shopMenu.PopulateItemList(shopInventory);

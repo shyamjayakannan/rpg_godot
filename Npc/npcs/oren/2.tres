@@ -1,0 +1,65 @@
+[gd_resource type="Resource" load_steps=16 format=2]
+
+[ext_resource path="res://Interactables/dialog/scripts/DialogInteractionResource.cs" type="Script" id=1]
+[ext_resource path="res://Interactables/dialog/scripts/DialogChoiceResource.cs" type="Script" id=2]
+[ext_resource path="res://Interactables/dialog/scripts/DialogTextResource.cs" type="Script" id=3]
+[ext_resource path="res://Quests/scripts/QuestConditionResource.cs" type="Script" id=4]
+[ext_resource path="res://Quests/scripts/QuestAdvanceResource.cs" type="Script" id=5]
+[ext_resource path="res://Interactables/dialog/scripts/DialogBranchResource.cs" type="Script" id=6]
+[ext_resource path="res://Quests/quests/fluteQuest.tres" type="Resource" id=7]
+[ext_resource path="res://Npc/npcs/oren.tres" type="Resource" id=8]
+[ext_resource path="res://Npc/npcs/hero.tres" type="Resource" id=9]
+
+[sub_resource type="Resource" id=81]
+script = ExtResource( 4 )
+LinkedQuest = ExtResource( 7 )
+QuestStep = 0
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Checking whether player has quest"
+CheckTypeInstance = 0
+removeWhenActivated = false
+
+[sub_resource type="Resource" id=82]
+script = ExtResource( 3 )
+NpcResource = ExtResource( 8 )
+QuestConditionResource = SubResource( 81 )
+NewDialogPath = null
+Text = "Have you brought what I requested?"
+
+[sub_resource type="Resource" id=83]
+script = ExtResource( 5 )
+LinkedQuest = ExtResource( 7 )
+QuestStep = 1
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Step: 1 - deliver 3 Apples
+Complete: False"
+
+[sub_resource type="Resource" id=84]
+script = ExtResource( 6 )
+NpcResource = ExtResource( 9 )
+QuestConditionResource = SubResource( 81 )
+QuestAdvanceResource = SubResource( 83 )
+NewDialogPath = null
+Text = "Yes."
+DialogItemResources = [  ]
+
+[sub_resource type="Resource" id=85]
+script = ExtResource( 6 )
+NpcResource = ExtResource( 9 )
+QuestConditionResource = SubResource( 81 )
+NewDialogPath = null
+Text = "No, not yet."
+DialogItemResources = [  ]
+
+[sub_resource type="Resource" id=86]
+script = ExtResource( 2 )
+NpcResource = ExtResource( 9 )
+QuestConditionResource = SubResource( 81 )
+NewDialogPath = null
+DialogBranchResources = [ SubResource( 84 ), SubResource( 85 ) ]
+
+[resource]
+script = ExtResource( 1 )
+DialogItemResources = [ SubResource( 82 ), SubResource( 86 ) ]

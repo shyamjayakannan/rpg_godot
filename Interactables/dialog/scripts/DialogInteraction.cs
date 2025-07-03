@@ -14,23 +14,45 @@ public class DialogInteraction : Interactables
 
     // Exports
     [Export]
-    public bool RunEditorFunction
+    private DialogInteractionResource DialogInteractionResource
+    {
+        get => dialogInteractionResource;
+        set => dialogInteractionResource = (DialogInteractionResource)value?.Duplicate();
+    }
+    [Export]
+    private bool SetDialogItems
     {
         get => false;
         set
         {
-            if (value)
-            {
-                // MyEditorFunction();
-                // Reset to false so you can trigger again
-                PropertyListChangedNotify();
-            }
+            if (!value)
+                return;
+
+            SetDialogChildren();
+            PropertyListChangedNotify();
         }
     }
     [Export]
-    private readonly List<DialogItemResource> dialogItemResources = new List<DialogItemResource>();
+    private bool GetDialogItems
+    {
+        get => false;
+        set
+        {
+            if (!value)
+                return;
+
+            GetDialogChildren();
+            PropertyListChangedNotify();
+        }
+    }
+    [Export]
+    private string firstDialogPath;
 
     // private
+    private DialogInteractionResource dialogInteractionResource;
+    private PackedScene dialogTextScene = GD.Load<PackedScene>("res://Interactables/dialog/DialogText.tscn");
+    private PackedScene dialogChoiceScene = GD.Load<PackedScene>("res://Interactables/dialog/DialogChoice.tscn");
+    private PackedScene dialogBranchScene = GD.Load<PackedScene>("res://Interactables/dialog/DialogBranch.tscn");
     private AnimationPlayer animationPlayer;
     private Area2D area2D;
     private bool enabled;
@@ -44,8 +66,8 @@ public class DialogInteraction : Interactables
         if (Engine.EditorHint)
             return;
 
-        foreach (DialogItemResource dialogItemResource in dialogItemResources)
-            SetChildResources(dialogItemResource);
+        if (DialogInteractionResource == null || dialogInteractionResource.DialogItemResources.Count == 0)
+            DialogInteractionResource = GD.Load<DialogInteractionResource>(firstDialogPath);
 
         area2D.Connect("area_entered", this, nameof(OnArea2DAreaEntered));
         area2D.Connect("area_exited", this, nameof(OnArea2DAreaExited));
@@ -53,7 +75,22 @@ public class DialogInteraction : Interactables
 
     public override string _GetConfigurationWarning()
     {
-        return dialogItemResources.Count > 0 ? "" : "please add at least one DialogItemResource";
+        int atLeastOneValidChild = 0;
+
+        foreach (Node child in GetChildren())
+            if (child is DialogItem)
+                atLeastOneValidChild++;
+
+        if (atLeastOneValidChild > 0)
+            return "";
+
+        if (DialogInteractionResource != null && DialogInteractionResource.DialogItemResources.Count > 0)
+            return "";
+
+        if (firstDialogPath != null && firstDialogPath != "")
+            return "";
+
+        return "please add at least one DialogItem/DialogItemResource or set first dialog path";
     }
 
     public override void OnInteractPressed()
@@ -66,7 +103,7 @@ public class DialogInteraction : Interactables
             await ToSignal(GetTree(), "idle_frame");
             await ToSignal(GetTree(), "idle_frame");
 
-            DialogSystem.Instance.ShowDialog(dialogItemResources);
+            DialogSystem.Instance.ShowDialog(DialogInteractionResource.DialogItemResources, this);
 
             if (!DialogSystem.Instance.IsConnected(nameof(DialogSystem.Finished), this, nameof(OnFinished)))
                 DialogSystem.Instance.Connect(nameof(DialogSystem.Finished), this, nameof(OnFinished));
@@ -77,9 +114,9 @@ public class DialogInteraction : Interactables
 
     protected override void OnArea2DAreaEntered(Area2D area)
     {
-        enabled = dialogItemResources.FindIndex(dialogItemResource => dialogItemResource.QuestConditionResource.CheckIsActivated()) >= 0;
+        enabled = DialogInteractionResource.DialogItemResources.FindIndex(dialogItemResource => dialogItemResource.QuestConditionResource == null || dialogItemResource.QuestConditionResource.CheckIsActivated()) >= 0;
 
-        if (!enabled || dialogItemResources.Count == 0)
+        if (!enabled || DialogInteractionResource.DialogItemResources.Count == 0)
             return;
 
         base.OnArea2DAreaEntered(area);
@@ -88,7 +125,7 @@ public class DialogInteraction : Interactables
 
     protected override void OnArea2DAreaExited(Area2D area)
     {
-        if (!enabled || dialogItemResources.Count == 0)
+        if (!enabled || DialogInteractionResource.DialogItemResources.Count == 0)
             return;
 
         base.OnArea2DAreaExited(area);
@@ -100,125 +137,90 @@ public class DialogInteraction : Interactables
         EmitSignal(nameof(Finished));
     }
 
-    private void SetChildResources(DialogItemResource dialogItemResource)
+    private void SetDialogChildren()
     {
-        if (dialogItemResource is DialogTextResource)
-            return;
+        foreach (Node child in GetChildren())
+            if (child is DialogItem)
+                child.QueueFree();
 
-        IEnumerable<DialogItemResource> children = null;
-        QuestConditionResource parentQuestCondition = dialogItemResource.QuestConditionResource;
-        NpcResource parentNpc = dialogItemResource.NpcResource;
-
-        if (dialogItemResource is DialogBranchResource branch)
-            children = branch.DialogItemResources;
-        else if (dialogItemResource is DialogChoiceResource choice)
-            children = choice.DialogBranchResources;
-
-        if (children == null)
-            return;
-
-        foreach (DialogItemResource child in children)
-        {
-            if (child.QuestConditionResource == null)
-                child.QuestConditionResource = parentQuestCondition;
-
-            if (child.NpcResource == null)
-                child.NpcResource = parentNpc;
-
-            SetChildResources(child);
-        }
+        foreach (DialogItemResource dialogItemResource in DialogInteractionResource.DialogItemResources)
+            AddDialogItem(dialogItemResource, this);
     }
+
+    private void GetDialogChildren()
+    {
+        DialogInteractionResource.DialogItemResources.Clear();
+
+        foreach (Node child in GetChildren())
+            if (child is DialogItem dialogItem)
+                DialogInteractionResource.DialogItemResources.Add(GetDialogs(dialogItem));
+    }
+
+    private void AddDialogItem(DialogItemResource dialogItemResource, Node node)
+    {
+        DialogItem dialogItem = (DialogItem)dialogTextScene.Instance();
+
+        if (dialogItemResource is DialogChoiceResource)
+            dialogItem = (DialogItem)dialogChoiceScene.Instance();
+        else if (dialogItemResource is DialogBranchResource)
+            dialogItem = (DialogItem)dialogBranchScene.Instance();
+
+        node.AddChild(dialogItem);
+        dialogItem.DialogItemResource = dialogItemResource;
+        SetDialogs(dialogItem);
+        dialogItem.Owner = Owner;
+    }
+
+    private void SetDialogs(DialogItem dialogItem)
+    {
+        if (dialogItem is DialogText)
+            return;
+
+        // need to make local copy if the reference changes in each iteration (the resources dont change but the variable referencing them changes in each iteration)
+        List<DialogItemResource> items = new List<DialogItemResource>(((DialogChoiceResource)dialogItem.DialogItemResource).DialogBranchResources);
+
+        if (dialogItem is DialogBranch)
+            items = new List<DialogItemResource>(((DialogBranchResource)dialogItem.DialogItemResource).DialogItemResources);
+
+        foreach (DialogItemResource dialogItemResource in items)
+            AddDialogItem(dialogItemResource, dialogItem);
+    }
+
+    private DialogItemResource GetDialogs(DialogItem dialogItem)
+    {
+        if (dialogItem is DialogText)
+            return dialogItem.DialogItemResource;
+
+        if (dialogItem is DialogBranch)
+        {
+            DialogBranchResource dialogBranchResource = (DialogBranchResource)dialogItem.DialogItemResource;
+            dialogBranchResource.DialogItemResources.Clear();
+
+            foreach (Node child in dialogItem.GetChildren())
+                if (child is DialogItem item)
+                    dialogBranchResource.DialogItemResources.Add(GetDialogs(item));
+
+            return dialogBranchResource;
+        }
+
+        if (dialogItem is DialogChoice)
+        {
+            DialogChoiceResource dialogChoiceResource = (DialogChoiceResource)dialogItem.DialogItemResource;
+            dialogChoiceResource.DialogBranchResources.Clear();
+
+            foreach (Node child in dialogItem.GetChildren())
+                if (child is DialogBranch item)
+                    dialogChoiceResource.DialogBranchResources.Add((DialogBranchResource)GetDialogs(item));
+
+            return dialogChoiceResource;
+        }
+
+        return null;
+    }
+
+    public void ChangeDialog(string path)
+    {
+        DialogInteractionResource = GD.Load<DialogInteractionResource>(path);
+    }
+
 }
-// using System.Collections.Generic;
-// using Godot;
-// using MonoCustomResourceRegistry;
-
-// [Tool]
-// [RegisteredType(nameof(DialogInteraction), "res://GUI/dialogSystem/icons/chat_bubbles.png", nameof(Node2D))]
-// public class DialogInteraction : Interactables
-// {
-//     // Signals
-//     [Signal]
-//     public delegate void PlayerInteracted();
-//     [Signal]
-//     public delegate void Finished();
-
-//     // Exports
-//     [Export]
-//     private readonly bool enabled = true;
-
-//     // private
-//     private AnimationPlayer animationPlayer;
-//     private readonly List<DialogItem> dialogItems = new List<DialogItem>();
-//     private Area2D area2D;
-
-//     // methods
-//     public override void _Ready()
-//     {
-//         animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-//         area2D = GetNode<Area2D>("Area2D");
-
-//         if (Engine.EditorHint)
-//             return;
-
-//         area2D.Connect("area_entered", this, nameof(OnArea2DAreaEntered));
-//         area2D.Connect("area_exited", this, nameof(OnArea2DAreaExited));
-
-//         foreach (Node child in GetChildren())
-//             if (child is DialogItem dialogItem)
-//                 dialogItems.Add(dialogItem);
-//     }
-
-//     public override string _GetConfigurationWarning()
-//     {
-//         bool atLeastOneValidChild = false;
-
-//         foreach (Node child in GetChildren())
-//             if (child is DialogItem)
-//                 atLeastOneValidChild = true;
-
-//         return atLeastOneValidChild ? "" : "please add at least one DialogItem as child";
-//     }
-
-//     public override void OnInteractPressed()
-//     {
-//         EmitSignal(nameof(PlayerInteracted));
-
-//         async void Wait()
-//         {
-//             // need to wait for two idle frames so that animation plays and npc faces player
-//             await ToSignal(GetTree(), "idle_frame");
-//             await ToSignal(GetTree(), "idle_frame");
-
-//             DialogSystem.Instance.ShowDialog(dialogItems);
-
-//             if (!DialogSystem.Instance.IsConnected(nameof(DialogSystem.Finished), this, nameof(OnFinished)))
-//                 DialogSystem.Instance.Connect(nameof(DialogSystem.Finished), this, nameof(OnFinished));
-//         }
-
-//         Wait();
-//     }
-
-//     protected override void OnArea2DAreaEntered(Area2D area)
-//     {
-//         if (!enabled || dialogItems.Count == 0)
-//             return;
-
-//         base.OnArea2DAreaEntered(area);
-//         animationPlayer.Play("show");
-//     }
-
-//     protected override void OnArea2DAreaExited(Area2D area)
-//     {
-//         if (!enabled || dialogItems.Count == 0)
-//             return;
-
-//         base.OnArea2DAreaExited(area);
-//         animationPlayer.Play("hide");
-//     }
-
-//     private void OnFinished()
-//     {
-//         EmitSignal(nameof(Finished));
-//     }
-// }

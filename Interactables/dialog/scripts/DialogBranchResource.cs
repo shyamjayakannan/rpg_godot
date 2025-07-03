@@ -6,13 +6,20 @@ using MonoCustomResourceRegistry;
 [RegisteredType(nameof(DialogBranchResource), "res://GUI/dialogSystem/icons/answer_bubble.png", nameof(Resource))]
 public class DialogBranchResource : DialogItemResource
 {
-	// Signals
-	[Signal]
-	public delegate void Selected();
-
 	// Exports
 	[Export]
-	public string Text { get; private set; } = "Ok...";
+	public string Text
+	{
+		get => text;
+		set
+		{
+			text = value;
+			EmitSignal("changed");
+		}
+	}
 	[Export]
 	public List<DialogItemResource> DialogItemResources { get; private set; } = new List<DialogItemResource>();
+
+	// private
+	private string text = "Ok...";
 }

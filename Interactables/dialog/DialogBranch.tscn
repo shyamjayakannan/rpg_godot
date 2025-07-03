@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Interactables/dialog/scripts/DialogBranch.cs" type="Script" id=1]
+[ext_resource path="res://Interactables/dialog/scripts/DialogBranchResource.cs" type="Script" id=2]
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 2 )
+Text = ""
+DialogItemResources = [  ]
+
+[node name="DialogBranch" type="Node2D"]
+script = ExtResource( 1 )
+DialogItemResource = SubResource( 1 )

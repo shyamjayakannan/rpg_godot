@@ -182,6 +182,8 @@ public class Player : KinematicBody2D
 
 		if (Level == LevelUpXpRequirements.Length)
 			Level--;
+
+		PauseMenu.Instance.Stats.Display();
 	}
 
 	public void SetHP(int hp, int maxHp)

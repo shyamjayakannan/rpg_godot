@@ -7,5 +7,16 @@ public class DialogTextResource : DialogItemResource
 {
 	// Exports
 	[Export(PropertyHint.MultilineText)]
-	public string Text { get; private set; }
+	public string Text
+	{
+		get => text;
+		set
+		{
+			text = value;
+			EmitSignal("changed");
+		}
+	}
+
+	// private
+	private string text;
 }

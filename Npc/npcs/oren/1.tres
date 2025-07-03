@@ -1,0 +1,88 @@
+[gd_resource type="Resource" load_steps=20 format=2]
+
+[ext_resource path="res://Npc/npcs/hero.tres" type="Resource" id=1]
+[ext_resource path="res://Quests/scripts/QuestAdvanceResource.cs" type="Script" id=2]
+[ext_resource path="res://Quests/quests/fluteQuest.tres" type="Resource" id=3]
+[ext_resource path="res://Npc/npcs/oren.tres" type="Resource" id=4]
+[ext_resource path="res://Interactables/dialog/scripts/DialogChoiceResource.cs" type="Script" id=5]
+[ext_resource path="res://Interactables/dialog/scripts/DialogInteractionResource.cs" type="Script" id=6]
+[ext_resource path="res://Interactables/dialog/scripts/DialogTextResource.cs" type="Script" id=7]
+[ext_resource path="res://Interactables/dialog/scripts/DialogBranchResource.cs" type="Script" id=8]
+
+[sub_resource type="Resource" id=74]
+script = ExtResource( 7 )
+NpcResource = ExtResource( 4 )
+NewDialogPath = null
+Text = "Hi hero."
+
+[sub_resource type="Resource" id=75]
+script = ExtResource( 7 )
+NpcResource = ExtResource( 4 )
+NewDialogPath = null
+Text = "Will you help me find my flute?"
+
+[sub_resource type="Resource" id=76]
+script = ExtResource( 7 )
+NpcResource = ExtResource( 4 )
+NewDialogPath = "res://Npc/npcs/oren/2.tres"
+Text = "Thanks so much!"
+
+[sub_resource type="Resource" id=73]
+script = ExtResource( 2 )
+LinkedQuest = ExtResource( 3 )
+QuestStep = 0
+SettingsSummary = "UPDATE QUEST
+Quest: Retrieve flute
+Step: 0 - N/A
+Complete: False"
+
+[sub_resource type="Resource" id=77]
+script = ExtResource( 8 )
+NpcResource = ExtResource( 1 )
+QuestAdvanceResource = SubResource( 73 )
+NewDialogPath = null
+Text = "Sure."
+DialogItemResources = [ SubResource( 76 ) ]
+
+[sub_resource type="Resource" id=78]
+script = ExtResource( 7 )
+NpcResource = ExtResource( 4 )
+NewDialogPath = null
+Text = "What a useless hero!"
+
+[sub_resource type="Resource" id=79]
+script = ExtResource( 8 )
+NpcResource = ExtResource( 1 )
+NewDialogPath = null
+Text = "Sorry."
+DialogItemResources = [ SubResource( 78 ) ]
+
+[sub_resource type="Resource" id=80]
+script = ExtResource( 5 )
+NpcResource = ExtResource( 1 )
+NewDialogPath = null
+DialogBranchResources = [ SubResource( 77 ), SubResource( 79 ) ]
+
+[sub_resource type="Resource" id=81]
+script = ExtResource( 8 )
+NpcResource = ExtResource( 1 )
+NewDialogPath = null
+Text = "Hi."
+DialogItemResources = [ SubResource( 75 ), SubResource( 80 ) ]
+
+[sub_resource type="Resource" id=82]
+script = ExtResource( 8 )
+NpcResource = ExtResource( 1 )
+NewDialogPath = null
+Text = "Bye."
+DialogItemResources = [  ]
+
+[sub_resource type="Resource" id=83]
+script = ExtResource( 5 )
+NpcResource = ExtResource( 1 )
+NewDialogPath = null
+DialogBranchResources = [ SubResource( 81 ), SubResource( 82 ) ]
+
+[resource]
+script = ExtResource( 6 )
+DialogItemResources = [ SubResource( 74 ), SubResource( 83 ) ]

@@ -35,7 +35,7 @@ public class QuestNodeResource : Resource
     // methods
     protected virtual void UpdateSummary()
     {
-        SettingsSummary = $"UPDATE QUEST\nQuest: {LinkedQuest.Title}\nStep: {QuestStep} - {GetStep().Step}\nComplete: {questStep == linkedQuest.Steps.Length}";
+        SettingsSummary = $"UPDATE QUEST\nQuest: {LinkedQuest?.Title}\nStep: {QuestStep} - {GetStep().Step}\nComplete: {questStep == linkedQuest?.Steps.Length}";
 
         // needed
         PropertyListChangedNotify();

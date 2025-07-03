@@ -4,7 +4,7 @@
 [ext_resource path="res://Quests/scripts/QuestResource.cs" type="Script" id=2]
 [ext_resource path="res://GUI/pauseMenu/inventory/scripts/SlotData.cs" type="Script" id=3]
 [ext_resource path="res://Quests/scripts/ItemDeliverQuestStepResource.cs" type="Script" id=4]
-[ext_resource path="res://Quests/scripts/QuestStepResource.cs" type="Script" id=5]
+[ext_resource path="res://Items/items/stone.tres" type="Resource" id=5]
 [ext_resource path="res://Items/items/apple.tres" type="Resource" id=6]
 
 [sub_resource type="Resource" id=1]
@@ -13,13 +13,15 @@ Quantity = 1
 Item = ExtResource( 1 )
 
 [sub_resource type="Resource" id=2]
-script = ExtResource( 5 )
-Step = "find flute"
-
-[sub_resource type="Resource" id=3]
 script = ExtResource( 4 )
 Step = "deliver 3 Apples"
 Item = ExtResource( 6 )
+Quantity = 3
+
+[sub_resource type="Resource" id=3]
+script = ExtResource( 4 )
+Step = "deliver 3 Stones"
+Item = ExtResource( 5 )
 Quantity = 3
 
 [resource]

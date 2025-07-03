@@ -79,7 +79,7 @@ public class QuestConditionResource : QuestNodeResource
 
     protected override void UpdateSummary()
     {
-        SettingsSummary = $"UPDATE QUEST\nQuest: {LinkedQuest.Title}\nChecking whether ";
+        SettingsSummary = $"UPDATE QUEST\nQuest: {LinkedQuest?.Title}\nChecking whether ";
 
         switch (CheckTypeInstance)
         {

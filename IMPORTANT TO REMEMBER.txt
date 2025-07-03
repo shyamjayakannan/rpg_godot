@@ -22,3 +22,8 @@ public class QuestAdvanceTrigger : QuestNode
 7) Always do addchild before setting other data or calling functions because some onready variables may be required which will only be available once _Ready has run. this will run only after add child.
 
 8) to detect tilemap collision shaped in area2d body entered, you need to set the area2d's monitorable to true as well.
+
+9) when loading resources, you can only load types that immediately inherit from resource. since DialogTextResource inherits from DialogItemResource and not resource directly, it wont work. you can cast it later if needed.
+Ex:
+(✅)private DialogItemResource dialogTextResource = GD.Load<DialogItemResource>("res://Interactables/dialog/blankResources/dialogTextResource.tres");
+(❌)private DialogTextResource dialogTextResource = GD.Load<DialogTextResource>("res://Interactables/dialog/blankResources/dialogTextResource.tres");

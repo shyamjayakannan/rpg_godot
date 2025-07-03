@@ -57,7 +57,7 @@ public class Stats : PanelContainer
         defencePlus.Text = "";
     }
 
-    private void Display()
+    public void Display()
     {
         level.Text = GlobalPlayerManager.Instance.Player.Level.ToString();
         xp.Text = $"{GlobalPlayerManager.Instance.Player.Xp}/{GlobalPlayerManager.Instance.Player.LevelUpXpRequirements[GlobalPlayerManager.Instance.Player.Level]}";
