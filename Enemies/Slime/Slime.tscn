@@ -765,6 +765,7 @@ NextStatePath = "../WanderEnemyState"
 [node name="WanderEnemyState" type="Node" parent="EnemyStateMachine"]
 script = ExtResource( 6 )
 NextStatePath = "../IdleEnemyState"
+speed = 0
 
 [node name="StunEnemyState" type="Node" parent="EnemyStateMachine"]
 script = ExtResource( 11 )

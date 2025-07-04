@@ -46,6 +46,7 @@ public class GlobalSaveManager : Node
 		public List<ItemData> Equipment { get; set; }
 		public List<string> Persistence { get; set; }
 		public List<QuestData> Quests { get; set; }
+		public Dictionary<string, List<(ItemData, Vector2)>> DroppedItems { get; set; }
 	}
 	private SaveData currentSaveData = new SaveData()
 	{
@@ -64,7 +65,8 @@ public class GlobalSaveManager : Node
 		Items = new List<ItemData>(),
 		Equipment = new List<ItemData>(),
 		Persistence = new List<string>(),
-		Quests = new List<QuestData>()
+		Quests = new List<QuestData>(),
+		DroppedItems = new Dictionary<string, List<(ItemData, Vector2)>>()
 	};
 
 	// methods
@@ -108,6 +110,7 @@ public class GlobalSaveManager : Node
 		SetPlayer();
 		SetPlayerInventory();
 		SetQuests();
+		SetDroppedItems();
 
 		GlobalLevelManager.Instance.Connect(nameof(GlobalLevelManager.LevelLoaded), this, nameof(OnLevelLoaded));
 	}
@@ -142,6 +145,7 @@ public class GlobalSaveManager : Node
 	{
 		currentSaveData.Items = GlobalPlayerManager.Instance.PlayerInventory.GetSaveData();
 		currentSaveData.Equipment = GlobalPlayerManager.Instance.PlayerEquipmentInventory.GetSaveData();
+		currentSaveData.DroppedItems = GlobalLevelManager.Instance.GetSaveData();
 	}
 
 	private void UpdateQuests()
@@ -175,6 +179,11 @@ public class GlobalSaveManager : Node
 	{
 		GlobalQuestManager.Instance.CurrentQuests = currentSaveData.Quests;
 		GlobalQuestManager.Instance.LoadQuests();
+	}
+
+	private void SetDroppedItems()
+	{
+		GlobalLevelManager.Instance.SetSaveData(currentSaveData.DroppedItems);
 	}
 
 	public void AddPersistentValue(string value)

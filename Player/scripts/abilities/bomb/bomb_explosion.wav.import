@@ -2,12 +2,12 @@
 
 importer="wav"
 type="AudioStreamSample"
-path="res://.import/bomb_explosion.wav-e329c98aa2cd7c6e5068d1dad728b31e.sample"
+path="res://.import/bomb_explosion.wav-ff737ae16155982b9501d8e8e57c077a.sample"
 
 [deps]
 
-source_file="res://Interactables/bomb/bomb_explosion.wav"
-dest_files=[ "res://.import/bomb_explosion.wav-e329c98aa2cd7c6e5068d1dad728b31e.sample" ]
+source_file="res://Player/scripts/abilities/bomb/bomb_explosion.wav"
+dest_files=[ "res://.import/bomb_explosion.wav-ff737ae16155982b9501d8e8e57c077a.sample" ]
 
 [params]
 

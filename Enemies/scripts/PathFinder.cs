@@ -97,7 +97,7 @@ public class PathFinder : Node2D
                 maxIndex = i;
             }
         }
-        // GD.Print(maxIndex, max);
+
         return maxIndex;
     }
 }

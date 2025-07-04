@@ -28,10 +28,13 @@ public class ItemPickup : KinematicBody2D
 	private AudioStreamPlayer2D audioStreamPlayer2D;
 	private Area2D area2D;
 	private PersistentDataHandler persistentDataHandler;
+	private bool pickedUp = false;
 
 	// properties
-	public Vector2 Velocity { get; set; }
+	public Vector2 Velocity { get; set; } = Vector2.Zero;
 	public bool DontPickup { get; private set; } = false;
+	public bool IsDroppedItem { get; set; } = false;
+	public Vector2 SavedPosition { get; set; }
 
 	// methods
 	public override void _Ready()
@@ -69,6 +72,13 @@ public class ItemPickup : KinematicBody2D
 			Velocity = Velocity.Bounce(collisionInfo.Normal);
 
 		Velocity *= 1 - delta * 4;
+
+	}
+
+	public override void _ExitTree()
+	{
+		if (IsDroppedItem && !pickedUp)
+			GlobalLevelManager.Instance.AddItem(GetTree().CurrentScene.Filename, Item, GlobalPosition);
 	}
 
 	private void UpdateTexture()
@@ -79,6 +89,7 @@ public class ItemPickup : KinematicBody2D
 
 	private void ItemPickedUp()
 	{
+		pickedUp = true;
 		audioStreamPlayer2D.Play();
 		Hide();
 		EmitSignal(nameof(PickedUp));
@@ -89,6 +100,9 @@ public class ItemPickup : KinematicBody2D
 	{
 		persistentDataHandler.SetValue();
 		QueueFree();
+
+		if (IsDroppedItem)
+			GlobalLevelManager.Instance.RemoveItem(GetTree().CurrentScene.Filename, Item, SavedPosition);
 	}
 
 	private void OnArea2DBodyEntered(object body)

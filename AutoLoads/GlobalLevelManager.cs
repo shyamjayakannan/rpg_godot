@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 public partial class GlobalLevelManager : Node
@@ -15,6 +16,7 @@ public partial class GlobalLevelManager : Node
 	public static GlobalLevelManager Instance { get; private set; }
 	public string TargetTransitionArea { get; private set; }
 	public Vector2 PositionOffset { get; private set; } = Vector2.Zero;
+	public Dictionary<string, List<(Items, Vector2)>> DroppedItems { get; set; } = new Dictionary<string, List<(Items, Vector2)>>();
 
 	// private
 	private string levelPath;
@@ -28,6 +30,71 @@ public partial class GlobalLevelManager : Node
 		// to the LevelLoaded signal are loaded before the signal is emitted.
 		// level loaded signal when entry level is loaded.
 		CallDeferred("emit_signal", nameof(LevelLoaded));
+	}
+
+	public void AddItem(string fileName, Items item, Vector2 globalPosition)
+	{
+		if (DroppedItems.TryGetValue(fileName, out List<(Items, Vector2)> items))
+			items.Add((item, globalPosition));
+		else
+			DroppedItems.Add(fileName, new List<(Items, Vector2)>(1) { (item, globalPosition) });
+	}
+
+	public void RemoveItem(string fileName, Items item, Vector2 globalPosition)
+	{
+		if (DroppedItems.TryGetValue(fileName, out List<(Items, Vector2)> items))
+			items.Remove((item, globalPosition));
+	}
+
+	public List<(Items, Vector2)> GetDroppedItems(string fileName)
+	{
+		return DroppedItems.TryGetValue(fileName, out List<(Items, Vector2)> items) ? items : null;
+	}
+
+	public Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>> GetSaveData()
+	{
+		Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>> keyValuePairs = new Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>>();
+
+		foreach (KeyValuePair<string, List<(Items, Vector2)>> keyValuePair in DroppedItems)
+		{
+			List<(GlobalSaveManager.ItemData, Vector2)> list = new List<(GlobalSaveManager.ItemData, Vector2)>();
+
+			foreach ((Items, Vector2) tuple in keyValuePair.Value)
+			{
+				list.Add((
+					new GlobalSaveManager.ItemData()
+					{
+						Quantity = 1,
+						Path = tuple.Item1.ResourcePath
+					},
+					tuple.Item2
+				));
+			}
+
+			keyValuePairs.Add(keyValuePair.Key, list);
+		}
+
+		return keyValuePairs;
+	}
+
+	public void SetSaveData(Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>> dictionary)
+	{
+		DroppedItems.Clear();
+
+		foreach (KeyValuePair<string, List<(GlobalSaveManager.ItemData, Vector2)>> keyValuePair in dictionary)
+		{
+			List<(Items, Vector2)> list = new List<(Items, Vector2)>();
+
+			foreach ((GlobalSaveManager.ItemData, Vector2) tuple in keyValuePair.Value)
+			{
+				list.Add((
+					GD.Load<Items>(tuple.Item1.Path),
+					tuple.Item2
+				));
+			}
+
+			DroppedItems.Add(keyValuePair.Key, list);
+		}
 	}
 
 	public void ChangeTileMapBounds(Vector2[] newBounds)

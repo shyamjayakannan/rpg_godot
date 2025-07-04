@@ -11,8 +11,8 @@ public class Abilities : Node
         Bomb
     }
     private PlayerAbilities selectedAbility = PlayerAbilities.Boomerang;
-    private readonly PackedScene boomerangScene = GD.Load<PackedScene>("res://Player/Boomerang.tscn");
-    private readonly PackedScene bombScene = GD.Load<PackedScene>("res://Interactables/bomb/Bomb.tscn");
+    private readonly PackedScene boomerangScene = GD.Load<PackedScene>("res://Player/scripts/abilities/boomerang/Boomerang.tscn");
+    private readonly PackedScene bombScene = GD.Load<PackedScene>("res://Player/scripts/abilities/bomb/Bomb.tscn");
     private Boomerang boomerang;
     private IdleState idleState;
     private WalkState walkState;
