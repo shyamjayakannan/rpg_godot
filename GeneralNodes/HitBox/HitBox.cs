@@ -17,7 +17,7 @@ public partial class HitBox : Area2D
 		if (area is HurtBox hurtBox)
 		{
 			hurtBox.EmitSignal(HurtBox.SignalName.DidDamage);
-			EmitSignal(nameof(Damaged), hurtBox);
+			EmitSignal(SignalName.Damaged, hurtBox);
 		}
 	}
 }

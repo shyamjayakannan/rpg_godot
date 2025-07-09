@@ -137,7 +137,7 @@ public partial class ShopMenu : CanvasLayer
 
     public void SetMenu(bool value)
     {
-        EmitSignal(value ? nameof(Shown) : nameof(Hidden));
+        EmitSignal(value ? SignalName.Shown : SignalName.Hidden);
         GlobalPlayerManager.Instance.Player.SetProcessUnhandledInput(!value);
         GlobalPlayerManager.Instance.Player.ChangeStateToIdle();
 

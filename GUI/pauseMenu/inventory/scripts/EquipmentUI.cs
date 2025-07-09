@@ -54,7 +54,7 @@ public partial class EquipmentUI : HBoxContainer
                 if (list[idx] == null)
                 {
                     list[idx] = slot;
-                    PauseMenu.Instance.EmitSignal(nameof(PauseMenu.EquipmentsChanged), eq);
+                    PauseMenu.Instance.EmitSignal(PauseMenu.SignalName.EquipmentsChanged, eq);
                 }
             }
         }

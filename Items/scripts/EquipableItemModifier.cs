@@ -15,7 +15,7 @@ public partial class EquipableItemModifier : Resource
             equipmentType = value;
 
             if (Engine.IsEditorHint())
-                EmitSignal("changed");
+                EmitSignal(Resource.SignalName.Changed);
         }
     }
     [Export]
@@ -27,7 +27,7 @@ public partial class EquipableItemModifier : Resource
             _value = value;
 
             if (Engine.IsEditorHint())
-                EmitSignal("changed");
+                EmitSignal(Resource.SignalName.Changed);
         }
     }
 

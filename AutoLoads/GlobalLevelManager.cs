@@ -29,7 +29,7 @@ public partial class GlobalLevelManager : Node
 		// wait for the entire scenetree to be ready (idle frame) before proceeding so that nodes listening
 		// to the LevelLoaded signal are loaded before the signal is emitted.
 		// level loaded signal when entry level is loaded.
-		CallDeferred("emit_signal", nameof(LevelLoaded));
+		CallDeferred(GodotObject.MethodName.EmitSignal, SignalName.LevelLoaded);
 	}
 
 	public void AddItem(string fileName, Items item, Vector2 globalPosition)
@@ -100,7 +100,7 @@ public partial class GlobalLevelManager : Node
 	public void ChangeTileMapBounds(Vector2[] newBounds)
 	{
 		CurrentTileMapBounds = newBounds;
-		EmitSignal(nameof(TileMapBoundsChanged), newBounds);
+		EmitSignal(SignalName.TileMapBoundsChanged, newBounds);
 	}
 
 	public void LoadNewLevel(
@@ -123,7 +123,7 @@ public partial class GlobalLevelManager : Node
 
 	private void LoadNewLevel2()
 	{
-		EmitSignal(nameof(LevelLoadStarted));
+		EmitSignal(SignalName.LevelLoadStarted);
 
 		GlobalPlayerManager.Instance.RemovePlayerParent();
 		GetTree().ChangeSceneToFile(levelPath);
@@ -134,6 +134,6 @@ public partial class GlobalLevelManager : Node
 	{
 		GetTree().Paused = false;
 
-		EmitSignal(nameof(LevelLoaded));
+		EmitSignal(SignalName.LevelLoaded);
 	}
 }

@@ -88,7 +88,7 @@ public partial class Player : CharacterBody2D
 	private void OnAnimationPlayerAnimationFinished(string animationName)
 	{
 		if (animationName == "attackDown" || animationName == "attackUp" || animationName == "attackSide")
-			EmitSignal(nameof(AttackAnimationOver));
+			EmitSignal(SignalName.AttackAnimationOver);
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -137,7 +137,7 @@ public partial class Player : CharacterBody2D
 		else
 			CardinalDirection = Direction.Y >= 0 ? Vector2.Down : Vector2.Up;
 
-		EmitSignal(nameof(PlayerDirectionChanged), CardinalDirection);
+		EmitSignal(SignalName.PlayerDirectionChanged, CardinalDirection);
 
 		if (CardinalDirection.X < 0)
 			Sprite2D.Scale = new Vector2(-1, 1);
@@ -156,7 +156,7 @@ public partial class Player : CharacterBody2D
 		UpdateHP(-Mathf.Clamp(hurtBox.Damage - Defence, 1, hurtBox.Damage));
 
 		if (oldHp > 0)
-			EmitSignal(nameof(PlayerDamaged), hurtBox);
+			EmitSignal(SignalName.PlayerDamaged, hurtBox);
 	}
 
 	public void UpdateHP(int delta)
@@ -194,14 +194,14 @@ public partial class Player : CharacterBody2D
 	public void MakeInvulnerable(float stunDuration)
 	{
 		invulnerable = true;
-		SetDeferred("hitBox.Monitoring", false);
+		hitBox.SetDeferred(Area2D.PropertyName.Monitoring, false);
 		GetTree().CreateTimer(stunDuration, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.MakeInvulnerable2));
 	}
 
 	private void MakeInvulnerable2()
 	{
 		invulnerable = false;
-		SetDeferred("hitBox.Monitoring", true);
+		hitBox.SetDeferred(Area2D.PropertyName.Monitoring, true);
 	}
 
 	public void PickupItem(Throwable throwable, Node2D throwableParent)

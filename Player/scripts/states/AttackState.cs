@@ -52,8 +52,8 @@ public partial class AttackState : State
 
 	public override void Exit()
 	{
-		Player.Disconnect(nameof(Player.AttackAnimationOver), new(this, nameof(OnPlayerAttackAnimationOver)));
-		hurtBox.SetDeferred("monitorable", false);
+		Player.Disconnect(Player.SignalName.AttackAnimationOver, new(this, MethodName.OnPlayerAttackAnimationOver));
+		hurtBox.SetDeferred(Area2D.PropertyName.Monitorable, false);
 		isAttacking = false;
 	}
 

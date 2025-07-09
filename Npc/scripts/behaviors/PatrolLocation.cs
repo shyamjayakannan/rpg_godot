@@ -70,7 +70,7 @@ public partial class PatrolLocation : Node2D
                     return;
 
                 transform = Transform;
-                EmitSignal(nameof(TransformChanged), Index);
+                EmitSignal(SignalName.TransformChanged, Index);
                 break;
         }
     }

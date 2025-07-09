@@ -13,7 +13,7 @@ public abstract partial class DialogItemResource : Resource
         set
         {
             npcResource = value;
-            EmitSignal("changed");
+            EmitSignal(Resource.SignalName.Changed);
         }
     }
     [Export]

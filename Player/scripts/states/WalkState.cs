@@ -45,7 +45,7 @@ public partial class WalkState : State
 			return dashState;
 
 		if (_event.IsActionPressed("interact"))
-			GlobalPlayerManager.Instance.EmitSignal(nameof(GlobalPlayerManager.InteractPressed));
+			GlobalPlayerManager.Instance.EmitSignal(GlobalPlayerManager.SignalName.InteractPressed);
 
 		return null;
 	}

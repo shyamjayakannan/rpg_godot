@@ -67,7 +67,7 @@ public partial class Enemy : CharacterBody2D
 		else
 			cardinalDirection = direction.Y >= 0 ? Vector2.Down : Vector2.Up;
 
-		EmitSignal(nameof(EnemyDirectionChanged), cardinalDirection);
+		EmitSignal(SignalName.EnemyDirectionChanged, cardinalDirection);
 
 		if (cardinalDirection.X < 0)
 			sprite.Scale = new Vector2(-1, 1);
@@ -86,8 +86,8 @@ public partial class Enemy : CharacterBody2D
 		GlobalEffectManager.Instance.DamageTexter(hurtBox.Damage.ToString(), GlobalPosition + new Vector2(0, -40));
 
 		if (hp > 0)
-			EmitSignal(nameof(EnemyDamaged), hurtBox);
+			EmitSignal(SignalName.EnemyDamaged, hurtBox);
 		else
-			EmitSignal(nameof(EnemyDestroyed), hurtBox);
+			EmitSignal(SignalName.EnemyDestroyed, hurtBox);
 	}
 }

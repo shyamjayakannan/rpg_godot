@@ -91,7 +91,7 @@ public partial class ItemPickup : CharacterBody2D
 		pickedUp = true;
 		audioStreamPlayer2D.Play();
 		Hide();
-		EmitSignal(nameof(PickedUp));
+		EmitSignal(SignalName.PickedUp);
 		audioStreamPlayer2D.Connect(AudioStreamPlayer2D.SignalName.Finished, new(this, MethodName.ItemPickedUp2));
 	}
 

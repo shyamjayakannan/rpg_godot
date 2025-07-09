@@ -48,7 +48,7 @@ public partial class Npc : CharacterBody2D
             return;
 
         GatherInteractables(this);
-        EmitSignal(nameof(DoBehaviorEnabled));
+        EmitSignal(SignalName.DoBehaviorEnabled);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -117,6 +117,6 @@ public partial class Npc : CharacterBody2D
         UpdateDirection(storeDirection);
         UpdateAnimation();
         DoBehavior = true;
-        EmitSignal(nameof(DoBehaviorEnabled));
+        EmitSignal(SignalName.DoBehaviorEnabled);
     }
 }

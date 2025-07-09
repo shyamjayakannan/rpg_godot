@@ -126,7 +126,7 @@ public partial class InventoryUI : GridContainer
 			OnEquipmentFocused(equipableItem, false);
 		}
 
-		PauseMenu.Instance.EmitSignal(nameof(PauseMenu.EquipmentsChanged), item);
+		PauseMenu.Instance.EmitSignal(PauseMenu.SignalName.EquipmentsChanged, item);
 	}
 
 	private int OnEquipmentFocused(EquipableItem item, bool update)

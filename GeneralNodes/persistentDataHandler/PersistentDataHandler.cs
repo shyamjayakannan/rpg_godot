@@ -29,7 +29,7 @@ public partial class PersistentDataHandler : Node
     public void GetValue()
     {
         value = GlobalSaveManager.Instance.CheckPersistentValue(GetItemName());
-        EmitSignal(nameof(DataLoaded), value);
+        EmitSignal(SignalName.DataLoaded, value);
     }
 
     private string GetItemName()

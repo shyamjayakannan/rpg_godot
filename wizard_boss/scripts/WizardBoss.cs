@@ -99,7 +99,7 @@ public partial class WizardBoss : Node2D
     {
         EnergyOrb orb = (EnergyOrb)energyOrbScene.Instantiate();
         orb.GlobalPosition = bossNode.GlobalPosition + new Vector2(0, -34);
-        GetParent().CallDeferred("add_child", orb);
+        GetParent().CallDeferred(Node.MethodName.AddChild, orb);
     }
 
     private void Teleport(int location)
@@ -233,7 +233,7 @@ public partial class WizardBoss : Node2D
 
     private void Finish(string animName)
     {
-        EmitSignal(nameof(DarkWizardDefeated));
+        EmitSignal(SignalName.DarkWizardDefeated);
         GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.EnemiesDestroyed, false);
         QueueFree();
     }
@@ -246,8 +246,8 @@ public partial class WizardBoss : Node2D
 
     private void SetBoxes(bool value)
     {
-        hitBox.SetDeferred("monitoring", value);
-        hurtBox.SetDeferred("monitorable", value);
+        hitBox.SetDeferred(Area2D.PropertyName.Monitoring, value);
+        hurtBox.SetDeferred(Area2D.PropertyName.Monitorable, value);
     }
 
     // called in destroy animation track

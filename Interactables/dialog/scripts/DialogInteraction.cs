@@ -127,7 +127,7 @@ public partial class DialogInteraction : Interactables
 
     public override void OnInteractPressed()
     {
-        EmitSignal(nameof(PlayerInteracted));
+        EmitSignal(SignalName.PlayerInteracted);
 
         async void Wait()
         {
@@ -177,7 +177,7 @@ public partial class DialogInteraction : Interactables
 
     private void OnFinished()
     {
-        EmitSignal(nameof(Finished));
+        EmitSignal(SignalName.Finished);
     }
 
     private void SetDialogChildren()

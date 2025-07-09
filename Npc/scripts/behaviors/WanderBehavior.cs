@@ -28,7 +28,7 @@ public partial class WanderBehavior : NPCBehavior
         area2D.CollisionMask = 8;
         RemoveChild(area2D);
         area2D.GlobalPosition = GlobalPosition;
-        Npc.GetParent().CallDeferred("add_child", area2D);
+        Npc.GetParent().CallDeferred(Node.MethodName.AddChild, area2D);
 
         Connect(Node.SignalName.TreeExited, new(this, MethodName.Destroy));
         area2D.Connect(Area2D.SignalName.BodyExited, new(this, MethodName.OnAreaExited));

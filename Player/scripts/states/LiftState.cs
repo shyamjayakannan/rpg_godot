@@ -37,7 +37,7 @@ public partial class LiftState : State
 
     private void OnAnimationPlayerAnimationFinished(string animname)
     {
-        Player.AnimationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, nameof(OnAnimationPlayerAnimationFinished)));
+        Player.AnimationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
         StateMachine.ChangeState(carryState);
     }
 

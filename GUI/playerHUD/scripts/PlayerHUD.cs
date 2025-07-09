@@ -96,7 +96,7 @@ public partial class PlayerHUD : CanvasLayer
 
 	private void ShowGameOverScreen2(string animName)
 	{
-		animationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, nameof(ShowGameOverScreen2)));
+		animationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.ShowGameOverScreen2));
 
 		if (!continueButton.Visible)
 			menuButton.GrabFocus();

@@ -80,6 +80,6 @@ public partial class ItemDropper : Node2D
     private void OnPickedUp()
     {
         persistentDataHandler.SetValue();
-        EmitSignal(nameof(ItemPickedUp));
+        EmitSignal(SignalName.ItemPickedUp);
     }
 }

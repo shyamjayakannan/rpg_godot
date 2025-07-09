@@ -56,7 +56,7 @@ public partial class ChargeState : State
     {
         timer.Stop();
         particles.Emitting = false;
-        hurtBox.SetDeferred("monitorable", false);
+        hurtBox.SetDeferred(Area2D.PropertyName.Monitorable, false);
     }
 
     public override State Process(float delta)

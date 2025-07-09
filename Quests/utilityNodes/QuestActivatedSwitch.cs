@@ -123,7 +123,7 @@ public partial class QuestActivatedSwitch : QuestNode
             child.Show();
             child.SetProcess(true);
             child.SetPhysicsProcess(true);
-            CallDeferred(nameof(SetCollisionBodies), child, true);
+            CallDeferred(MethodName.SetCollisionBodies, child, true);
         }
     }
 
@@ -131,10 +131,10 @@ public partial class QuestActivatedSwitch : QuestNode
     {
         foreach (Node2D child in GetChildren().Cast<Node2D>())
         {
-            child.CallDeferred("hide");
-            child.CallDeferred("set_process", false);
-            child.CallDeferred("set_physics_process", false);
-            CallDeferred(nameof(SetCollisionBodies), child, false);
+            child.CallDeferred(CanvasItem.MethodName.Hide);
+            child.CallDeferred(Node.MethodName.SetProcess, false);
+            child.CallDeferred(Node.MethodName.SetPhysicsProcess, false);
+            CallDeferred(MethodName.SetCollisionBodies, child, false);
 
             if (freeOnRemove)
                 child.QueueFree();

@@ -13,7 +13,7 @@ public partial class DialogTextResource : DialogItemResource
 		set
 		{
 			text = value;
-			EmitSignal("changed");
+			EmitSignal(Resource.SignalName.Changed);
 		}
 	}
 

@@ -110,7 +110,7 @@ public partial class DialogSystem : CanvasLayer
     {
         if (++dialogItemIndex == dialogItemResources.Count)
         {
-            EmitSignal(nameof(Finished));
+            EmitSignal(SignalName.Finished);
             SetUIState(false);
         }
         else
@@ -121,7 +121,7 @@ public partial class DialogSystem : CanvasLayer
     {
         ShowDialog(dialogBranchResources[index].DialogItemResources, dialogInteraction);
         dialogBranchResources[index].QuestAdvanceResource?.AdvanceQuest();
-        EmitSignal(nameof(BranchSelected), index);
+        EmitSignal(SignalName.BranchSelected, index);
     }
 
     private void SetUIState(bool value)
@@ -142,7 +142,7 @@ public partial class DialogSystem : CanvasLayer
         SetUIState(true);
         dialogItemResources = items;
         dialogItemIndex = 0;
-        CallDeferred(nameof(StartDialog));
+        CallDeferred(MethodName.StartDialog);
         dialogInteraction = _dialogInteraction;
     }
 
@@ -249,7 +249,7 @@ public partial class DialogSystem : CanvasLayer
         }
 
         richTextLabel.VisibleCharacters += 1;
-        EmitSignal(nameof(LetterAdded), plainText.Substr(richTextLabel.VisibleCharacters - 1, 1));
+        EmitSignal(SignalName.LetterAdded, plainText.Substr(richTextLabel.VisibleCharacters - 1, 1));
         timerStarted = true;
     }
 }

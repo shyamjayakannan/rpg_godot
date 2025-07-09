@@ -172,11 +172,11 @@ public partial class Throwable : Interactables
 
     private void OnAnimationPlayerAnimationFinished(string animName)
     {
-        if (IsConnected(Area2D.SignalName.AreaEntered, new(this, nameof(OnArea2DAreaEntered))))
-            Disconnect(Area2D.SignalName.AreaEntered, new(this, nameof(OnArea2DAreaEntered)));
+        if (IsConnected(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered)))
+            Disconnect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
 
-        if (IsConnected(Area2D.SignalName.AreaExited, new(this, nameof(OnArea2DAreaExited))))
-            Disconnect(Area2D.SignalName.AreaExited, new(this, nameof(OnArea2DAreaExited)));
+        if (IsConnected(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited)))
+            Disconnect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
 
         ThrowableParent.QueueFree();
     }

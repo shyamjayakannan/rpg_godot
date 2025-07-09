@@ -32,7 +32,7 @@ public partial class StunEnemyState : EnemyState
 
 	public override void Exit()
 	{
-		Enemy.AnimationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, nameof(OnAnimationPlayerAnimationFinished)));
+		Enemy.AnimationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
 		Enemy.Invulnerable = false;
 	}
 

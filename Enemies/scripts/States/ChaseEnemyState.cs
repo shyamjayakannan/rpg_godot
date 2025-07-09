@@ -36,7 +36,7 @@ public partial class ChaseEnemyState : EnemyState
 		pathFinder = (PathFinder)pathFinderScene.Instantiate();
 		Enemy.AddChild(pathFinder);
 		timer = stateAnimationDuration;
-		attackArea.SetDeferred("monitorable", true);
+		attackArea.SetDeferred(Area2D.PropertyName.Monitorable, true);
 		canSeePlayer = true;
 		Enemy.UpdateAnimation("chase");
 	}
@@ -44,7 +44,7 @@ public partial class ChaseEnemyState : EnemyState
 	public override void Exit()
 	{
 		pathFinder.QueueFree();
-		attackArea.SetDeferred("monitorable", false);
+		attackArea.SetDeferred(Area2D.PropertyName.Monitorable, false);
 		canSeePlayer = false;
 	}
 

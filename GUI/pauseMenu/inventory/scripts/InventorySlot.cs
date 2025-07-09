@@ -64,7 +64,7 @@ public partial class InventorySlot : Button
 			if (!alreadyEmitted)
 			{
 				alreadyEmitted = true;
-				EmitSignal(nameof(MouseEntered));
+				EmitSignal(SignalName.MouseEntered);
 			}
 		}
 		else
@@ -105,8 +105,8 @@ public partial class InventorySlot : Button
 
 	private void PlayAudio(AudioStream audioStream)
 	{
-		if (AudioStreamPlayer.IsConnected("finished", new(this, nameof(PlayAudio))))
-			AudioStreamPlayer.Disconnect("finished", new(this, nameof(PlayAudio)));
+		if (AudioStreamPlayer.IsConnected(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.PlayAudio)))
+			AudioStreamPlayer.Disconnect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.PlayAudio));
 
 		AudioStreamPlayer.Stream = audioStream;
 		AudioStreamPlayer.Play();
@@ -124,7 +124,7 @@ public partial class InventorySlot : Button
 
 		if (slotData.Item is EquipableItem equipableItem)
 		{
-			EmitSignal(nameof(EquipmentFocused), equipableItem, false);
+			EmitSignal(SignalName.EquipmentFocused, equipableItem, false);
 			PauseMenu.Instance.UpdateDescription(SlotData.Item.Description + "\n\n" + equipableItem.StatsDescription);
 			return;
 		}
@@ -148,7 +148,7 @@ public partial class InventorySlot : Button
 
 		if (slotData.Item is EquipableItem equipableItem)
 		{
-			EmitSignal(nameof(EquipmentSelected), equipableItem);
+			EmitSignal(SignalName.EquipmentSelected, equipableItem);
 			return;
 		}
 
@@ -157,7 +157,7 @@ public partial class InventorySlot : Button
 			QueueFree();
 			int index = GetIndex();
 			GlobalPlayerManager.Instance.PlayerInventory.Slots.RemoveAt(index);
-			PauseMenu.Instance.EmitSignal(nameof(PauseMenu.ItemRemoved));
+			PauseMenu.Instance.EmitSignal(PauseMenu.SignalName.ItemRemoved);
 
 			// focus on the first item
 			if (index == 0)

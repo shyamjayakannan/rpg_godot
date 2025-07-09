@@ -14,7 +14,7 @@ public partial class DialogBranchResource : DialogItemResource
 		set
 		{
 			text = value;
-			EmitSignal("changed");
+			EmitSignal(Resource.SignalName.Changed);
 		}
 	}
 	[Export]

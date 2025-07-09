@@ -107,7 +107,7 @@ public partial class GlobalQuestManager : Node
         GlobalSaveManager.QuestData quest = CurrentQuests[i];
         quest.IsComplete = questResource.Steps.Length == quest.CompletedSteps.Count;
         CurrentQuests[i] = quest;
-        EmitSignal(nameof(QuestUpdated), title, false);
+        EmitSignal(SignalName.QuestUpdated, title, false);
         PlayerHUD.Instance.QueueNotification("Quest Updated", $"{title}: {step}");
 
         if (quest.IsComplete)
@@ -132,7 +132,7 @@ public partial class GlobalQuestManager : Node
         };
 
         CurrentQuests.Add(questData);
-        EmitSignal(nameof(QuestUpdated), title, true);
+        EmitSignal(SignalName.QuestUpdated, title, true);
 
         PlayerHUD.Instance.QueueNotification("Quest Added", title);
     }

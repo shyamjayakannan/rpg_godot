@@ -93,7 +93,7 @@ public partial class PauseMenu : CanvasLayer
 		arrowButton.UpdateLabel(GlobalPlayerManager.Instance.Player.Arrows);
 		bombButton.UpdateLabel(GlobalPlayerManager.Instance.Player.Bombs);
 
-		EmitSignal(nameof(Shown));
+		EmitSignal(SignalName.Shown);
 	}
 
 	private void HidePauseMenu()
@@ -103,7 +103,7 @@ public partial class PauseMenu : CanvasLayer
 		Hide();
 		isPaused = false;
 		GetTree().Paused = false;
-		EmitSignal(nameof(Hidden));
+		EmitSignal(SignalName.Hidden);
 
 		if (DialogSystem.Instance != null && DialogSystem.Instance.Visible && DialogSystem.Instance.DialogProgressIndicator.Visible)
 			DialogSystem.Instance.DialogProgressIndicator.GrabFocus();
@@ -125,7 +125,7 @@ public partial class PauseMenu : CanvasLayer
 
 	private void OnLoadPressed2()
 	{
-		AudioStreamPlayer.Disconnect("finished", new(this, nameof(OnLoadPressed2)));
+		AudioStreamPlayer.Disconnect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnLoadPressed2));
 		GlobalSaveManager.Instance.LoadGame();
 		HidePauseMenu();
 	}
@@ -139,7 +139,7 @@ public partial class PauseMenu : CanvasLayer
 
 	private void OnMenuPressed2()
 	{
-		AudioStreamPlayer.Disconnect("finished", new(this, nameof(OnMenuPressed2)));
+		AudioStreamPlayer.Disconnect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnMenuPressed2));
 		GlobalLevelManager.Instance.LoadNewLevel("res://title_screen/TitleScene.tscn", "", Vector2.Zero);
 		HidePauseMenu();
 	}

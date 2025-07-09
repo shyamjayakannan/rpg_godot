@@ -2,7 +2,7 @@ using System;
 
 namespace MonoCustomResourceRegistry
 {
-	[AttributeUsage(System.AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class)]
 	public partial class RegisteredTypeAttribute : System.Attribute
 	{
 		public string name;

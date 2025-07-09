@@ -92,7 +92,7 @@ public partial class PressurePlate : Node2D
             );
             PlayAudio(audioActivate);
             EmitSignal(nameof(PressurePlateActivated));
-            GlobalSignalManager.Instance.EmitSignal(nameof(GlobalSignalManager.PressurePlateActivated));
+            GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.PressurePlateActivated);
         }
         else if (bodies <= 0 && isActive)
         {
@@ -105,7 +105,7 @@ public partial class PressurePlate : Node2D
                 sprite.RegionRect.Size
             );
             PlayAudio(audioDeactivate);
-            GlobalSignalManager.Instance.EmitSignal(nameof(GlobalSignalManager.PressurePlateDeactivated));
+            GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.PressurePlateDeactivated);
         }
     }
 

@@ -21,13 +21,13 @@ public partial class VisionArea : Area2D
     private void OnVisionAreaBodyEntered(Node body)
     {
         if (body is Player)
-            EmitSignal(nameof(PlayerEntered));
+            EmitSignal(SignalName.PlayerEntered);
     }
 
     private void OnVisionAreaBodyExited(Node body)
     {
         if (body is Player)
-            EmitSignal(nameof(PlayerExited));
+            EmitSignal(SignalName.PlayerExited);
     }
 
     private void OnEnemyDirectionChanged(Vector2 newDirection)

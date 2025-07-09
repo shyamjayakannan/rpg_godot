@@ -85,7 +85,7 @@ public partial class GlobalSaveManager : Node
 		FileAccess file = FileAccess.Open(SAVEPATH + "savegame.sav", FileAccess.ModeFlags.Write);
 		file.StoreLine(JsonConvert.SerializeObject(currentSaveData));
 		file.Close();
-		EmitSignal(nameof(GameSaved));
+		EmitSignal(SignalName.GameSaved);
 	}
 
 	public static bool CheckLoad()
@@ -116,7 +116,7 @@ public partial class GlobalSaveManager : Node
 	private void OnLevelLoaded()
 	{
 		GlobalLevelManager.Instance.Disconnect(GlobalLevelManager.SignalName.LevelLoaded, new(this, MethodName.OnLevelLoaded));
-		EmitSignal(nameof(GameLoaded));
+		EmitSignal(SignalName.GameLoaded);
 	}
 
 	private void UpdatePlayer()

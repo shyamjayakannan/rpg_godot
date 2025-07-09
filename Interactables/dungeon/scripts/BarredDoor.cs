@@ -31,13 +31,13 @@ public partial class BarredDoor : Node2D
     {
         animationPlayer.Play("openDoor");
         persistentDataHandler.SetValue();
-        GlobalSignalManager.Instance.EmitSignal(nameof(GlobalSignalManager.BarredDoorStateChanged), true);
+        GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.BarredDoorStateChanged, true);
     }
 
     private void CloseDoor()
     {
         animationPlayer.Play("closeDoor");
         persistentDataHandler.UnsetValue();
-        GlobalSignalManager.Instance.EmitSignal(nameof(GlobalSignalManager.BarredDoorStateChanged), false);
+        GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.BarredDoorStateChanged, false);
     }
 }
