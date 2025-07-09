@@ -52,7 +52,7 @@ public partial class ShopMenu : CanvasLayer
         colorRect.Hide();
         Initialize();
 
-        acceptDialog.Connect(AcceptDialog.SignalName.Canceled, new(this, MethodName.OnPopupHidden));
+        acceptDialog.Connect(AcceptDialog.SignalName.Canceled, Callable.From(() => colorRect.Hide()));
         buyButton.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.OnBuyButtonPressed));
         lineEdit.Connect(LineEdit.SignalName.TextChanged, new(this, MethodName.OnLineEditTextChanged));
         closeButton.Connect(BaseButton.SignalName.Pressed, Callable.From(() => SetMenu(false)));
@@ -66,11 +66,6 @@ public partial class ShopMenu : CanvasLayer
         description.Text = "";
         lineEdit.Text = "1";
         total.Text = "";
-    }
-
-    private void OnPopupHidden()
-    {
-        colorRect.Hide();
     }
 
     private void OnBuyButtonPressed()
@@ -171,12 +166,7 @@ public partial class ShopMenu : CanvasLayer
             shopItemButton.Connect(Control.SignalName.FocusEntered, Callable.From(() => OnShopItemButtonFocused(item)));
         }
 
-        GetTree().CreateTimer(0.1f).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.OnTimerTimeout));
-    }
-
-    private void OnTimerTimeout()
-    {
-        buttonMenu.GetChildOrNull<ShopItemButton>(0)?.GrabFocus();
+        GetTree().CreateTimer(0.1f).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => buttonMenu.GetChildOrNull<ShopItemButton>(0)?.GrabFocus()));
     }
 
     private void OnShopItemButtonFocused(Items item)

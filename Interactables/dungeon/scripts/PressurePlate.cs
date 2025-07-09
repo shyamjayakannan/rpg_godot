@@ -32,14 +32,10 @@ public partial class PressurePlate : Node2D
         area2D.Connect(Area2D.SignalName.BodyEntered, new(this, MethodName.OnArea2DBodyEntered));
         area2D.Connect(Area2D.SignalName.BodyExited, new(this, MethodName.OnArea2DBodyExited));
         GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.BarredDoorStateChanged, new(this, MethodName.SetValue));
-        GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoadStarted, new(this, MethodName.SetIsActive));
-    }
 
-    private void SetIsActive()
-    {
         // before next level loads, do this so that pressure plate is not deactivated when the statue leaves
         // the scenetree and onarea2dbodyexited is called
-        isActive = false;
+        GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoadStarted, Callable.From(() => isActive = false));
     }
 
     private void SetValue(bool value)
@@ -74,7 +70,6 @@ public partial class PressurePlate : Node2D
     private void OnArea2DBodyExited(Node body)
     {
         bodies -= 1;
-
         CheckIsActivated();
     }
 

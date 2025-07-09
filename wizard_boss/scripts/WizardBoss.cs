@@ -118,7 +118,6 @@ public partial class WizardBoss : Node2D
     }
 
     private void Teleport2(int location)
-
     {
         if (hp < 1)
             return;

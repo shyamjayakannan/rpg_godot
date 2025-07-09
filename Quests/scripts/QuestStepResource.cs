@@ -1,8 +1,7 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(QuestStepResource), "", nameof(Resource))]
+[GlobalClass]
 public partial class QuestStepResource : Resource
 {
     // Exports

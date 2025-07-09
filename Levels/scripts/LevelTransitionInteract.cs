@@ -12,18 +12,13 @@ public partial class LevelTransitionInteract : LevelTransition
         Connect(Area2D.SignalName.AreaExited, new(this, MethodName.OnArea2DAreaExited));
     }
 
-    private void OnInteractPressed()
-    {
-        OnLevelTransitionBodyEntered();
-    }
-
     private void OnArea2DAreaEntered(Area2D area)
     {
-        GlobalPlayerManager.Instance.Connect(GlobalPlayerManager.SignalName.InteractPressed, new(this, MethodName.OnInteractPressed));
+        GlobalPlayerManager.Instance.Connect(GlobalPlayerManager.SignalName.InteractPressed, new(this, LevelTransition.MethodName.OnLevelTransitionBodyEntered));
     }
 
     private void OnArea2DAreaExited(Area2D area)
     {
-        GlobalPlayerManager.Instance.Disconnect(GlobalPlayerManager.SignalName.InteractPressed, new(this, MethodName.OnInteractPressed));
+        GlobalPlayerManager.Instance.Disconnect(GlobalPlayerManager.SignalName.InteractPressed, new(this, LevelTransition.MethodName.OnLevelTransitionBodyEntered));
     }
 }

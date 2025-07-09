@@ -25,8 +25,8 @@ public partial class Arrow : Node2D
         audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
         audioStreamPlayer2D.Play();
 
-        hurtBox.Connect(HurtBox.SignalName.DidDamage, new(this, MethodName.OnDidDamage));
-        GetTree().CreateTimer(10).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.OnDidDamage));
+        hurtBox.Connect(HurtBox.SignalName.DidDamage, new(this, Node.MethodName.QueueFree));
+        GetTree().CreateTimer(10).Connect(SceneTreeTimer.SignalName.Timeout, new(this, Node.MethodName.QueueFree));
     }
 
     public override void _Process(double delta)
@@ -41,10 +41,5 @@ public partial class Arrow : Node2D
         sprite.Rotation = angle;
         shadow.Rotation = angle;
         hurtBox.Rotation = angle;
-    }
-
-    private void OnDidDamage()
-    {
-        QueueFree();
     }
 }

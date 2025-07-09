@@ -1,8 +1,7 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(Items), "", nameof(Resource))]
+[GlobalClass]
 public partial class Items : Resource
 {
 	// Exports

@@ -33,7 +33,7 @@ public partial class DashState : State
         audioStreamPlayer2D.Play();
         effectTimer = effectDelay;
 
-        GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.OnAnimationFinished));
+        GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => nextState = idleState));
     }
 
     public override State Process(float delta)
@@ -61,11 +61,6 @@ public partial class DashState : State
             Player.UpdateAnimation("charge");
 
         return null;
-    }
-
-    private void OnAnimationFinished()
-    {
-        nextState = idleState;
     }
 
     private void SpawnEffect()

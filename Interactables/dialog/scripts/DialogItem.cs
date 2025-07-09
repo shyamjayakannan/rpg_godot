@@ -1,5 +1,4 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
 #if TOOLS
 public abstract partial class DialogItem : Node2D
@@ -52,7 +51,7 @@ public abstract partial class DialogItem : Node2D
 #endif
 
 [Tool]
-[RegisteredType(nameof(DialogItem), "res://GUI/dialogSystem/icons/chat_bubble.png", nameof(Node2D))]
+[GlobalClass, Icon("res://GUI/dialogSystem/icons/chat_bubble.png")]
 public abstract partial class DialogItem : Node2D
 {
     //Exports

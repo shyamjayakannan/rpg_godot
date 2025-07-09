@@ -104,12 +104,7 @@ public partial class ChargeState : State
         double duration = Player.AnimationPlayer.CurrentAnimationLength;
         Player.MakeInvulnerable((float)duration);
 
-        GetTree().CreateTimer(duration * 0.875f, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.ChargeAttack2));
-    }
-
-    private void ChargeAttack2()
-    {
-        StateMachine.ChangeState(idleState);
+        GetTree().CreateTimer(duration * 0.875f, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => StateMachine.ChangeState(idleState)));
     }
 
     private static float GetSpinFrame()

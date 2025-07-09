@@ -1,9 +1,8 @@
 using System.Linq;
 using Godot;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(QuestActivatedSwitch), "res://Quests/utilityNodes/icons/quest_switch.png", nameof(Node2D))]
+[GlobalClass, Icon("res://Quests/utilityNodes/icons/quest_switch.png")]
 public partial class QuestActivatedSwitch : QuestNode
 {
     // Exports

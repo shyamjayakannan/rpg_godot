@@ -119,13 +119,12 @@ public partial class PauseMenu : CanvasLayer
 	private void OnLoadPressed()
 	{
 		ButtonMenu.PlayPress(AudioStreamPlayer);
-		AudioStreamPlayer.Connect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnLoadPressed2));
+		AudioStreamPlayer.Connect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnLoadPressed2), (uint)ConnectFlags.OneShot);
 		buttonMenu.DisconnectFocus(save);
 	}
 
 	private void OnLoadPressed2()
 	{
-		AudioStreamPlayer.Disconnect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnLoadPressed2));
 		GlobalSaveManager.Instance.LoadGame();
 		HidePauseMenu();
 	}
@@ -133,13 +132,12 @@ public partial class PauseMenu : CanvasLayer
 	private void OnMenuPressed()
 	{
 		ButtonMenu.PlayPress(AudioStreamPlayer);
-		AudioStreamPlayer.Connect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnMenuPressed2));
+		AudioStreamPlayer.Connect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnMenuPressed2), (uint)ConnectFlags.OneShot);
 		buttonMenu.DisconnectFocus(save);
 	}
 
 	private void OnMenuPressed2()
 	{
-		AudioStreamPlayer.Disconnect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnMenuPressed2));
 		GlobalLevelManager.Instance.LoadNewLevel("res://title_screen/TitleScene.tscn", "", Vector2.Zero);
 		HidePauseMenu();
 	}

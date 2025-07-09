@@ -28,7 +28,7 @@ public partial class ChaseEnemyState : EnemyState
 		attackArea = GetNode<HurtBox>("../../Sprite2D/AttackHurtBox");
 
 		visionArea.Connect(VisionArea.SignalName.PlayerEntered, new(this, MethodName.OnPlayerEntered));
-		visionArea.Connect(VisionArea.SignalName.PlayerExited, new(this, MethodName.OnPlayerExited));
+		visionArea.Connect(VisionArea.SignalName.PlayerExited, Callable.From(() => canSeePlayer = false));
 	}
 
 	public override void Enter()
@@ -80,10 +80,5 @@ public partial class ChaseEnemyState : EnemyState
 
 		if (!(StateMachine.CurrentState is StunEnemyState || StateMachine.CurrentState is DestroyEnemyState))
 			StateMachine.ChangeState(this);
-	}
-
-	private void OnPlayerExited()
-	{
-		canSeePlayer = false;
 	}
 }

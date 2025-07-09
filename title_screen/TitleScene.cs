@@ -47,18 +47,13 @@ public partial class TitleScene : Node2D
 
 		newButton.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.StartGame));
 		continueButton.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.LoadGame));
-		quit.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.EndGame));
+		quit.Connect(BaseButton.SignalName.Pressed, Callable.From(() => GetTree().Quit()));
 		buttonMenu.ConnectFocus(newButton, audioStreamPlayer);
 		buttonMenu.ConnectFocus(continueButton, audioStreamPlayer);
 		buttonMenu.ConnectFocus(quit, audioStreamPlayer);
 		continueButton.Visible = GlobalSaveManager.CheckLoad();
 
 		GlobalAudioManager.Instance.PlayAudio(music);
-	}
-
-	private void EndGame()
-	{
-		GetTree().Quit();
 	}
 
 	private void LoadGame()

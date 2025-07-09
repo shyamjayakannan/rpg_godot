@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
-using MonoCustomResourceRegistry;
 
-[RegisteredType(nameof(InventoryData), "", nameof(Resource))]
+[GlobalClass]
 public partial class InventoryData : Resource
 {
 	// Exports

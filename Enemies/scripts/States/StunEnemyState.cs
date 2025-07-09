@@ -26,13 +26,12 @@ public partial class StunEnemyState : EnemyState
 		Enemy.SetDirection(direction);
 		Enemy.Velocity = direction * (-knockbackSpeed);
 		Enemy.UpdateAnimation("stun");
-		Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
+		Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, Callable.From(() => animationFinished = true), (uint)ConnectFlags.OneShot);
 		Enemy.Invulnerable = true;
 	}
 
 	public override void Exit()
 	{
-		Enemy.AnimationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
 		Enemy.Invulnerable = false;
 	}
 
@@ -50,10 +49,5 @@ public partial class StunEnemyState : EnemyState
 	{
 		damagePosition = hurtBox.GlobalPosition;
 		StateMachine.ChangeState(this);
-	}
-
-	private void OnAnimationPlayerAnimationFinished(string animName)
-	{
-		animationFinished = true;
 	}
 }

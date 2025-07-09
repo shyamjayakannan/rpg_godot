@@ -48,12 +48,7 @@ public partial class QuestUI : Control
         }
 
         ClearDescription();
-        GetTree().CreateTimer(0.1f).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.OnTimerTimeout));
-    }
-
-    private void OnTimerTimeout()
-    {
-        vBoxContainer.GetChildOrNull<QuestItem>(0)?.GrabFocus();
+        GetTree().CreateTimer(0.1f).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => vBoxContainer.GetChildOrNull<QuestItem>(0)?.GrabFocus()));
     }
 
     private void ClearDescription()

@@ -43,12 +43,7 @@ public partial class EnergyOrb : Node2D
 		PlayAudio(hitSound);
 		Hide();
 		SetProcess(false);
-		audioStreamPlayer2D.Connect(AudioStreamPlayer2D.SignalName.Finished, new(this, MethodName.OnHurtBoxDidDamage2));
-	}
-
-	private void OnHurtBoxDidDamage2()
-	{
-		QueueFree();
+		audioStreamPlayer2D.Connect(AudioStreamPlayer2D.SignalName.Finished, new(this, Node.MethodName.QueueFree));
 	}
 
 	private void PlayAudio(AudioStream stream)

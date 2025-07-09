@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using MonoCustomResourceRegistry;
 using Newtonsoft.Json;
 
 [Tool]
-[RegisteredType(nameof(DialogInteraction), "res://GUI/dialogSystem/icons/chat_bubbles.png", nameof(Node2D))]
+[GlobalClass, Icon("res://GUI/dialogSystem/icons/chat_bubbles.png")]
 public partial class DialogInteraction : Interactables
 {
     // Signals

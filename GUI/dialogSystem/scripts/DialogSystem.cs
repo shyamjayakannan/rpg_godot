@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(DialogSystem), "res://GUI/dialogSystem/icons/star_bubble.png", nameof(CanvasLayer))]
+[GlobalClass, Icon("res://GUI/dialogSystem/icons/star_bubble.png")]
 public partial class DialogSystem : CanvasLayer
 {
     // Signals

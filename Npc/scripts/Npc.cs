@@ -1,8 +1,7 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(Npc), "res://Npc/icons/npc.png", nameof(CharacterBody2D))]
+[GlobalClass, Icon("res://Npc/icons/npc.png")]
 public partial class Npc : CharacterBody2D
 {
     // Signals

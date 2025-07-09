@@ -63,12 +63,7 @@ public partial class LevelTransition : Area2D
 		PlacePlayer();
 
 		// the area2d is still trigerring even after changing player position. only option is to wait till it registers
-		GetTree().CreateTimer(0.4f, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.SetMonitoring));
-	}
-
-	private void SetMonitoring()
-	{
-		Monitoring = true;
+		GetTree().CreateTimer(0.4f, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => Monitoring = true));
 	}
 
 	protected void UpdateArea()

@@ -1,8 +1,7 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(QuestConditionResource), "res://Quests/utilityNodes/icons/quest_switch.png", nameof(Resource))]
+[GlobalClass, Icon("res://Quests/utilityNodes/icons/quest_switch.png")]
 public partial class QuestConditionResource : QuestNodeResource
 {
     // Exports

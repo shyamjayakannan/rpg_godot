@@ -1,8 +1,7 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
-[RegisteredType(nameof(NPCBehavior), "res://Npc/icons/npc_behavior.png", nameof(Node2D))]
-public abstract class NPCBehavior : Node2D
+[GlobalClass, Icon("res://Npc/icons/npc_behavior.png")]
+public abstract partial class NPCBehavior : Node2D
 {
     // properties
     protected Npc Npc { get; private set; }

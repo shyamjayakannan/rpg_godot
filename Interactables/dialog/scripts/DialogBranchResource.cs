@@ -1,9 +1,8 @@
 using Godot;
 using Godot.Collections;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(DialogBranchResource), "res://GUI/dialogSystem/icons/answer_bubble.png", nameof(Resource))]
+[GlobalClass, Icon("res://GUI/dialogSystem/icons/answer_bubble.png")]
 public partial class DialogBranchResource : DialogItemResource
 {
 	// Exports

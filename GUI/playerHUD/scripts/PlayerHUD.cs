@@ -91,13 +91,11 @@ public partial class PlayerHUD : CanvasLayer
 		gameOver.MouseFilter = Control.MouseFilterEnum.Stop;
 		animationPlayer.Play("showGameOver");
 		continueButton.Visible = GlobalSaveManager.CheckLoad();
-		animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.ShowGameOverScreen2));
+		animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.ShowGameOverScreen2), (uint)ConnectFlags.OneShot);
 	}
 
 	private void ShowGameOverScreen2(string animName)
 	{
-		animationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.ShowGameOverScreen2));
-
 		if (!continueButton.Visible)
 			menuButton.GrabFocus();
 		else
@@ -107,23 +105,13 @@ public partial class PlayerHUD : CanvasLayer
 	private void LoadGame()
 	{
 		ButtonMenu.PlayPress(audioStreamPlayer);
-		GetTree().CreateTimer(FadeToBlack(), false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.LoadGame2));
-	}
-
-	private static void LoadGame2()
-	{
-		GlobalSaveManager.Instance.LoadGame();
+		GetTree().CreateTimer(FadeToBlack(), false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => GlobalSaveManager.Instance.LoadGame()));
 	}
 
 	private void BackToMenu()
 	{
 		ButtonMenu.PlayPress(audioStreamPlayer);
-		GetTree().CreateTimer(FadeToBlack(), false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.BackToMenu2));
-	}
-
-	private static void BackToMenu2()
-	{
-		GlobalLevelManager.Instance.LoadNewLevel("res://title_screen/TitleScene.tscn", "", Vector2.Zero);
+		GetTree().CreateTimer(FadeToBlack(), false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => GlobalLevelManager.Instance.LoadNewLevel("res://title_screen/TitleScene.tscn", "", Vector2.Zero)));
 	}
 
 	private float FadeToBlack()

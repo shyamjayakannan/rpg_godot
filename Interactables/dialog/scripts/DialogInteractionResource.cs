@@ -1,9 +1,8 @@
 using Godot;
 using Godot.Collections;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(DialogInteractionResource), "res://GUI/dialogSystem/icons/chat_bubbles.png", nameof(Resource))]
+[GlobalClass, Icon("res://GUI/dialogSystem/icons/chat_bubbles.png")]
 public partial class DialogInteractionResource : Resource
 {
     // Exports

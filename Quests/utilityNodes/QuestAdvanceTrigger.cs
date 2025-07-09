@@ -1,8 +1,7 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(QuestAdvanceTrigger), "res://Quests/utilityNodes/icons/quest_advance.png", nameof(Node2D))]
+[GlobalClass, Icon("res://Quests/utilityNodes/icons/quest_advance.png")]
 public partial class QuestAdvanceTrigger : QuestNode
 {
     // Exports

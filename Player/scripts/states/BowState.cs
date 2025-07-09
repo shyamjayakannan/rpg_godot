@@ -16,7 +16,7 @@ public partial class BowState : State
     public override void Enter()
     {
         Player.UpdateAnimation("bow");
-        GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.OnAnimationFinished));
+        GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => nextState = idleState));
 
         Arrow arrow = (Arrow)arrowScene.Instantiate();
         Player.GetParent().AddChild(arrow);
@@ -33,10 +33,5 @@ public partial class BowState : State
     public override void Exit()
     {
         nextState = null;
-    }
-
-    private void OnAnimationFinished()
-    {
-        nextState = idleState;
     }
 }

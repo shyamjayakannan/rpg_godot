@@ -1,7 +1,6 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
-[RegisteredType(nameof(DropData), "", nameof(Resource))]
+[GlobalClass]
 public partial class DropData : Resource
 {
     // Exports

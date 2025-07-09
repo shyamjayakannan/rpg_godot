@@ -1,8 +1,7 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(QuestAdvanceResource), "res://Quests/utilityNodes/icons/quest_advance.png", nameof(Resource))]
+[GlobalClass, Icon("res://Quests/utilityNodes/icons/quest_advance.png")]
 public partial class QuestAdvanceResource : QuestNodeResource
 {
     // methods

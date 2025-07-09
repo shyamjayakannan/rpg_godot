@@ -110,13 +110,7 @@ public partial class GlobalSaveManager : Node
 		SetQuests();
 		SetDroppedItems();
 
-		GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoaded, new(this, MethodName.OnLevelLoaded));
-	}
-
-	private void OnLevelLoaded()
-	{
-		GlobalLevelManager.Instance.Disconnect(GlobalLevelManager.SignalName.LevelLoaded, new(this, MethodName.OnLevelLoaded));
-		EmitSignal(SignalName.GameLoaded);
+		GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoaded, Callable.From(() => EmitSignal(SignalName.GameLoaded)), (uint)ConnectFlags.OneShot);
 	}
 
 	private void UpdatePlayer()

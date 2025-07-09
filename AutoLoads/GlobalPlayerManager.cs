@@ -22,12 +22,7 @@ public partial class GlobalPlayerManager : Node
         // we dont have a way to know if playerspawn nodes exist and we want PlayerSpawned to be true
         // so we wait a bit so that a PlayerSpawn node, if it exists, can set it to true.
         // we cant set it to true in the beginninng because PlayerSpawn nodes require it to be false first.
-        GetTree().CreateTimer(0.2f, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Ready2));
-    }
-
-    private void Ready2()
-    {
-        PlayerSpawned = true;
+        GetTree().CreateTimer(0.2f, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => PlayerSpawned = true));
     }
 
     public void SetPlayerPosition(Vector2 position)

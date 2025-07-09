@@ -1,8 +1,7 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(EquipableItemModifier), "", nameof(Resource))]
+[GlobalClass]
 public partial class EquipableItemModifier : Resource
 {
     // Exports

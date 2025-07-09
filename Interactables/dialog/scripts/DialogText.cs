@@ -1,8 +1,7 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(DialogText), "res://GUI/dialogSystem/icons/text_bubble.png", nameof(Node2D))]
+[GlobalClass, Icon("res://GUI/dialogSystem/icons/text_bubble.png")]
 public partial class DialogText : DialogItem
 {
 	// methods

@@ -30,13 +30,8 @@ public partial class WanderBehavior : NPCBehavior
         area2D.GlobalPosition = GlobalPosition;
         Npc.GetParent().CallDeferred(Node.MethodName.AddChild, area2D);
 
-        Connect(Node.SignalName.TreeExited, new(this, MethodName.Destroy));
+        Connect(Node.SignalName.TreeExited, Callable.From(() => area2D.QueueFree()));
         area2D.Connect(Area2D.SignalName.BodyExited, new(this, MethodName.OnAreaExited));
-    }
-
-    private void Destroy()
-    {
-        area2D.QueueFree();
     }
 
     public override string[] _GetConfigurationWarnings()

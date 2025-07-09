@@ -1,7 +1,6 @@
 using Godot;
-using MonoCustomResourceRegistry;
 
-[RegisteredType(nameof(ItemEffects), "", nameof(Resource))]
+[GlobalClass]
 public abstract partial class ItemEffects : Resource
 {
     // methods
