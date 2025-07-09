@@ -1,14 +1,14 @@
 using Godot;
 
-public class PushableStatue : RigidBody2D
+public partial class PushableStatue : RigidBody2D
 {
     // Exports
     [Export]
-    private readonly float pushSpeed = 60.0f;
+    private float pushSpeed = 60.0f;
     [Export]
-    private readonly Vector2 targetPosition;
+    private Vector2 targetPosition;
     [Export]
-    private readonly bool usePersistence = false;
+    private bool usePersistence = false;
 
     // private
     private AudioStreamPlayer2D audioStreamPlayer2D;
@@ -23,11 +23,11 @@ public class PushableStatue : RigidBody2D
         {
             persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
-            persistentDataHandler.Connect(nameof(PersistentDataHandler.DataLoaded), this, nameof(SetState));
+            persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetState));
             persistentDataHandler.GetValue();
         }
 
-        GlobalSignalManager.Instance.Connect(nameof(GlobalSignalManager.BarredDoorStateChanged), this, nameof(SetValue));
+        GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.BarredDoorStateChanged, new(this, MethodName.SetValue));
     }
 
     private void SetValue(bool value)
@@ -40,13 +40,11 @@ public class PushableStatue : RigidBody2D
 
     private void SetState(bool value)
     {
-        if (value && targetPosition != null)
-        {
+        if (value)
             Position = targetPosition;
-        }
     }
 
-    public override void _PhysicsProcess(float delta)
+    public override void _PhysicsProcess(double delta)
     {
         Rotation = 0;
         LinearVelocity.LimitLength(pushSpeed);

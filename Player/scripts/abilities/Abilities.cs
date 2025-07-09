@@ -1,6 +1,6 @@
 using Godot;
 
-public class Abilities : Node
+public partial class Abilities : Node
 {
     // private
     private enum PlayerAbilities
@@ -11,12 +11,13 @@ public class Abilities : Node
         Bomb
     }
     private PlayerAbilities selectedAbility = PlayerAbilities.Boomerang;
-    private readonly PackedScene boomerangScene = GD.Load<PackedScene>("res://Player/scripts/abilities/boomerang/Boomerang.tscn");
-    private readonly PackedScene bombScene = GD.Load<PackedScene>("res://Player/scripts/abilities/bomb/Bomb.tscn");
+    private PackedScene boomerangScene = GD.Load<PackedScene>("res://Player/scripts/abilities/boomerang/Boomerang.tscn");
+    private PackedScene bombScene = GD.Load<PackedScene>("res://Player/scripts/abilities/bomb/Bomb.tscn");
     private Boomerang boomerang;
     private IdleState idleState;
     private WalkState walkState;
     private LiftState liftState;
+    private BowState bowState;
 
     // methods
     public override void _Ready()
@@ -24,6 +25,7 @@ public class Abilities : Node
         idleState = GetNode<IdleState>("../PlayerStateMachine/IdleState");
         walkState = GetNode<WalkState>("../PlayerStateMachine/WalkState");
         liftState = GetNode<LiftState>("../PlayerStateMachine/LiftState");
+        bowState = GetNode<BowState>("../PlayerStateMachine/BowState");
         PlayerHUD.Instance.UpdateArrows(GlobalPlayerManager.Instance.Player.Arrows);
         PlayerHUD.Instance.UpdateBombs(GlobalPlayerManager.Instance.Player.Bombs);
     }
@@ -69,16 +71,24 @@ public class Abilities : Node
 
         liftState.SetStartLate(true);
         PlayerHUD.Instance.UpdateBombs(--player.Bombs);
-        Node2D bomb = (Node2D)bombScene.Instance();
+        Node2D bomb = (Node2D)bombScene.Instantiate();
         player.GetParent().AddChild(bomb);
         bomb.GetNode<Bomb>("Throwable").OnInteractPressed();
     }
 
     private void BowAbility()
     {
+        Player player = GlobalPlayerManager.Instance.Player;
+        State currentState = player.GetCurrentState();
+
+        if (player.Arrows <= 0 || (currentState != idleState && currentState != walkState))
+            return;
+
+        PlayerHUD.Instance.UpdateArrows(--player.Arrows);
+        player.SetCurrentState(bowState);
     }
 
-    private void GrappleAbility()
+    private static void GrappleAbility()
     {
     }
 
@@ -88,7 +98,7 @@ public class Abilities : Node
 
         if (boomerang == null)
         {
-            boomerang = (Boomerang)boomerangScene.Instance();
+            boomerang = (Boomerang)boomerangScene.Instantiate();
             player.AddChild(boomerang);
         }
 

@@ -1,6 +1,6 @@
 using Godot;
 
-public class State : Node
+public partial class State : Node
 {
     // properties
     public static Player Player { get; set; }

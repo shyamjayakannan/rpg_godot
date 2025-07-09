@@ -1,7 +1,7 @@
 using Godot;
 
 [Tool]
-public class QuestNode : Node2D
+public partial class QuestNode : Node2D
 {
     // Exports
     [Export]
@@ -38,7 +38,7 @@ public class QuestNode : Node2D
         SettingsSummary = $"UPDATE QUEST\nQuest: {LinkedQuest.Title}\nStep: {QuestStep} - {GetStep()}\nComplete: {questStep == linkedQuest.Steps.Length}";
 
         // needed
-        PropertyListChangedNotify();
+        NotifyPropertyListChanged();
     }
 
     protected string GetStep()

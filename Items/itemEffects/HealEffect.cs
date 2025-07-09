@@ -1,12 +1,12 @@
 using Godot;
 
-public class HealEffect : ItemEffects
+public partial class HealEffect : ItemEffects
 {
     // Exports
     [Export]
-    private readonly int healAmmount = 1;
+    private int healAmmount = 1;
     [Export]
-    private readonly AudioStream audioStream;
+    private AudioStream audioStream;
 
     // methods
     public override void Use()

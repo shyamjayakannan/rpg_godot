@@ -1,10 +1,10 @@
 using Godot;
 
-public class LockedDoor : Interactables
+public partial class LockedDoor : Interactables
 {
     // Exports
     [Export]
-    private readonly Items key;
+    private Items key;
 
     // private
     private bool isOpen = false;
@@ -19,10 +19,10 @@ public class LockedDoor : Interactables
         interactArea = GetNode<Area2D>("Area2D");
         persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
-        interactArea.Connect("area_entered", this, nameof(OnArea2DAreaEntered));
-        interactArea.Connect("area_exited", this, nameof(OnArea2DAreaExited));
+        interactArea.Connect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
+        interactArea.Connect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
 
-        persistentDataHandler.Connect(nameof(PersistentDataHandler.DataLoaded), this, nameof(SetDoorState));
+        persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetDoorState));
         persistentDataHandler.GetValue();
     }
 

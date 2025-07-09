@@ -1,14 +1,13 @@
-using System.Collections.Generic;
 using Godot;
 
-public class InventoryUI : GridContainer
+public partial class InventoryUI : GridContainer
 {
 	// Exports
 	[Export]
-	private readonly InventoryData data;
+	private InventoryData data;
 
 	// private
-	private readonly PackedScene inventorySlotScene = GD.Load<PackedScene>("res://GUI/pauseMenu/inventory/InventorySlot.tscn");
+	private PackedScene inventorySlotScene = GD.Load<PackedScene>("res://GUI/pauseMenu/inventory/InventorySlot.tscn");
 	private InventorySlot hoveredSlot;
 	private EquipmentUI equipmentUI;
 
@@ -20,9 +19,9 @@ public class InventoryUI : GridContainer
 		// we cant use the pausemenu global static instance here because inventoryUI is a child of pausemenu
 		// so its _Ready will be called before that of pausemenu (_Ready's call order is children then parent)
 		PauseMenu pauseMenu = GetNode<PauseMenu>("../../../../../");
-		pauseMenu.Connect(nameof(PauseMenu.Shown), this, nameof(UpdateInventory));
-		pauseMenu.Connect(nameof(PauseMenu.Hidden), this, nameof(ClearInventory));
-		pauseMenu.Connect(nameof(PauseMenu.ItemRemoved), this, nameof(AddInventorySlot), new Godot.Collections.Array(this));
+		pauseMenu.Connect(PauseMenu.SignalName.Shown, new(this, MethodName.UpdateInventory));
+		pauseMenu.Connect(PauseMenu.SignalName.Hidden, new(this, MethodName.ClearInventory));
+		pauseMenu.Connect(PauseMenu.SignalName.ItemRemoved, Callable.From(() => AddInventorySlot(this)));
 
 		// inventorydata is a class so any instances will be reference types. assignments like below
 		// will make both variables reference the same instance, so updating either will update both.
@@ -33,14 +32,13 @@ public class InventoryUI : GridContainer
 
 	private void AddInventorySlot(Node parent)
 	{
-		InventorySlot slot = (InventorySlot)inventorySlotScene.Instance();
+		InventorySlot slot = (InventorySlot)inventorySlotScene.Instantiate();
 		parent.AddChild(slot);
 	}
 
 	private void InitializeInventory()
 	{
-		if (data.Slots == null)
-			data.Slots = new List<SlotData>(InventoryData.MAX_ITEMS);
+		data.Slots ??= new();
 
 		for (int i = data.Slots.Count; i < InventoryData.MAX_ITEMS; i++)
 			data.Slots.Add(null);
@@ -60,13 +58,13 @@ public class InventoryUI : GridContainer
 		{
 			// here we need to add child slot first before setting slotData because slotData's setter
 			// requires texture and label data that will only be loaded once its _Ready runs
-			InventorySlot slot = (InventorySlot)inventorySlotScene.Instance();
+			InventorySlot slot = (InventorySlot)inventorySlotScene.Instantiate();
 			AddChild(slot);
 			slot.SlotData = data;
-			slot.Connect(nameof(InventorySlot.EquipmentSelected), this, nameof(OnEquipmentSelected));
-			slot.Connect(nameof(InventorySlot.EquipmentFocused), this, nameof(OnEquipmentFocused));
-			slot.Connect("button_up", this, nameof(OnInventorySlotButtonUp), new Godot.Collections.Array(slot));
-			slot.Connect(nameof(InventorySlot.MouseEntered), this, nameof(OnInventorySlotMouseEntered), new Godot.Collections.Array(slot));
+			slot.Connect(InventorySlot.SignalName.EquipmentSelected, new(this, MethodName.OnEquipmentSelected));
+			slot.Connect(InventorySlot.SignalName.EquipmentFocused, new(this, MethodName.OnEquipmentFocused));
+			slot.Connect(BaseButton.SignalName.ButtonUp, Callable.From(() => OnInventorySlotButtonUp(slot)));
+			slot.Connect(InventorySlot.SignalName.MouseEntered, Callable.From(() => OnInventorySlotMouseEntered(slot)));
 		}
 
 		equipmentUI.UpdateInventory();
@@ -95,7 +93,17 @@ public class InventoryUI : GridContainer
 
 	private void OnEquipmentSelected(EquipableItem item)
 	{
-		int index = data.Slots.FindIndex(slot => slot != null && slot.Item.Name == item.Name);
+		int index = -1;
+
+		for (int i = 0; i < data.Slots.Count; i++)
+		{
+			if (data.Slots[i] != null && data.Slots[i].Item.Name == item.Name)
+			{
+				index = i;
+				break;
+			}
+		}
+
 		int equipmentIndex = OnEquipmentFocused(item, true);
 		InventorySlot inventorySlot = GetChild<InventorySlot>(index);
 		InventorySlot equipmentSlot = equipmentUI.EquipmentContainers[equipmentIndex].GetChild<InventorySlot>(1);
@@ -126,8 +134,8 @@ public class InventoryUI : GridContainer
 		int equipmentIndex = (int)item.EquipmentType;
 		InventorySlot equipmentSlot = equipmentUI.EquipmentContainers[equipmentIndex].GetChild<InventorySlot>(1);
 
-		int[] currentEquipment = equipmentSlot.SlotData == null ? new int[4] { 0, 0, 0, 0 } : equipmentUI.CalculateSingleModifier((EquipableItem)equipmentSlot.SlotData.Item);
-		int[] newEquipment = equipmentUI.CalculateSingleModifier(item);
+		int[] currentEquipment = equipmentSlot.SlotData == null ? new int[4] { 0, 0, 0, 0 } : EquipmentUI.CalculateSingleModifier((EquipableItem)equipmentSlot.SlotData.Item);
+		int[] newEquipment = EquipmentUI.CalculateSingleModifier(item);
 
 		for (int i = 0; i < 4; i++)
 			newEquipment[i] -= currentEquipment[i];

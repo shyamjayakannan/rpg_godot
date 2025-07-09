@@ -1,12 +1,12 @@
 using Godot;
 
-public class StunEnemyState : EnemyState
+public partial class StunEnemyState : EnemyState
 {
 	// Exports
 	[Export]
-	private readonly float knockbackSpeed = 200f;
+	private float knockbackSpeed = 200f;
 	[Export]
-	private readonly float deceleration = 5;
+	private float deceleration = 5;
 
 	// private
 	private Vector2 direction;
@@ -16,7 +16,7 @@ public class StunEnemyState : EnemyState
 	// methods
 	public override void Init()
 	{
-		Enemy.Connect(nameof(Enemy.EnemyDamaged), this, nameof(OnEnemyDamaged));
+		Enemy.Connect(Enemy.SignalName.EnemyDamaged, new(this, MethodName.OnEnemyDamaged));
 	}
 
 	public override void Enter()
@@ -26,22 +26,22 @@ public class StunEnemyState : EnemyState
 		Enemy.SetDirection(direction);
 		Enemy.Velocity = direction * (-knockbackSpeed);
 		Enemy.UpdateAnimation("stun");
-		Enemy.AnimationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
+		Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
 		Enemy.Invulnerable = true;
 	}
 
 	public override void Exit()
 	{
-		Enemy.AnimationPlayer.Disconnect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
+		Enemy.AnimationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, nameof(OnAnimationPlayerAnimationFinished)));
 		Enemy.Invulnerable = false;
 	}
 
-	public override EnemyState Process(float delta)
+	public override EnemyState Process(double delta)
 	{
 		if (animationFinished)
 			return NextState;
 
-		Enemy.Velocity *= 1 - deceleration * delta;
+		Enemy.Velocity *= 1 - deceleration * (float)delta;
 
 		return null;
 	}

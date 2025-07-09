@@ -1,16 +1,16 @@
 using Godot;
 
-public class GlobalSignalManager : Node
+public partial class GlobalSignalManager : Node
 {
     // Signals
     [Signal]
-    public delegate void PressurePlateActivated();
+    public delegate void PressurePlateActivatedEventHandler();
     [Signal]
-    public delegate void PressurePlateDeactivated();
+    public delegate void PressurePlateDeactivatedEventHandler();
     [Signal]
-    public delegate void BarredDoorStateChanged(bool value);
+    public delegate void BarredDoorStateChangedEventHandler(bool value);
     [Signal]
-    public delegate void EnemiesDestroyed(bool alreadyDestroyed);
+    public delegate void EnemiesDestroyedEventHandler(bool alreadyDestroyed);
 
     // properties
     public static GlobalSignalManager Instance { get; private set; }

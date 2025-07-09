@@ -1,7 +1,7 @@
 using Godot;
 
 [Tool]
-public class TreasureChest : Interactables
+public partial class TreasureChest : Interactables
 {
     // Exports
     [Export]
@@ -12,7 +12,7 @@ public class TreasureChest : Interactables
         {
             item = value;
 
-            if (Engine.EditorHint)
+            if (Engine.IsEditorHint())
                 UpdateTexture();
         }
     }
@@ -24,7 +24,7 @@ public class TreasureChest : Interactables
         {
             quantity = value;
 
-            if (Engine.EditorHint)
+            if (Engine.IsEditorHint())
                 UpdateQuantity();
         }
     }
@@ -32,7 +32,7 @@ public class TreasureChest : Interactables
     // private
     private Items item;
     private int quantity = 1;
-    private Sprite sprite;
+    private Sprite2D sprite;
     private Label label;
     private AnimationPlayer animationPlayer;
     private bool isOpened = false;
@@ -42,7 +42,7 @@ public class TreasureChest : Interactables
     // methods
     public override void _Ready()
     {
-        sprite = GetNode<Sprite>("ItemSprite");
+        sprite = GetNode<Sprite2D>("ItemSprite");
         label = GetNode<Label>("ItemSprite/Label");
         animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
         area2D = GetNode<Area2D>("Area2D");
@@ -50,7 +50,7 @@ public class TreasureChest : Interactables
         UpdateTexture();
         UpdateQuantity();
 
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
         // VERY IMPORTANT
@@ -58,17 +58,17 @@ public class TreasureChest : Interactables
         // when code runs in editor so thats why declaring it here. otherwise, we have to make it a tool script too.
         persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
-        area2D.Connect("area_entered", this, nameof(OnArea2DAreaEntered));
-        area2D.Connect("area_exited", this, nameof(OnArea2DAreaExited));
+        area2D.Connect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
+        area2D.Connect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
 
-        persistentDataHandler.Connect(nameof(PersistentDataHandler.DataLoaded), this, nameof(SetChestState));
+        persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetChestState));
         persistentDataHandler.GetValue();
     }
 
     private void UpdateTexture()
     {
         if (sprite != null)
-            sprite.Texture = Item.Texture;
+            sprite.Texture = Item.Texture2D;
     }
 
     private void UpdateQuantity()

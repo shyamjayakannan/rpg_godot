@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/hwaah.wav-b437c94c41a1c0575c567e28da579d19.sample"
+type="AudioStreamWAV"
+uid="uid://c2i7jmg3sh0ev"
+path="res://.godot/imported/hwaah.wav-b437c94c41a1c0575c567e28da579d19.sample"
 
 [deps]
 
 source_file="res://Player/audio/hwaah.wav"
-dest_files=[ "res://.import/hwaah.wav-b437c94c41a1c0575c567e28da579d19.sample" ]
+dest_files=["res://.godot/imported/hwaah.wav-b437c94c41a1c0575c567e28da579d19.sample"]
 
 [params]
 

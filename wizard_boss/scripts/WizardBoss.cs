@@ -1,25 +1,26 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
-public class WizardBoss : Node2D
+public partial class WizardBoss : Node2D
 {
     // Signals
     [Signal]
-    private delegate void DarkWizardDefeated();
+    private delegate void DarkWizardDefeatedEventHandler();
 
     // Exports
     [Export]
-    private readonly int maxHp = 10;
+    private int maxHp = 10;
     [Export]
-    private readonly AudioStream hurtSound;
+    private AudioStream hurtSound;
     [Export]
-    private readonly float teleportDelay = 1.5f;
+    private float teleportDelay = 1.5f;
 
     // private
     private int hp = 10;
     private int currentPosition;
-    private readonly List<Vector2> positions = new List<Vector2>();
-    private readonly List<EnergyBeam> beams = new List<EnergyBeam>();
+    private List<Vector2> positions = new();
+    private List<EnergyBeam> beams = new();
     private Node2D positionTargets;
     private Node2D beamAttacks;
     private Node2D bossNode;
@@ -28,10 +29,10 @@ public class WizardBoss : Node2D
     private AudioStreamPlayer2D audioStreamPlayer2D;
     private HitBox hitBox;
     private HurtBox hurtBox;
-    private readonly PackedScene explosionScene = GD.Load<PackedScene>("res://wizard_boss/EnergyExplosion.tscn");
-    private readonly PackedScene energyOrbScene = GD.Load<PackedScene>("res://wizard_boss/EnergyOrb.tscn");
-    private Sprite Hand1;
-    private Sprite Hand2;
+    private PackedScene explosionScene = GD.Load<PackedScene>("res://wizard_boss/EnergyExplosion.tscn");
+    private PackedScene energyOrbScene = GD.Load<PackedScene>("res://wizard_boss/EnergyOrb.tscn");
+    private Sprite2D Hand1;
+    private Sprite2D Hand2;
     private int damageCounter = 0;
     private PersistentDataHandler persistentDataHandler;
 
@@ -46,21 +47,21 @@ public class WizardBoss : Node2D
         audioStreamPlayer2D = bossNode.GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
         hitBox = bossNode.GetNode<HitBox>("HitBox");
         hurtBox = bossNode.GetNode<HurtBox>("HurtBox");
-        Hand1 = bossNode.GetNode<Sprite>("Cloak/Hand1_Down");
-        Hand2 = bossNode.GetNode<Sprite>("Cloak/Hand2_Down");
+        Hand1 = bossNode.GetNode<Sprite2D>("Cloak/Hand1_Down");
+        Hand2 = bossNode.GetNode<Sprite2D>("Cloak/Hand2_Down");
         persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
-        persistentDataHandler.Connect(nameof(PersistentDataHandler.DataLoaded), this, nameof(SetState));
+        persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetState));
         persistentDataHandler.GetValue();
 
-        hitBox.Connect(nameof(HitBox.Damaged), this, nameof(OnHitBoxDamaged));
+        hitBox.Connect(HitBox.SignalName.Damaged, new(this, MethodName.OnHitBoxDamaged));
 
         hp = maxHp;
 
-        foreach (Sprite sprite in positionTargets.GetChildren())
+        foreach (Sprite2D sprite in positionTargets.GetChildren().Cast<Sprite2D>())
             positions.Add(sprite.GlobalPosition);
 
-        foreach (EnergyBeam child in beamAttacks.GetChildren())
+        foreach (EnergyBeam child in beamAttacks.GetChildren().Cast<EnergyBeam>())
             beams.Add(child);
 
         positionTargets.Hide();
@@ -74,7 +75,7 @@ public class WizardBoss : Node2D
         if (alreadyDestroyed)
         {
             QueueFree();
-            GlobalSignalManager.Instance.EmitSignal(nameof(GlobalSignalManager.EnemiesDestroyed), true);
+            GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.EnemiesDestroyed, true);
             return;
         }
     }
@@ -96,7 +97,7 @@ public class WizardBoss : Node2D
 
     private void OrbAttack()
     {
-        EnergyOrb orb = (EnergyOrb)energyOrbScene.Instance();
+        EnergyOrb orb = (EnergyOrb)energyOrbScene.Instantiate();
         orb.GlobalPosition = bossNode.GlobalPosition + new Vector2(0, -34);
         GetParent().CallDeferred("add_child", orb);
     }
@@ -113,10 +114,11 @@ public class WizardBoss : Node2D
         if (hp < 7)
             OrbAttack();
 
-        GetTree().CreateTimer(teleportDelay, false).Connect("timeout", this, nameof(Teleport2), new Godot.Collections.Array(location));
+        GetTree().CreateTimer(teleportDelay, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => Teleport2(location)));
     }
 
     private void Teleport2(int location)
+
     {
         if (hp < 1)
             return;
@@ -125,7 +127,7 @@ public class WizardBoss : Node2D
         bossNode.GlobalPosition = positions[location];
         UpdateAnimation();
         animationPlayer.Play("appear");
-        GetTree().CreateTimer(animationPlayer.CurrentAnimationLength, false).Connect("timeout", this, nameof(Idle));
+        GetTree().CreateTimer(animationPlayer.CurrentAnimationLength, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Idle));
     }
 
     private void Idle()
@@ -135,7 +137,7 @@ public class WizardBoss : Node2D
 
         SetBoxes(true);
         animationPlayer.Play("idle");
-        GetTree().CreateTimer(teleportDelay, false).Connect("timeout", this, nameof(Idle2));
+        GetTree().CreateTimer(teleportDelay, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Idle2));
     }
 
     private void Idle2()
@@ -147,7 +149,7 @@ public class WizardBoss : Node2D
         {
             animationPlayer.Play("castSpell");
             BeamAttack();
-            GetTree().CreateTimer(animationPlayer.CurrentAnimationLength, false).Connect("timeout", this, nameof(Teleport), new Godot.Collections.Array((int)(GD.Randi() % positions.Count)));
+            GetTree().CreateTimer(animationPlayer.CurrentAnimationLength, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => Teleport((int)(GD.Randi() % positions.Count))));
             return;
         }
 
@@ -200,8 +202,8 @@ public class WizardBoss : Node2D
                 break;
         }
 
-        Hand1.RegionRect = new Rect2(x1, 0, Hand1.RegionRect.Size.x, Hand1.RegionRect.Size.y);
-        Hand2.RegionRect = new Rect2(x2, 0, Hand2.RegionRect.Size.x, Hand2.RegionRect.Size.y);
+        Hand1.RegionRect = new Rect2(x1, 0, Hand1.RegionRect.Size.X, Hand1.RegionRect.Size.Y);
+        Hand2.RegionRect = new Rect2(x2, 0, Hand2.RegionRect.Size.X, Hand2.RegionRect.Size.Y);
     }
 
     private void OnHitBoxDamaged(HurtBox @hurtBox)
@@ -226,13 +228,13 @@ public class WizardBoss : Node2D
         SetBoxes(false);
         persistentDataHandler.SetValue();
         PlayerHUD.Instance.HideBossHealthBar();
-        animationPlayer.Connect("animation_finished", this, nameof(Finish));
+        animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.Finish));
     }
 
     private void Finish(string animName)
     {
         EmitSignal(nameof(DarkWizardDefeated));
-        GlobalSignalManager.Instance.EmitSignal(nameof(GlobalSignalManager.EnemiesDestroyed), false);
+        GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.EnemiesDestroyed, false);
         QueueFree();
     }
 
@@ -251,7 +253,7 @@ public class WizardBoss : Node2D
     // called in destroy animation track
     private void Explosion(Vector2 position)
     {
-        Node2D explosion = (Node2D)explosionScene.Instance();
+        Node2D explosion = (Node2D)explosionScene.Instantiate();
         explosion.GlobalPosition = bossNode.GlobalPosition + position;
         GetParent().AddChild(explosion);
     }

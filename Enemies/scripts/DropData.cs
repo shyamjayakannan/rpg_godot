@@ -2,17 +2,17 @@ using Godot;
 using MonoCustomResourceRegistry;
 
 [RegisteredType(nameof(DropData), "", nameof(Resource))]
-public class DropData : Resource
+public partial class DropData : Resource
 {
     // Exports
     [Export]
-    public readonly Items item;
+    public Items item;
     [Export(PropertyHint.Range, "0, 100, 1")]
-    private readonly float probability = 100;
+    private float probability = 100;
     [Export(PropertyHint.Range, "0, 10, 1")]
-    private readonly int minAmount = 1;
+    private int minAmount = 1;
     [Export(PropertyHint.Range, "0, 10, 1")]
-    private readonly int maxAmount = 1;
+    private int maxAmount = 1;
 
     // methods
     public int GetDropCount()

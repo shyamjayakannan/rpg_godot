@@ -1,19 +1,19 @@
 using Godot;
 
-public class PlayerSprite : Sprite
+public partial class PlayerSprite : Sprite2D
 {
     // private
     private const int FRAME_COUNT = 128;
-    private Sprite below;
-    private Sprite above;
+    private Sprite2D below;
+    private Sprite2D above;
 
     // methods
     public override void _Ready()
     {
-        below = GetNode<Sprite>("WeaponBelowSprite");
-        above = GetNode<Sprite>("WeaponAboveSprite");
+        below = GetNode<Sprite2D>("WeaponBelowSprite");
+        above = GetNode<Sprite2D>("WeaponAboveSprite");
 
-        PauseMenu.Instance.Connect(nameof(PauseMenu.EquipmentsChanged), this, nameof(OnEquipmentChanged));
+        PauseMenu.Instance.Connect(PauseMenu.SignalName.EquipmentsChanged, new(this, MethodName.OnEquipmentChanged));
     }
 
     private void OnEquipmentChanged(EquipableItem equipableItem)
@@ -34,7 +34,7 @@ public class PlayerSprite : Sprite
         }
     }
 
-    public override void _Process(float delta)
+    public override void _Process(double delta)
     {
         below.Frame = Frame;
         above.Frame = Frame + FRAME_COUNT;

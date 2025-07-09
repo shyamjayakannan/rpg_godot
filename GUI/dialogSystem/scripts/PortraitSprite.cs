@@ -3,7 +3,7 @@ using Godot;
 // so that dialogsystem can recognize the cast (line 58). this is needed because dialogsystem is a tool script
 // and when it runs in the editor, unless custom types are also tool scripts, it wont recognize them
 [Tool]
-public class PortraitSprite : Sprite
+public partial class PortraitSprite : Sprite2D
 {
     // private
     private bool blink = false;
@@ -29,7 +29,7 @@ public class PortraitSprite : Sprite
     {
         audioStreamPlayer = GetNode<AudioStreamPlayer>("../AudioStreamPlayer");
 
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
         Blink = false;
@@ -65,7 +65,7 @@ public class PortraitSprite : Sprite
 
     private void SetBlink(bool value)
     {
-        GetTree().CreateTimer(Blink ? 0.15f : (float)GD.RandRange(0.1, 3)).Connect("timeout", this, nameof(SetBlink2), new Godot.Collections.Array(value));
+        GetTree().CreateTimer(Blink ? 0.15f : (float)GD.RandRange(0.1, 3)).Connect(Timer.SignalName.Timeout, Callable.From(() => SetBlink2(value)));
     }
 
     private void SetBlink2(bool value)

@@ -1,12 +1,12 @@
 using Godot;
 
-public class CarryState : State
+public partial class CarryState : State
 {
     // Exports
     [Export]
-    private readonly int speed = 100;
+    private int speed = 100;
     [Export]
-    private readonly AudioStream throwAudio;
+    private AudioStream throwAudio;
 
     // private
     private IdleState idleState;

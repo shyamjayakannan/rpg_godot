@@ -6,13 +6,13 @@ using Newtonsoft.Json;
 
 [Tool]
 [RegisteredType(nameof(DialogInteraction), "res://GUI/dialogSystem/icons/chat_bubbles.png", nameof(Node2D))]
-public class DialogInteraction : Interactables
+public partial class DialogInteraction : Interactables
 {
     // Signals
     [Signal]
-    public delegate void PlayerInteracted();
+    public delegate void PlayerInteractedEventHandler();
     [Signal]
-    public delegate void Finished();
+    public delegate void FinishedEventHandler();
 
     // Exports
     [Export]
@@ -31,7 +31,7 @@ public class DialogInteraction : Interactables
                 return;
 
             SetDialogChildren();
-            PropertyListChangedNotify();
+            NotifyPropertyListChanged();
         }
     }
     [Export]
@@ -44,7 +44,7 @@ public class DialogInteraction : Interactables
                 return;
 
             GetDialogChildren();
-            PropertyListChangedNotify();
+            NotifyPropertyListChanged();
         }
     }
     [Export]
@@ -58,7 +58,7 @@ public class DialogInteraction : Interactables
     private AnimationPlayer animationPlayer;
     private Area2D area2D;
     private bool enabled;
-    private Dictionary<string, string> questTitleToFile = new Dictionary<string, string>();
+    private Dictionary<string, string> questTitleToFile = new();
 
     // methods
     public override void _Ready()
@@ -66,15 +66,15 @@ public class DialogInteraction : Interactables
         animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
         area2D = GetNode<Area2D>("Area2D");
 
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
         OnGameLoaded();
 
-        area2D.Connect("area_entered", this, nameof(OnArea2DAreaEntered));
-        area2D.Connect("area_exited", this, nameof(OnArea2DAreaExited));
-        GlobalQuestManager.Instance.Connect(nameof(GlobalQuestManager.QuestUpdated), this, nameof(ChangeDialog));
-        GlobalSaveManager.Instance.Connect(nameof(GlobalSaveManager.GameLoaded), this, nameof(OnGameLoaded));
+        area2D.Connect(Area2D.SignalName.AreaEntered, new(this, MethodName.OnArea2DAreaEntered));
+        area2D.Connect(Area2D.SignalName.AreaExited, new(this, MethodName.OnArea2DAreaExited));
+        GlobalQuestManager.Instance.Connect(GlobalQuestManager.SignalName.QuestUpdated, new(this, MethodName.ChangeDialog));
+        GlobalSaveManager.Instance.Connect(GlobalSaveManager.SignalName.GameLoaded, new(this, MethodName.OnGameLoaded));
     }
 
     private void OnGameLoaded()
@@ -90,8 +90,7 @@ public class DialogInteraction : Interactables
 
     private void LoadQuestMapping()
     {
-        File file = new File();
-        file.Open($"{npcDialogFolder}questMap.json", File.ModeFlags.Read);
+        FileAccess file = FileAccess.Open($"{npcDialogFolder}questMap.json", FileAccess.ModeFlags.Read);
         string json = file.GetAsText();
         file.Close();
         questTitleToFile = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
@@ -106,7 +105,7 @@ public class DialogInteraction : Interactables
             DialogInteractionResource = GD.Load<DialogInteractionResource>($"{npcDialogFolder}{fileName}");
     }
 
-    public override string _GetConfigurationWarning()
+    public override string[] _GetConfigurationWarnings()
     {
         int atLeastOneValidChild = 0;
 
@@ -115,15 +114,15 @@ public class DialogInteraction : Interactables
                 atLeastOneValidChild++;
 
         if (atLeastOneValidChild > 0)
-            return "";
+            return Array.Empty<string>();
 
         if (DialogInteractionResource != null && DialogInteractionResource.DialogItemResources.Count > 0)
-            return "";
+            return Array.Empty<string>();
 
         if (npcDialogFolder != null && npcDialogFolder != "")
-            return "";
+            return Array.Empty<string>();
 
-        return "please add at least one DialogItem/DialogItemResource or set npc dialog folder path";
+        return new[] { "please add at least one DialogItem/DialogItemResource or set npc dialog folder path" };
     }
 
     public override void OnInteractPressed()
@@ -138,8 +137,8 @@ public class DialogInteraction : Interactables
 
             DialogSystem.Instance.ShowDialog(DialogInteractionResource.DialogItemResources, this);
 
-            if (!DialogSystem.Instance.IsConnected(nameof(DialogSystem.Finished), this, nameof(OnFinished)))
-                DialogSystem.Instance.Connect(nameof(DialogSystem.Finished), this, nameof(OnFinished));
+            if (!DialogSystem.Instance.IsConnected(DialogSystem.SignalName.Finished, new(this, MethodName.OnFinished)))
+                DialogSystem.Instance.Connect(DialogSystem.SignalName.Finished, new(this, MethodName.OnFinished));
         }
 
         Wait();
@@ -147,7 +146,18 @@ public class DialogInteraction : Interactables
 
     protected override void OnArea2DAreaEntered(Area2D area)
     {
-        enabled = DialogInteractionResource.DialogItemResources.FindIndex(dialogItemResource => dialogItemResource.QuestConditionResource == null || dialogItemResource.QuestConditionResource.CheckIsActivated()) >= 0;
+        enabled = false;
+
+        for (int i = 0; i < DialogInteractionResource.DialogItemResources.Count; i++)
+        {
+            DialogItemResource dialogItemResource = DialogInteractionResource.DialogItemResources[i];
+
+            if (dialogItemResource.QuestConditionResource == null || dialogItemResource.QuestConditionResource.CheckIsActivated())
+            {
+                enabled = true;
+                break;
+            }
+        }
 
         if (!enabled || DialogInteractionResource.DialogItemResources.Count == 0)
             return;
@@ -191,12 +201,12 @@ public class DialogInteraction : Interactables
 
     private void AddDialogItem(DialogItemResource dialogItemResource, Node node)
     {
-        DialogItem dialogItem = (DialogItem)dialogTextScene.Instance();
+        DialogItem dialogItem = (DialogItem)dialogTextScene.Instantiate();
 
         if (dialogItemResource is DialogChoiceResource)
-            dialogItem = (DialogItem)dialogChoiceScene.Instance();
+            dialogItem = (DialogItem)dialogChoiceScene.Instantiate();
         else if (dialogItemResource is DialogBranchResource)
-            dialogItem = (DialogItem)dialogBranchScene.Instance();
+            dialogItem = (DialogItem)dialogBranchScene.Instantiate();
 
         node.AddChild(dialogItem);
         dialogItem.DialogItemResource = dialogItemResource;
@@ -221,7 +231,7 @@ public class DialogInteraction : Interactables
             AddDialogItem(dialogItemResource, dialogItem);
     }
 
-    private DialogItemResource GetDialogs(DialogItem dialogItem)
+    private static DialogItemResource GetDialogs(DialogItem dialogItem)
     {
         if (dialogItem is DialogText)
             return dialogItem.DialogItemResource;

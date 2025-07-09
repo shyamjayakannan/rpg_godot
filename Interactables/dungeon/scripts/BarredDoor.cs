@@ -1,6 +1,6 @@
 using Godot;
 
-public class BarredDoor : Node2D
+public partial class BarredDoor : Node2D
 {
     // private
     private AnimationPlayer animationPlayer;
@@ -12,11 +12,11 @@ public class BarredDoor : Node2D
         animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
         persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
-        persistentDataHandler.Connect(nameof(PersistentDataHandler.DataLoaded), this, nameof(SetState));
+        persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetState));
         persistentDataHandler.GetValue();
 
-        GlobalSignalManager.Instance.Connect(nameof(GlobalSignalManager.PressurePlateActivated), this, nameof(OpenDoor));
-        GlobalSignalManager.Instance.Connect(nameof(GlobalSignalManager.PressurePlateDeactivated), this, nameof(CloseDoor));
+        GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.PressurePlateActivated, new(this, MethodName.OpenDoor));
+        GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.PressurePlateDeactivated, new(this, MethodName.CloseDoor));
     }
 
     private void SetState(bool value)

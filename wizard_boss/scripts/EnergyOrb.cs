@@ -1,14 +1,14 @@
 using Godot;
 
-public class EnergyOrb : Node2D
+public partial class EnergyOrb : Node2D
 {
 	// Exports
 	[Export]
-	private readonly float speed = 100;
+	private float speed = 100;
 	[Export]
-	private readonly AudioStream shootSound;
+	private AudioStream shootSound;
 	[Export]
-	private readonly AudioStream hitSound;
+	private AudioStream hitSound;
 
 	// private
 	private Vector2 direction = Vector2.Down;
@@ -20,15 +20,15 @@ public class EnergyOrb : Node2D
 		hurtBox = GetNode<HurtBox>("HurtBox");
 		audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
 
-		hurtBox.Connect(nameof(HurtBox.DidDamage), this, nameof(OnHurtBoxDidDamage));
+		hurtBox.Connect(HurtBox.SignalName.DidDamage, new(this, MethodName.OnHurtBoxDidDamage));
 		PlayAudio(shootSound);
 		direction = GlobalPosition.DirectionTo(GlobalPlayerManager.Instance.Player.GlobalPosition);
-		GetTree().CreateTimer(4, false).Connect("timeout", this, nameof(Destroy));
+		GetTree().CreateTimer(4, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Destroy));
 	}
 
-	public override void _Process(float delta)
+	public override void _Process(double delta)
 	{
-		Position += direction * speed * delta;
+		Position += direction * speed * (float)delta;
 	}
 
 	private void Destroy()
@@ -43,7 +43,7 @@ public class EnergyOrb : Node2D
 		PlayAudio(hitSound);
 		Hide();
 		SetProcess(false);
-		audioStreamPlayer2D.Connect("finished", this, nameof(OnHurtBoxDidDamage2));
+		audioStreamPlayer2D.Connect(AudioStreamPlayer2D.SignalName.Finished, new(this, MethodName.OnHurtBoxDidDamage2));
 	}
 
 	private void OnHurtBoxDidDamage2()

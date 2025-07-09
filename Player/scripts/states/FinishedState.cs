@@ -1,10 +1,10 @@
 using Godot;
 
-public class FinishedState : State
+public partial class FinishedState : State
 {
     // Exports
     [Export]
-    private readonly AudioStream exhaustAudio;
+    private AudioStream exhaustAudio;
 
     // private
     private AudioStreamPlayer2D audioStreamPlayer2D;

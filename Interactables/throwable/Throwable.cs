@@ -1,6 +1,6 @@
 using Godot;
 
-public class Throwable : Interactables
+public partial class Throwable : Interactables
 {
     // Exports
     [Export]
@@ -18,6 +18,7 @@ public class Throwable : Interactables
     protected Vector2 ThrowVelocity { get; set; }
     protected Vector2 ThrowDirection { get; set; }
     protected HurtBox HurtBox { get; private set; }
+    protected Sprite2D Shadow { get; private set; }
 
     // methods
     public override void _Ready()
@@ -27,13 +28,14 @@ public class Throwable : Interactables
         Timer = GetNode<Timer>("Timer");
         ThrowableParent = (Node2D)GetParent();
         AnimationPlayer = ThrowableParent.GetNode<AnimationPlayer>("AnimationPlayer");
+        Shadow = ThrowableParent.GetNodeOrNull<Sprite2D>("Shadow");
         SetupAreas();
         SetPhysicsProcess(false);
 
-        Timer.Connect("timeout", this, nameof(OnTimeout));
-        AnimationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
-        Connect("area_entered", this, nameof(OnArea2DAreaEntered));
-        Connect("area_exited", this, nameof(OnArea2DAreaExited));
+        Timer.Connect(Timer.SignalName.Timeout, new(this, MethodName.OnTimeout));
+        AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
+        Connect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
+        Connect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
     }
 
     public override void OnInteractPressed()
@@ -45,22 +47,30 @@ public class Throwable : Interactables
         ThrowableParent.GetParent()?.RemoveChild(ThrowableParent);
         GlobalPlayerManager.Instance.Player.PickupItem(this, ThrowableParent);
 
-        Disconnect("area_entered", this, nameof(OnArea2DAreaEntered));
-        Disconnect("area_exited", this, nameof(OnArea2DAreaExited));
+        // let shadow move on ground
+        if (Shadow != null)
+        {
+            ThrowableParent.RemoveChild(Shadow);
+            WallDetect.AddChild(Shadow);
+            Shadow.Hide();
+        }
 
-        if (!HurtBox.IsConnected(nameof(HurtBox.DidDamage), this, nameof(OnCollision)))
-            HurtBox.Connect(nameof(HurtBox.DidDamage), this, nameof(OnCollision));
+        Disconnect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
+        Disconnect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
 
-        if (!WallDetect.IsConnected("body_entered", this, nameof(OnWallDetected)))
-            WallDetect.Connect("body_entered", this, nameof(OnWallDetected));
+        if (!HurtBox.IsConnected(HurtBox.SignalName.DidDamage, new(this, MethodName.OnCollision)))
+            HurtBox.Connect(HurtBox.SignalName.DidDamage, new(this, MethodName.OnCollision));
+
+        if (!WallDetect.IsConnected(Area2D.SignalName.BodyEntered, new(this, MethodName.OnWallDetected)))
+            WallDetect.Connect(Area2D.SignalName.BodyEntered, new(this, MethodName.OnWallDetected));
     }
 
-    public override void _PhysicsProcess(float delta)
+    public override void _PhysicsProcess(double delta)
     {
-        ThrowVelocity = new Vector2(ThrowVelocity.x, ThrowVelocity.y + Gravity * delta);
-        ThrowableParent.Position += ThrowVelocity * delta;
-        ThrowSpeedWallDetect += Gravity * delta;
-        WallDetect.Position = new Vector2(WallDetect.Position.x, WallDetect.Position.y - ThrowSpeedWallDetect * delta);
+        ThrowVelocity = new Vector2(ThrowVelocity.X, ThrowVelocity.Y + Gravity * (float)delta);
+        ThrowableParent.Position += ThrowVelocity * (float)delta;
+        ThrowSpeedWallDetect += Gravity * (float)delta;
+        WallDetect.Position = new Vector2(WallDetect.Position.X, WallDetect.Position.Y - ThrowSpeedWallDetect * (float)delta);
     }
 
     public async void SetState(string state, Vector2 throwDirection)
@@ -85,10 +95,11 @@ public class Throwable : Interactables
 
         // let wall detect move on the ground
         WallDetect.GlobalPosition = GlobalPlayerManager.Instance.Player.GlobalPosition;
+        Shadow?.Show();
 
         float playerToItemVectorMagnitude = GlobalPlayerManager.Instance.Player.GlobalPosition.DistanceTo(globalPosition);
         Timer.WaitTime = Mathf.Sqrt(2 * playerToItemVectorMagnitude / Gravity);
-        SpeedAtTouchDown = Gravity * Timer.WaitTime;
+        SpeedAtTouchDown = Gravity * (float)Timer.WaitTime;
         Timer.Start();
 
         SetPhysicsProcess(true);
@@ -106,7 +117,7 @@ public class Throwable : Interactables
             Vector2 playerToItemVector = playerToItemVectorMagnitude * GlobalPlayerManager.Instance.Player.GlobalPosition.DirectionTo(globalPosition);
             Vector2 landLocationFromPlayerFeet = ThrowDistance * 32 * ThrowDirection;
             Vector2 finalVector = landLocationFromPlayerFeet - playerToItemVector;
-            ThrowVelocity = new Vector2(finalVector.x, finalVector.y - 0.5f * Gravity * Mathf.Pow(Timer.WaitTime, 2)) / Timer.WaitTime;
+            ThrowVelocity = new Vector2(finalVector.X, finalVector.Y - 0.5f * Gravity * Mathf.Pow((float)Timer.WaitTime, 2)) / (float)Timer.WaitTime;
             return;
         }
 
@@ -129,9 +140,9 @@ public class Throwable : Interactables
         }
     }
 
-    private void SetCollisionBodies(Node parent, bool value)
+    private static void SetCollisionBodies(Node parent, bool value)
     {
-        Godot.Collections.Array children = parent.GetChildren();
+        Godot.Collections.Array<Node> children = parent.GetChildren();
 
         foreach (Node c in children)
         {
@@ -146,6 +157,7 @@ public class Throwable : Interactables
     {
         SetPhysicsProcess(false);
         AnimationPlayer.Play("destroy");
+        Shadow.Hide();
     }
 
     protected virtual void OnCollision()
@@ -160,11 +172,11 @@ public class Throwable : Interactables
 
     private void OnAnimationPlayerAnimationFinished(string animName)
     {
-        if (IsConnected("area_entered", this, nameof(OnArea2DAreaEntered)))
-            Disconnect("area_entered", this, nameof(OnArea2DAreaEntered));
+        if (IsConnected(Area2D.SignalName.AreaEntered, new(this, nameof(OnArea2DAreaEntered))))
+            Disconnect(Area2D.SignalName.AreaEntered, new(this, nameof(OnArea2DAreaEntered)));
 
-        if (IsConnected("area_exited", this, nameof(OnArea2DAreaExited)))
-            Disconnect("area_exited", this, nameof(OnArea2DAreaExited));
+        if (IsConnected(Area2D.SignalName.AreaExited, new(this, nameof(OnArea2DAreaExited))))
+            Disconnect(Area2D.SignalName.AreaExited, new(this, nameof(OnArea2DAreaExited)));
 
         ThrowableParent.QueueFree();
     }

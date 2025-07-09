@@ -1,6 +1,6 @@
 using Godot;
 
-public class EnemyState : Node
+public partial class EnemyState : Node
 {
     // Exports
     [Export]
@@ -34,12 +34,12 @@ public class EnemyState : Node
 
     }
 
-    public virtual EnemyState Process(float delta)
+    public virtual EnemyState Process(double delta)
     {
         return null;
     }
 
-    public virtual EnemyState PhysicsProcess(float delta)
+    public virtual EnemyState PhysicsProcess(double delta)
     {
         return null;
     }

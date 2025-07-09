@@ -1,6 +1,6 @@
 using Godot;
 
-public class SceneTransition : CanvasLayer
+public partial class SceneTransition : CanvasLayer
 {
 	// private
 	private AnimationPlayer animationPlayer;
@@ -18,12 +18,12 @@ public class SceneTransition : CanvasLayer
 	public float FadeIn()
 	{
 		animationPlayer.Play("fadeIn");
-		return animationPlayer.CurrentAnimationLength;
+		return (float)animationPlayer.CurrentAnimationLength;
 	}
 
 	public float FadeOut()
 	{
 		animationPlayer.Play("fadeOut");
-		return animationPlayer.CurrentAnimationLength;
+		return (float)animationPlayer.CurrentAnimationLength;
 	}
 }

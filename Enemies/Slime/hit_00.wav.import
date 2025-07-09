@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/hit_00.wav-ac938bce4917c9974dd7d32729daca6e.sample"
+type="AudioStreamWAV"
+uid="uid://c2rw6eragk75a"
+path="res://.godot/imported/hit_00.wav-ac938bce4917c9974dd7d32729daca6e.sample"
 
 [deps]
 
 source_file="res://Enemies/Slime/hit_00.wav"
-dest_files=[ "res://.import/hit_00.wav-ac938bce4917c9974dd7d32729daca6e.sample" ]
+dest_files=["res://.godot/imported/hit_00.wav-ac938bce4917c9974dd7d32729daca6e.sample"]
 
 [params]
 

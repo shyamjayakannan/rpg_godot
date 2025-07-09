@@ -1,9 +1,10 @@
+using System.Linq;
 using Godot;
 using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(QuestActivatedSwitch), "res://Quests/utilityNodes/icons/quest_switch.png", nameof(Node2D))]
-public class QuestActivatedSwitch : QuestNode
+public partial class QuestActivatedSwitch : QuestNode
 {
     // Exports
     [Export]
@@ -17,11 +18,11 @@ public class QuestActivatedSwitch : QuestNode
         }
     }
     [Export]
-    private readonly bool removeWhenActivated = false;
+    private bool removeWhenActivated = false;
     [Export]
-    private readonly bool reactToGlobalSignal = false;
+    private bool reactToGlobalSignal = false;
     [Export]
-    private readonly bool freeOnRemove = false;
+    private bool freeOnRemove = false;
 
     // private
     private CheckType checkType = CheckType.HasQuest;
@@ -37,15 +38,15 @@ public class QuestActivatedSwitch : QuestNode
     // methods
     public override void _Ready()
     {
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
-        GetNode<Sprite>("Sprite").QueueFree();
+        GetNode<Sprite2D>("Sprite2D").QueueFree();
 
         if (reactToGlobalSignal)
         {
-            GlobalQuestManager.Instance.Connect(nameof(GlobalQuestManager.QuestUpdated), this, nameof(OnQuestUpdated));
-            GlobalSaveManager.Instance.Connect(nameof(GlobalSaveManager.GameLoaded), this, nameof(OnQuestUpdated));
+            GlobalQuestManager.Instance.Connect(GlobalQuestManager.SignalName.QuestUpdated, new(this, MethodName.OnQuestUpdated));
+            GlobalSaveManager.Instance.Connect(GlobalSaveManager.SignalName.GameLoaded, new(this, MethodName.OnQuestUpdated));
         }
 
         CheckIsActivated();
@@ -117,7 +118,7 @@ public class QuestActivatedSwitch : QuestNode
 
     private void ShowChildren()
     {
-        foreach (Node2D child in GetChildren())
+        foreach (Node2D child in GetChildren().Cast<Node2D>())
         {
             child.Show();
             child.SetProcess(true);
@@ -128,7 +129,7 @@ public class QuestActivatedSwitch : QuestNode
 
     private void HideChildren()
     {
-        foreach (Node2D child in GetChildren())
+        foreach (Node2D child in GetChildren().Cast<Node2D>())
         {
             child.CallDeferred("hide");
             child.CallDeferred("set_process", false);
@@ -140,11 +141,11 @@ public class QuestActivatedSwitch : QuestNode
         }
     }
 
-    private void SetCollisionBodies(Node parent, bool value)
+    private static void SetCollisionBodies(Node parent, bool value)
     {
-        Godot.Collections.Array children = parent.GetChildren();
+        Godot.Collections.Array<Node> children = parent.GetChildren();
 
-        foreach (Node c in children)
+        foreach (Node c in children.Select(v => (Node)v))
         {
             if (c is CollisionShape2D collisionShape2D)
                 collisionShape2D.Disabled = !value;
@@ -177,6 +178,6 @@ public class QuestActivatedSwitch : QuestNode
         }
 
         // needed
-        PropertyListChangedNotify();
+        NotifyPropertyListChanged();
     }
 }

@@ -1,11 +1,11 @@
 using Godot;
 
-public class GlobalAudioManager : Node
+public partial class GlobalAudioManager : Node
 {
     // private
     private AudioStreamPlayer musicPlayer;
-    private readonly string musicBus = "Music";
-    private readonly float musicFadeDuration = 0.5f;
+    private string musicBus = "Music";
+    private float musicFadeDuration = 0.5f;
     private AudioStream stream;
     private Timer timer;
 
@@ -18,9 +18,9 @@ public class GlobalAudioManager : Node
         Instance = this;
 
         // dont pause this if game pauses
-        PauseMode = PauseModeEnum.Process;
+        ProcessMode = ProcessModeEnum.Always;
 
-        AudioStreamPlayer audioStreamPlayer = new AudioStreamPlayer()
+        AudioStreamPlayer audioStreamPlayer = new()
         {
             Bus = musicBus,
             VolumeDb = -40
@@ -32,7 +32,7 @@ public class GlobalAudioManager : Node
             WaitTime = musicFadeDuration,
             OneShot = true
         };
-        timer.Connect("timeout", this, nameof(OnTimerTimeout));
+        timer.Connect(Timer.SignalName.Timeout, new(this, MethodName.OnTimerTimeout));
         AddChild(timer);
     }
 
@@ -54,7 +54,7 @@ public class GlobalAudioManager : Node
 
     private void FadeOut()
     {
-        SceneTreeTween tween = CreateTween();
+        Tween tween = CreateTween();
         tween.TweenProperty(musicPlayer, "volume_db", -40, musicFadeDuration);
     }
 

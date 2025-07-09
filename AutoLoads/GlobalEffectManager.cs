@@ -1,9 +1,9 @@
 using Godot;
 
-public class GlobalEffectManager : Node
+public partial class GlobalEffectManager : Node
 {
     // private
-    private readonly PackedScene damageTextScene = GD.Load<PackedScene>("res://AutoLoads/globalEffects/DamageText.tscn");
+    private PackedScene damageTextScene = GD.Load<PackedScene>("res://AutoLoads/globalEffects/DamageText.tscn");
 
     // properties
     public static GlobalEffectManager Instance { get; private set; }
@@ -16,7 +16,7 @@ public class GlobalEffectManager : Node
 
     public void DamageTexter(string text, Vector2 position)
     {
-        DamageText damageText = (DamageText)damageTextScene.Instance();
+        DamageText damageText = (DamageText)damageTextScene.Instantiate();
         AddChild(damageText);
         damageText.Start(text, position);
     }

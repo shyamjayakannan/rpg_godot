@@ -1,6 +1,6 @@
 using Godot;
 
-public class EnergyBeam : Node2D
+public partial class EnergyBeam : Node2D
 {
     // private
     private AnimationPlayer animationPlayer;

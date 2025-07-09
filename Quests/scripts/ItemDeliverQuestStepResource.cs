@@ -3,7 +3,7 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(QuestStepResource), "", nameof(Resource))]
-public class ItemDeliverQuestStepResource : QuestStepResource
+public partial class ItemDeliverQuestStepResource : QuestStepResource
 {
     // Exports
     [Export]
@@ -35,6 +35,6 @@ public class ItemDeliverQuestStepResource : QuestStepResource
     private void SetString()
     {
         Step = $"deliver {Quantity} {Item?.Name}{(Quantity > 1 ? "s" : "")}";
-        PropertyListChangedNotify();
+        NotifyPropertyListChanged();
     }
 }

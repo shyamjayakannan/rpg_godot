@@ -1,10 +1,10 @@
 using Godot;
 
-public class LiftState : State
+public partial class LiftState : State
 {
     // Exports
     [Export]
-    private readonly AudioStream audioStream;
+    private AudioStream audioStream;
 
     // private
     private CarryState carryState;
@@ -25,7 +25,7 @@ public class LiftState : State
         if (startLate)
             Player.AnimationPlayer.Seek(0.19f); // just before end of lift animation (immediate carry for bomb)
 
-        Player.AnimationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
+        Player.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
         audioStreamPlayer2D.Stream = audioStream;
         audioStreamPlayer2D.Play();
     }
@@ -37,7 +37,7 @@ public class LiftState : State
 
     private void OnAnimationPlayerAnimationFinished(string animname)
     {
-        Player.AnimationPlayer.Disconnect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
+        Player.AnimationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, nameof(OnAnimationPlayerAnimationFinished)));
         StateMachine.ChangeState(carryState);
     }
 

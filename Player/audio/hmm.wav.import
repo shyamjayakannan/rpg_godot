@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/hmm.wav-a2878f723ef69d6046df5491291376a0.sample"
+type="AudioStreamWAV"
+uid="uid://chddsg8uurxb7"
+path="res://.godot/imported/hmm.wav-a2878f723ef69d6046df5491291376a0.sample"
 
 [deps]
 
 source_file="res://Player/audio/hmm.wav"
-dest_files=[ "res://.import/hmm.wav-a2878f723ef69d6046df5491291376a0.sample" ]
+dest_files=["res://.godot/imported/hmm.wav-a2878f723ef69d6046df5491291376a0.sample"]
 
 [params]
 

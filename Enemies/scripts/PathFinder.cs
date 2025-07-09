@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class PathFinder : Node2D
+public partial class PathFinder : Node2D
 {
     // private
-    private readonly Vector2[] vectors = new Vector2[16]{
+    private Vector2[] vectors = new Vector2[16]{
         Vector2.Up,
         new Vector2(1, -2).Normalized(),
         new Vector2(1, -1).Normalized(),
@@ -23,9 +23,9 @@ public class PathFinder : Node2D
         new Vector2(-1, -1).Normalized(),
         new Vector2(-1, -2).Normalized()
     };
-    private readonly float[] interests = new float[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private readonly float[] obstacles = new float[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private readonly List<RayCast2D> rayCasts = new List<RayCast2D>(16);
+    private float[] interests = new float[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private float[] obstacles = new float[16] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private List<RayCast2D> rayCasts = new(16);
     private Timer timer;
 
     // properties
@@ -35,7 +35,7 @@ public class PathFinder : Node2D
     public override void _Ready()
     {
         timer = GetNode<Timer>("Timer");
-        timer.Connect("timeout", this, nameof(SetPath));
+        timer.Connect(Timer.SignalName.Timeout, new(this, MethodName.SetPath));
         Node parent = GetParent();
 
         foreach (Node child in GetChildren())
@@ -43,7 +43,7 @@ public class PathFinder : Node2D
             if (child is RayCast2D rayCast)
             {
                 rayCast.Enabled = true;
-                rayCast.AddException(parent);
+                rayCast.AddException((CollisionObject2D)parent);
                 rayCasts.Add(rayCast);
             }
         }
@@ -84,7 +84,7 @@ public class PathFinder : Node2D
         BestPath = vectors[GetMaxValueIndex(interests)];
     }
 
-    private int GetMaxValueIndex(float[] array)
+    private static int GetMaxValueIndex(float[] array)
     {
         float max = float.MinValue;
         int maxIndex = 0;

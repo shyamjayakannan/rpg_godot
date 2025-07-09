@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/notification.wav-3d1c4df0bbe2a537bb22eb79ee0cd94d.sample"
+type="AudioStreamWAV"
+uid="uid://c5wpjxgmpox74"
+path="res://.godot/imported/notification.wav-3d1c4df0bbe2a537bb22eb79ee0cd94d.sample"
 
 [deps]
 
 source_file="res://GUI/playerHUD/notification.wav"
-dest_files=[ "res://.import/notification.wav-3d1c4df0bbe2a537bb22eb79ee0cd94d.sample" ]
+dest_files=["res://.godot/imported/notification.wav-3d1c4df0bbe2a537bb22eb79ee0cd94d.sample"]
 
 [params]
 

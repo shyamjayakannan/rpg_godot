@@ -3,7 +3,7 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(QuestResource), "", nameof(Resource))]
-public class QuestResource : Resource
+public partial class QuestResource : Resource
 {
     // Exports
     [Export]
@@ -15,5 +15,5 @@ public class QuestResource : Resource
     [Export]
     public int RewardXp { get; private set; }
     [Export]
-    public SlotData[] RewardItems { get; private set; } = new SlotData[0];
+    public SlotData[] RewardItems { get; private set; } = System.Array.Empty<SlotData>();
 }

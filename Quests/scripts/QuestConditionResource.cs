@@ -3,7 +3,7 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(QuestConditionResource), "res://Quests/utilityNodes/icons/quest_switch.png", nameof(Resource))]
-public class QuestConditionResource : QuestNodeResource
+public partial class QuestConditionResource : QuestNodeResource
 {
     // Exports
     [Export]
@@ -17,7 +17,7 @@ public class QuestConditionResource : QuestNodeResource
         }
     }
     [Export]
-    private readonly bool removeWhenActivated = false;
+    private bool removeWhenActivated = false;
 
     // private
     private CheckType checkType = CheckType.HasQuest;
@@ -105,6 +105,6 @@ public class QuestConditionResource : QuestNodeResource
         }
 
         // needed
-        PropertyListChangedNotify();
+        NotifyPropertyListChanged();
     }
 }

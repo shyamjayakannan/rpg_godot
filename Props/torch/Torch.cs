@@ -1,14 +1,14 @@
 using Godot;
 
-public class Torch : Light2D
+public partial class Torch : PointLight2D
 {
     // private
     private float time = 0.0f;
 
     // methods
-    public override void _Process(float delta)
+    public override void _Process(double delta)
     {
-        time += delta;
+        time += (float)delta;
 
         if (time > 0.2f)
         {

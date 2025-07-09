@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/boss_fireball_hit.wav-357cf42488c7b830a1fcf81152982713.sample"
+type="AudioStreamWAV"
+uid="uid://dfe340hayo851"
+path="res://.godot/imported/boss_fireball_hit.wav-357cf42488c7b830a1fcf81152982713.sample"
 
 [deps]
 
 source_file="res://wizard_boss/audio/boss_fireball_hit.wav"
-dest_files=[ "res://.import/boss_fireball_hit.wav-357cf42488c7b830a1fcf81152982713.sample" ]
+dest_files=["res://.godot/imported/boss_fireball_hit.wav-357cf42488c7b830a1fcf81152982713.sample"]
 
 [params]
 

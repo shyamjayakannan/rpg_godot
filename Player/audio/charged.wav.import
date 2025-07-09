@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/charged.wav-f1e0f89c7bb8e403f76b782a70957e0f.sample"
+type="AudioStreamWAV"
+uid="uid://dcodapa7ostor"
+path="res://.godot/imported/charged.wav-f1e0f89c7bb8e403f76b782a70957e0f.sample"
 
 [deps]
 
 source_file="res://Player/audio/charged.wav"
-dest_files=[ "res://.import/charged.wav-f1e0f89c7bb8e403f76b782a70957e0f.sample" ]
+dest_files=["res://.godot/imported/charged.wav-f1e0f89c7bb8e403f76b782a70957e0f.sample"]
 
 [params]
 

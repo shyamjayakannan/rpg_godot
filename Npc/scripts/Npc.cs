@@ -2,12 +2,12 @@ using Godot;
 using MonoCustomResourceRegistry;
 
 [Tool]
-[RegisteredType(nameof(Npc), "res://Npc/icons/npc.png", nameof(KinematicBody2D))]
-public class Npc : KinematicBody2D
+[RegisteredType(nameof(Npc), "res://Npc/icons/npc.png", nameof(CharacterBody2D))]
+public partial class Npc : CharacterBody2D
 {
     // Signals
     [Signal]
-    public delegate void DoBehaviorEnabled();
+    public delegate void DoBehaviorEnabledEventHandler();
 
     // Exports
     [Export]
@@ -18,7 +18,7 @@ public class Npc : KinematicBody2D
         {
             npcResource = value;
 
-            if (Engine.EditorHint)
+            if (Engine.IsEditorHint())
                 UpdateTexture();
         }
     }
@@ -26,7 +26,7 @@ public class Npc : KinematicBody2D
     // private
     private NpcResource npcResource;
     private string directionName = "Down";
-    private Sprite sprite;
+    private Sprite2D sprite;
     private AnimationPlayer animationPlayer;
     private Vector2 storeDirection;
     private string storeState;
@@ -35,32 +35,31 @@ public class Npc : KinematicBody2D
     public Vector2 Direction { get; set; } = Vector2.Down;
     public bool DoBehavior { get; private set; } = true;
     public string State { get; set; } = "idle";
-    public Vector2 Velocity { get; set; } = Vector2.Zero;
 
     // methods
     public override void _Ready()
     {
-        sprite = GetNode<Sprite>("Sprite");
+        sprite = GetNode<Sprite2D>("Sprite2D");
         animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
 
         UpdateTexture();
 
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
         GatherInteractables(this);
         EmitSignal(nameof(DoBehaviorEnabled));
     }
 
-    public override void _PhysicsProcess(float delta)
+    public override void _PhysicsProcess(double delta)
     {
-        MoveAndSlide(Velocity);
+        MoveAndSlide();
     }
 
     private void UpdateTexture()
     {
         if (sprite != null)
-            sprite.Texture = npcResource.Sprite;
+            sprite.Texture = npcResource.Sprite2D;
     }
 
     public void UpdateAnimation()
@@ -79,7 +78,7 @@ public class Npc : KinematicBody2D
             directionName = "Up";
         else
         {
-            if (Direction.x < 0)
+            if (Direction.X < 0)
                 sprite.Scale = new Vector2(-1, 1);
             else
                 sprite.Scale = new Vector2(1, 1);
@@ -94,8 +93,8 @@ public class Npc : KinematicBody2D
         {
             if (child is DialogInteraction dialogInteraction)
             {
-                dialogInteraction.Connect(nameof(DialogInteraction.PlayerInteracted), this, nameof(OnPlayerInteracted));
-                dialogInteraction.Connect(nameof(DialogInteraction.Finished), this, nameof(OnFinished));
+                dialogInteraction.Connect(DialogInteraction.SignalName.PlayerInteracted, new(this, MethodName.OnPlayerInteracted));
+                dialogInteraction.Connect(DialogInteraction.SignalName.Finished, new(this, MethodName.OnFinished));
             }
 
             GatherInteractables(child);

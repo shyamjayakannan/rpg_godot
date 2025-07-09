@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/bomb_explosion.wav-ff737ae16155982b9501d8e8e57c077a.sample"
+type="AudioStreamWAV"
+uid="uid://bulj0v1t8nycs"
+path="res://.godot/imported/bomb_explosion.wav-ff737ae16155982b9501d8e8e57c077a.sample"
 
 [deps]
 
 source_file="res://Player/scripts/abilities/bomb/bomb_explosion.wav"
-dest_files=[ "res://.import/bomb_explosion.wav-ff737ae16155982b9501d8e8e57c077a.sample" ]
+dest_files=["res://.godot/imported/bomb_explosion.wav-ff737ae16155982b9501d8e8e57c077a.sample"]
 
 [params]
 

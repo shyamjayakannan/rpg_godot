@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/bars_open.wav-935b151726780805fe97766b4c14084f.sample"
+type="AudioStreamWAV"
+uid="uid://b7204fy1uagqr"
+path="res://.godot/imported/bars_open.wav-935b151726780805fe97766b4c14084f.sample"
 
 [deps]
 
 source_file="res://Interactables/dungeon/bars_open.wav"
-dest_files=[ "res://.import/bars_open.wav-935b151726780805fe97766b4c14084f.sample" ]
+dest_files=["res://.godot/imported/bars_open.wav-935b151726780805fe97766b4c14084f.sample"]
 
 [params]
 

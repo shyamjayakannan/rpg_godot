@@ -1,13 +1,11 @@
 using Godot;
 
 [Tool]
-public class PatrolLocation : Node2D
+public partial class PatrolLocation : Node2D
 {
     // Signals
     [Signal]
-    public delegate void TransformChanged(int index);
-    [Signal]
-    public delegate void TreeEntered();
+    public delegate void TransformChangedEventHandler(int index);
 
     // Exports
     [Export]
@@ -18,7 +16,7 @@ public class PatrolLocation : Node2D
         {
             waitTime = value;
 
-            if (Engine.EditorHint)
+            if (Engine.IsEditorHint())
                 UpdateWaitTime();
         }
     }
@@ -37,25 +35,24 @@ public class PatrolLocation : Node2D
     // methods
     public override void _Ready()
     {
-        label = GetNode<Label>("Sprite/Label");
-        label2 = GetNode<Label>("Sprite/Label2");
-        line2D = GetNode<Line2D>("Sprite/Line2D");
+        label = GetNode<Label>("Sprite2D/Label");
+        label2 = GetNode<Label>("Sprite2D/Label2");
+        line2D = GetNode<Line2D>("Sprite2D/Line2D");
         UpdateWaitTime();
         transform = Transform;
         TargetPosition = GlobalPosition;
 
-        Connect(nameof(TreeEntered), (PatrolBehavior)GetParent(), nameof(PatrolBehavior.UpdatePatrolLocations));
-        EmitSignal(nameof(TreeEntered));
+        ((PatrolBehavior)GetParent()).UpdatePatrolLocations();
 
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
-        GetNode<Sprite>("Sprite").QueueFree();
+        GetNode<Sprite2D>("Sprite2D").QueueFree();
     }
 
     public override void _EnterTree()
     {
-        if (!Engine.EditorHint)
+        if (!Engine.IsEditorHint())
             return;
 
         SetNotifyTransform(true);
@@ -63,12 +60,12 @@ public class PatrolLocation : Node2D
 
     public override void _Notification(int what)
     {
-        if (!Engine.EditorHint)
+        if (!Engine.IsEditorHint())
             return;
 
         switch (what)
         {
-            case NotificationTransformChanged:
+            case (int)NotificationTransformChanged:
                 if (transform == Transform)
                     return;
 

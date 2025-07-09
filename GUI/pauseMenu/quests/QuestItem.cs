@@ -1,6 +1,6 @@
 using Godot;
 
-public class QuestItem : Button
+public partial class QuestItem : Button
 {
     // private
     private Label title;
@@ -19,7 +19,7 @@ public class QuestItem : Button
         titleEllipsis = GetNode<Label>("MarginContainer/VBoxContainer/HBoxContainer/Ellipsis");
         step = GetNode<Label>("MarginContainer/VBoxContainer/HBoxContainer2/Step");
         stepEllipsis = GetNode<Label>("MarginContainer/VBoxContainer/HBoxContainer2/Ellipsis");
-        font = GetFont("m5x7");
+        font = GetThemeFont("m5x7");
     }
 
     public void Initialize(QuestResource _quest, GlobalSaveManager.QuestData questData)
@@ -35,7 +35,7 @@ public class QuestItem : Button
         else
             step.Text = $"stage: {questData.CompletedSteps.Count}/{_quest.Steps.Length}";
 
-        titleEllipsis.Visible = font.GetStringSize(title.Text).x > title.RectSize.x;
-        stepEllipsis.Visible = font.GetStringSize(step.Text).x > step.RectSize.x;
+        titleEllipsis.Visible = font.GetStringSize(title.Text).X > title.Size.X;
+        stepEllipsis.Visible = font.GetStringSize(step.Text).X > step.Size.X;
     }
 }

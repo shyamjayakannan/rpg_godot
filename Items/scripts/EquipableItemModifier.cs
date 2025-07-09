@@ -3,7 +3,7 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(EquipableItemModifier), "", nameof(Resource))]
-public class EquipableItemModifier : Resource
+public partial class EquipableItemModifier : Resource
 {
     // Exports
     [Export]
@@ -14,7 +14,7 @@ public class EquipableItemModifier : Resource
         {
             equipmentType = value;
 
-            if (Engine.EditorHint)
+            if (Engine.IsEditorHint())
                 EmitSignal("changed");
         }
     }
@@ -26,7 +26,7 @@ public class EquipableItemModifier : Resource
         {
             _value = value;
 
-            if (Engine.EditorHint)
+            if (Engine.IsEditorHint())
                 EmitSignal("changed");
         }
     }

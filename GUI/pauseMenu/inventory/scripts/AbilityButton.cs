@@ -1,26 +1,26 @@
 using Godot;
 
 [Tool]
-public class AbilityButton : Button
+public partial class AbilityButton : Button
 {
     // Exports
     [Export(PropertyHint.MultilineText)]
     public string description;
     [Export]
-    public Texture Texture
+    public Texture2D Texture2D
     {
         get => texture;
         set
         {
             texture = value;
 
-            if (Engine.EditorHint)
+            if (Engine.IsEditorHint())
                 UpdateTexture();
         }
     }
 
     // private
-    private Texture texture;
+    private Texture2D texture;
     private TextureRect textureRect;
     private Label label;
 
@@ -32,14 +32,14 @@ public class AbilityButton : Button
 
         UpdateTexture();
 
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
     }
 
     private void UpdateTexture()
     {
         if (textureRect != null)
-            textureRect.Texture = Texture;
+            textureRect.Texture = Texture2D;
     }
 
     public void UpdateLabel(int number)

@@ -1,24 +1,24 @@
 using Godot;
 
-public class DestroyEnemyState : EnemyState
+public partial class DestroyEnemyState : EnemyState
 {
 	// Exports
 	[Export]
-	private readonly float knockbackSpeed = 200f;
+	private float knockbackSpeed = 200f;
 	[Export]
-	private readonly float deceleration = 10f;
+	private float deceleration = 10f;
 	[Export]
-	private readonly DropData[] drops = new DropData[0];
+	private DropData[] drops = System.Array.Empty<DropData>();
 
 	// private
 	private Vector2 direction;
 	private Vector2 damagePosition;
-	private readonly PackedScene itemPickupScene = GD.Load<PackedScene>("res://Items/itemPickup/ItemPickup.tscn");
+	private PackedScene itemPickupScene = GD.Load<PackedScene>("res://Items/itemPickup/ItemPickup.tscn");
 
 	// methods
 	public override void Init()
 	{
-		Enemy.Connect(nameof(Enemy.EnemyDestroyed), this, nameof(OnEnemyDestroyed));
+		Enemy.Connect(Enemy.SignalName.EnemyDestroyed, new(this, MethodName.OnEnemyDestroyed));
 	}
 
 	public override void Enter()
@@ -27,7 +27,7 @@ public class DestroyEnemyState : EnemyState
 		Enemy.SetDirection(direction);
 		Enemy.Velocity = direction * (-knockbackSpeed);
 		Enemy.UpdateAnimation("destroy");
-		Enemy.AnimationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
+		Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
 		Enemy.Invulnerable = true;
 		DropItems();
 		GlobalPlayerManager.Instance.Player.UpdateXP(Enemy.RewardXp);
@@ -38,9 +38,9 @@ public class DestroyEnemyState : EnemyState
 		Enemy.Invulnerable = false;
 	}
 
-	public override EnemyState Process(float delta)
+	public override EnemyState Process(double delta)
 	{
-		Enemy.Velocity *= 1 - deceleration * delta;
+		Enemy.Velocity *= 1 - deceleration * (float)delta;
 
 		return null;
 	}
@@ -63,7 +63,7 @@ public class DestroyEnemyState : EnemyState
 		{
 			for (int j = 0; j < drop.GetDropCount(); j++)
 			{
-				ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instance();
+				ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
 				itemPickup.Item = drop.item;
 				itemPickup.GlobalPosition = Enemy.GlobalPosition;
 				itemPickup.IsDroppedItem = true;

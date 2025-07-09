@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/equip.wav-a0a1677faf63bb8f474573ed95172193.sample"
+type="AudioStreamWAV"
+uid="uid://c8x5d1k6lxsbx"
+path="res://.godot/imported/equip.wav-a0a1677faf63bb8f474573ed95172193.sample"
 
 [deps]
 
 source_file="res://Items/sprites/player_equipment/equip.wav"
-dest_files=[ "res://.import/equip.wav-a0a1677faf63bb8f474573ed95172193.sample" ]
+dest_files=["res://.godot/imported/equip.wav-a0a1677faf63bb8f474573ed95172193.sample"]
 
 [params]
 

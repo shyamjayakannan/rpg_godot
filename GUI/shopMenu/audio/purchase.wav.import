@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/purchase.wav-1ee3db336cf053dfdbc02970fb71ee2b.sample"
+type="AudioStreamWAV"
+uid="uid://b6gcj8dnnd6j"
+path="res://.godot/imported/purchase.wav-1ee3db336cf053dfdbc02970fb71ee2b.sample"
 
 [deps]
 
 source_file="res://GUI/shopMenu/audio/purchase.wav"
-dest_files=[ "res://.import/purchase.wav-1ee3db336cf053dfdbc02970fb71ee2b.sample" ]
+dest_files=["res://.godot/imported/purchase.wav-1ee3db336cf053dfdbc02970fb71ee2b.sample"]
 
 [params]
 

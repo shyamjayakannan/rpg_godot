@@ -5,11 +5,11 @@ public partial class GlobalLevelManager : Node
 {
 	// Signals
 	[Signal]
-	public delegate void TileMapBoundsChanged(Vector2[] newBounds);
+	public delegate void TileMapBoundsChangedEventHandler(Vector2[] newBounds);
 	[Signal]
-	public delegate void LevelLoaded();
+	public delegate void LevelLoadedEventHandler();
 	[Signal]
-	public delegate void LevelLoadStarted();
+	public delegate void LevelLoadStartedEventHandler();
 
 	// properties
 	public Vector2[] CurrentTileMapBounds { get; private set; }
@@ -53,11 +53,11 @@ public partial class GlobalLevelManager : Node
 
 	public Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>> GetSaveData()
 	{
-		Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>> keyValuePairs = new Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>>();
+		Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>> keyValuePairs = new();
 
 		foreach (KeyValuePair<string, List<(Items, Vector2)>> keyValuePair in DroppedItems)
 		{
-			List<(GlobalSaveManager.ItemData, Vector2)> list = new List<(GlobalSaveManager.ItemData, Vector2)>();
+			List<(GlobalSaveManager.ItemData, Vector2)> list = new();
 
 			foreach ((Items, Vector2) tuple in keyValuePair.Value)
 			{
@@ -65,7 +65,7 @@ public partial class GlobalLevelManager : Node
 					new GlobalSaveManager.ItemData()
 					{
 						Quantity = 1,
-						Path = tuple.Item1.ResourcePath
+						Path3D = tuple.Item1.ResourcePath
 					},
 					tuple.Item2
 				));
@@ -83,12 +83,12 @@ public partial class GlobalLevelManager : Node
 
 		foreach (KeyValuePair<string, List<(GlobalSaveManager.ItemData, Vector2)>> keyValuePair in dictionary)
 		{
-			List<(Items, Vector2)> list = new List<(Items, Vector2)>();
+			List<(Items, Vector2)> list = new();
 
 			foreach ((GlobalSaveManager.ItemData, Vector2) tuple in keyValuePair.Value)
 			{
 				list.Add((
-					GD.Load<Items>(tuple.Item1.Path),
+					GD.Load<Items>(tuple.Item1.Path3D),
 					tuple.Item2
 				));
 			}
@@ -118,7 +118,7 @@ public partial class GlobalLevelManager : Node
 		// below wont quefree the player along with the previous level.
 
 		// dont know why but binding string doesnt work so using private levelPath
-		GetTree().CreateTimer(SceneTransition.Instance.FadeIn()).Connect("timeout", this, nameof(LoadNewLevel2));
+		GetTree().CreateTimer(SceneTransition.Instance.FadeIn()).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.LoadNewLevel2));
 	}
 
 	private void LoadNewLevel2()
@@ -126,8 +126,8 @@ public partial class GlobalLevelManager : Node
 		EmitSignal(nameof(LevelLoadStarted));
 
 		GlobalPlayerManager.Instance.RemovePlayerParent();
-		GetTree().ChangeScene(levelPath);
-		GetTree().CreateTimer(SceneTransition.Instance.FadeOut()).Connect("timeout", this, nameof(LoadNewLevel3));
+		GetTree().ChangeSceneToFile(levelPath);
+		GetTree().CreateTimer(SceneTransition.Instance.FadeOut()).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.LoadNewLevel3));
 	}
 
 	private void LoadNewLevel3()

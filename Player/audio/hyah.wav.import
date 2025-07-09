@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/hyah.wav-bb7f969085160dadec0e1581e6958949.sample"
+type="AudioStreamWAV"
+uid="uid://cccpr6i0gk6be"
+path="res://.godot/imported/hyah.wav-bb7f969085160dadec0e1581e6958949.sample"
 
 [deps]
 
 source_file="res://Player/audio/hyah.wav"
-dest_files=[ "res://.import/hyah.wav-bb7f969085160dadec0e1581e6958949.sample" ]
+dest_files=["res://.godot/imported/hyah.wav-bb7f969085160dadec0e1581e6958949.sample"]
 
 [params]
 

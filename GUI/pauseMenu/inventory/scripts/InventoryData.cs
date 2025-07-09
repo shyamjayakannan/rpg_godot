@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Godot;
+using Godot.Collections;
 using MonoCustomResourceRegistry;
 
 [RegisteredType(nameof(InventoryData), "", nameof(Resource))]
-public class InventoryData : Resource
+public partial class InventoryData : Resource
 {
 	// Exports
 	[Export]
-	public List<SlotData> Slots { get; set; }
+	public Array<SlotData> Slots { get; set; }
 
 	// properties
 	public const int MAX_ITEMS = 20;
@@ -78,7 +79,7 @@ public class InventoryData : Resource
 
 	public List<GlobalSaveManager.ItemData> GetSaveData()
 	{
-		List<GlobalSaveManager.ItemData> list = new List<GlobalSaveManager.ItemData>();
+		List<GlobalSaveManager.ItemData> list = new();
 
 		foreach (SlotData slot in Slots)
 		{
@@ -86,7 +87,7 @@ public class InventoryData : Resource
 			{
 				list.Add(new GlobalSaveManager.ItemData
 				{
-					Path = "",
+					Path3D = "",
 					Quantity = 0
 				});
 
@@ -95,7 +96,7 @@ public class InventoryData : Resource
 
 			list.Add(new GlobalSaveManager.ItemData
 			{
-				Path = slot.Item.ResourcePath,
+				Path3D = slot.Item.ResourcePath,
 				Quantity = slot.Quantity
 			});
 		}
@@ -105,11 +106,11 @@ public class InventoryData : Resource
 
 	public void SetSaveData(List<GlobalSaveManager.ItemData> items)
 	{
-		List<SlotData> slots = new List<SlotData>();
+		Array<SlotData> slots = new();
 
 		foreach (GlobalSaveManager.ItemData item in items)
 		{
-			if (item.Path == "")
+			if (item.Path3D == "")
 			{
 				slots.Add(null);
 				continue;
@@ -117,7 +118,7 @@ public class InventoryData : Resource
 
 			slots.Add(new SlotData(
 				item.Quantity,
-				GD.Load<Items>(item.Path)
+				GD.Load<Items>(item.Path3D)
 			));
 		}
 

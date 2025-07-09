@@ -1,16 +1,16 @@
 using Godot;
 
-public class PauseMenu : CanvasLayer
+public partial class PauseMenu : CanvasLayer
 {
 	// Signals
 	[Signal]
-	public delegate void Shown();
+	public delegate void ShownEventHandler();
 	[Signal]
-	public delegate void Hidden();
+	public delegate void HiddenEventHandler();
 	[Signal]
-	public delegate void EquipmentsChanged(EquipableItem equipableItem);
+	public delegate void EquipmentsChangedEventHandler(EquipableItem equipableItem);
 	[Signal]
-	public delegate void ItemRemoved();
+	public delegate void ItemRemovedEventHandler();
 
 	// private
 	private Button save;
@@ -46,12 +46,12 @@ public class PauseMenu : CanvasLayer
 		Stats = GetNode<Stats>("Control/TabContainer/Inventory/Stats");
 		InventorySlot.AudioStreamPlayer = AudioStreamPlayer;
 
-		load.Connect("pressed", this, nameof(OnLoadPressed));
-		menu.Connect("pressed", this, nameof(OnMenuPressed));
-		save.Connect("pressed", this, nameof(OnSavePressed));
+		load.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.OnLoadPressed));
+		menu.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.OnMenuPressed));
+		save.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.OnSavePressed));
 		buttonMenu.ConnectFocus(menu, AudioStreamPlayer);
 		buttonMenu.ConnectFocus(load, AudioStreamPlayer);
-		system.Connect("visibility_changed", this, nameof(OnSystemVisibilityChanged));
+		system.Connect(CanvasItem.SignalName.VisibilityChanged, new(this, MethodName.OnSystemVisibilityChanged));
 		itemDescription.Text = "";
 
 		HidePauseMenu();
@@ -62,7 +62,7 @@ public class PauseMenu : CanvasLayer
 		if (!system.Visible)
 			return;
 
-		load.Visible = GlobalSaveManager.Instance.CheckLoad();
+		load.Visible = GlobalSaveManager.CheckLoad();
 		save.GrabFocus();
 
 		if (!buttonMenu.IsConnectedFocus(save))
@@ -85,7 +85,7 @@ public class PauseMenu : CanvasLayer
 	private void ShowPauseMenu()
 	{
 		// pause music
-		GlobalAudioManager.Instance.PauseMode = PauseModeEnum.Inherit;
+		GlobalAudioManager.Instance.ProcessMode = ProcessModeEnum.Inherit;
 		Show();
 		isPaused = true;
 		GetTree().Paused = true;
@@ -99,7 +99,7 @@ public class PauseMenu : CanvasLayer
 	private void HidePauseMenu()
 	{
 		// continue music
-		GlobalAudioManager.Instance.PauseMode = PauseModeEnum.Process;
+		GlobalAudioManager.Instance.ProcessMode = ProcessModeEnum.Always;
 		Hide();
 		isPaused = false;
 		GetTree().Paused = false;
@@ -111,35 +111,35 @@ public class PauseMenu : CanvasLayer
 
 	private void OnSavePressed()
 	{
-		buttonMenu.PlayPress(AudioStreamPlayer);
+		ButtonMenu.PlayPress(AudioStreamPlayer);
 		GlobalSaveManager.Instance.SaveGame();
 		HidePauseMenu();
 	}
 
 	private void OnLoadPressed()
 	{
-		buttonMenu.PlayPress(AudioStreamPlayer);
-		AudioStreamPlayer.Connect("finished", this, nameof(OnLoadPressed2));
+		ButtonMenu.PlayPress(AudioStreamPlayer);
+		AudioStreamPlayer.Connect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnLoadPressed2));
 		buttonMenu.DisconnectFocus(save);
 	}
 
 	private void OnLoadPressed2()
 	{
-		AudioStreamPlayer.Disconnect("finished", this, nameof(OnLoadPressed2));
+		AudioStreamPlayer.Disconnect("finished", new(this, nameof(OnLoadPressed2)));
 		GlobalSaveManager.Instance.LoadGame();
 		HidePauseMenu();
 	}
 
 	private void OnMenuPressed()
 	{
-		buttonMenu.PlayPress(AudioStreamPlayer);
-		AudioStreamPlayer.Connect("finished", this, nameof(OnMenuPressed2));
+		ButtonMenu.PlayPress(AudioStreamPlayer);
+		AudioStreamPlayer.Connect(AudioStreamPlayer.SignalName.Finished, new(this, MethodName.OnMenuPressed2));
 		buttonMenu.DisconnectFocus(save);
 	}
 
 	private void OnMenuPressed2()
 	{
-		AudioStreamPlayer.Disconnect("finished", this, nameof(OnMenuPressed2));
+		AudioStreamPlayer.Disconnect("finished", new(this, nameof(OnMenuPressed2)));
 		GlobalLevelManager.Instance.LoadNewLevel("res://title_screen/TitleScene.tscn", "", Vector2.Zero);
 		HidePauseMenu();
 	}

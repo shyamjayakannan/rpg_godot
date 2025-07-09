@@ -1,14 +1,14 @@
 using Godot;
 
-public class DashState : State
+public partial class DashState : State
 {
     // Exports
     [Export]
-    private readonly float moveSpeed = 250;
+    private float moveSpeed = 250;
     [Export]
-    private readonly float effectDelay = 0.05f;
+    private float effectDelay = 0.05f;
     [Export]
-    private readonly AudioStream dashSound;
+    private AudioStream dashSound;
 
     // private
     private State idleState;
@@ -27,13 +27,13 @@ public class DashState : State
     public override void Enter()
     {
         Player.UpdateAnimation("dash");
-        Player.MakeInvulnerable(Player.AnimationPlayer.CurrentAnimationLength);
+        Player.MakeInvulnerable((float)Player.AnimationPlayer.CurrentAnimationLength);
         direction = Player.Direction == Vector2.Zero ? Player.CardinalDirection : Player.Direction;
         audioStreamPlayer2D.Stream = dashSound;
         audioStreamPlayer2D.Play();
         effectTimer = effectDelay;
 
-        GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect("timeout", this, nameof(OnAnimationFinished));
+        GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.OnAnimationFinished));
     }
 
     public override State Process(float delta)
@@ -70,14 +70,14 @@ public class DashState : State
 
     private void SpawnEffect()
     {
-        Node2D effect = new Node2D();
+        Node2D effect = new();
         Player.GetParent().AddChild(effect);
         effect.GlobalPosition = Player.GlobalPosition - new Vector2(0, 0.1f);
-        Sprite spriteCopy = (Sprite)Player.Sprite.Duplicate();
+        Sprite2D spriteCopy = (Sprite2D)Player.Sprite2D.Duplicate();
         effect.AddChild(spriteCopy);
-        SceneTreeTween sceneTreeTween = CreateTween();
+        Tween sceneTreeTween = CreateTween();
         sceneTreeTween.SetEase(Tween.EaseType.Out);
         sceneTreeTween.TweenProperty(effect, "modulate", new Color(1, 1, 1, 0), 0.2f);
-        sceneTreeTween.Chain().TweenCallback(effect, "queue_free");
+        sceneTreeTween.Chain().TweenCallback(Callable.From(() => effect.QueueFree()));
     }
 }

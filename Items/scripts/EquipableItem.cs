@@ -3,7 +3,7 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(EquipableItem), "", nameof(Resource))]
-public class EquipableItem : Items
+public partial class EquipableItem : Items
 {
     // Exports
     [Export(PropertyHint.MultilineText)]
@@ -16,7 +16,7 @@ public class EquipableItem : Items
         {
             equipmentType = value;
 
-            if (Engine.EditorHint)
+            if (Engine.IsEditorHint())
                 UpdateDescription();
         }
     }
@@ -26,7 +26,7 @@ public class EquipableItem : Items
         get => modifiers;
         private set
         {
-            if (!Engine.EditorHint)
+            if (!Engine.IsEditorHint())
             {
                 modifiers = value;
                 return;
@@ -36,24 +36,24 @@ public class EquipableItem : Items
             // need to do this because godot doesn't automatically disconnect signals for resources
             if (modifiers != null)
                 foreach (EquipableItemModifier mod in modifiers)
-                    if (mod != null && mod.IsConnected("changed", this, nameof(UpdateDescription)))
-                        mod.Disconnect("changed", this, nameof(UpdateDescription));
+                    if (mod != null && mod.IsConnected(Resource.SignalName.Changed, new(this, MethodName.UpdateDescription)))
+                        mod.Disconnect(Resource.SignalName.Changed, new(this, MethodName.UpdateDescription));
 
             modifiers = value;
 
             // Connect new signals
             if (modifiers != null)
                 foreach (EquipableItemModifier mod in modifiers)
-                    mod?.Connect("changed", this, nameof(UpdateDescription));
+                    mod?.Connect(Resource.SignalName.Changed, new(this, MethodName.UpdateDescription));
 
             UpdateDescription();
         }
     }
     [Export]
-    public Texture SpriteTexture { get; private set; }
+    public Texture2D SpriteTexture { get; private set; }
 
     // private
-    private EquipableItemModifier[] modifiers = new EquipableItemModifier[0];
+    private EquipableItemModifier[] modifiers = System.Array.Empty<EquipableItemModifier>();
     public Type equipmentType = Type.Weapon;
 
     // properties
@@ -106,6 +106,6 @@ public class EquipableItem : Items
         StatsDescription += $"\nHealth: {(healthModifier >= 0 ? $"+{healthModifier}" : healthModifier.ToString())}";
         StatsDescription += $"      Speed: {(speedModifier >= 0 ? $"+{speedModifier}" : speedModifier.ToString())}";
 
-        PropertyListChangedNotify();
+        NotifyPropertyListChanged();
     }
 }

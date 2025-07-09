@@ -6,6 +6,6 @@
 script = ExtResource( 1 )
 Title = "Short Quest"
 Description = "Short Quest"
-Steps = PoolStringArray( "Complete Quest" )
+Steps = PackedStringArray( "Complete Quest" )
 RewardXp = 10
 RewardItems = [  ]

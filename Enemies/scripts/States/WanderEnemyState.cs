@@ -1,16 +1,16 @@
 using Godot;
 
-public class WanderEnemyState : EnemyState
+public partial class WanderEnemyState : EnemyState
 {
 	// Exports
 	[Export]
-	private readonly int speed = 100;
+	private int speed = 100;
 	[Export]
-	private readonly float stateAnimationDuration = 0.6f;
+	private float stateAnimationDuration = 0.6f;
 	[Export]
-	private readonly int minCycles = 1;
+	private int minCycles = 1;
 	[Export]
-	private readonly int maxCycles = 3;
+	private int maxCycles = 3;
 
 	// private
 	private float timer;
@@ -31,9 +31,9 @@ public class WanderEnemyState : EnemyState
 		Enemy.UpdateAnimation("walk");
 	}
 
-	public override EnemyState Process(float delta)
+	public override EnemyState Process(double delta)
 	{
-		timer -= delta;
+		timer -= (float)delta;
 
 		if (timer <= 0)
 			return NextState;

@@ -1,21 +1,21 @@
 using Godot;
 
-public class VisionArea : Area2D
+public partial class VisionArea : Area2D
 {
     // Signals
     [Signal]
-    public delegate void PlayerEntered();
+    public delegate void PlayerEnteredEventHandler();
     [Signal]
-    public delegate void PlayerExited();
+    public delegate void PlayerExitedEventHandler();
 
     // methods
     public override void _Ready()
     {
-        Connect("body_entered", this, nameof(OnVisionAreaBodyEntered));
-        Connect("body_exited", this, nameof(OnVisionAreaBodyExited));
+        Connect(Area2D.SignalName.BodyEntered, new(this, MethodName.OnVisionAreaBodyEntered));
+        Connect(Area2D.SignalName.BodyExited, new(this, MethodName.OnVisionAreaBodyExited));
 
         if (GetParent() is Enemy parent)
-            parent.Connect(nameof(Enemy.EnemyDirectionChanged), this, nameof(OnEnemyDirectionChanged));
+            parent.Connect(Enemy.SignalName.EnemyDirectionChanged, new(this, MethodName.OnEnemyDirectionChanged));
     }
 
     private void OnVisionAreaBodyEntered(Node body)

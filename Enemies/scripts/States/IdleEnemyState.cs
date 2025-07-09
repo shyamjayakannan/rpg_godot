@@ -1,12 +1,12 @@
 using Godot;
 
-public class IdleEnemyState : EnemyState
+public partial class IdleEnemyState : EnemyState
 {
 	// Exports
 	[Export]
-	private readonly float minStateDuration = 0.5f;
+	private float minStateDuration = 0.5f;
 	[Export]
-	private readonly float maxStateDuration = 1.5f;
+	private float maxStateDuration = 1.5f;
 
 	// private
 	private float timer;
@@ -19,9 +19,9 @@ public class IdleEnemyState : EnemyState
 		timer = (float)GD.RandRange(minStateDuration, maxStateDuration);
 	}
 
-	public override EnemyState Process(float delta)
+	public override EnemyState Process(double delta)
 	{
-		timer -= delta;
+		timer -= (float)delta;
 
 		if (timer <= 0)
 		{

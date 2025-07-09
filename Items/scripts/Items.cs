@@ -3,7 +3,7 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(Items), "", nameof(Resource))]
-public class Items : Resource
+public partial class Items : Resource
 {
 	// Exports
 	[Export]
@@ -11,11 +11,11 @@ public class Items : Resource
 	[Export(PropertyHint.MultilineText)]
 	public string Description { get; protected set; } = "";
 	[Export]
-	public Texture Texture { get; private set; }
+	public Texture2D Texture2D { get; private set; }
 	[Export]
-	private readonly ItemEffects[] effects;
+	private ItemEffects[] effects;
 	[Export]
-	public readonly int Cost = 1;
+	public int Cost = 1;
 
 	// methods
 	public virtual void Use()

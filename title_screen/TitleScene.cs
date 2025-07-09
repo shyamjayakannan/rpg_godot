@@ -1,10 +1,10 @@
 using Godot;
 
-public class TitleScene : Node2D
+public partial class TitleScene : Node2D
 {
 	// Exports
 	[Export]
-	private readonly AudioStream music;
+	private AudioStream music;
 
 	// constants
 	private const string START_LEVEL = "res://Levels/Area1/2.tscn";
@@ -26,10 +26,10 @@ public class TitleScene : Node2D
 		audioStreamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
 
 		GlobalPlayerManager.Instance.PlayerSpawned = false;
-		GlobalLevelManager.Instance.Connect(nameof(GlobalLevelManager.LevelLoadStarted), this, nameof(ExitTitleScreen));
+		GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoadStarted, new(this, MethodName.ExitTitleScreen));
 
 		PlayerHUD.Instance.Hide();
-		PauseMenu.Instance.PauseMode = PauseModeEnum.Stop;
+		PauseMenu.Instance.ProcessMode = ProcessModeEnum.Disabled;
 
 		// make sure that audioplayer's pause mode is set to process
 		GetTree().Paused = true;
@@ -45,13 +45,13 @@ public class TitleScene : Node2D
 		else
 			continueButton.GrabFocus();
 
-		newButton.Connect("pressed", this, nameof(StartGame));
-		continueButton.Connect("pressed", this, nameof(LoadGame));
-		quit.Connect("pressed", this, nameof(EndGame));
+		newButton.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.StartGame));
+		continueButton.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.LoadGame));
+		quit.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.EndGame));
 		buttonMenu.ConnectFocus(newButton, audioStreamPlayer);
 		buttonMenu.ConnectFocus(continueButton, audioStreamPlayer);
 		buttonMenu.ConnectFocus(quit, audioStreamPlayer);
-		continueButton.Visible = GlobalSaveManager.Instance.CheckLoad();
+		continueButton.Visible = GlobalSaveManager.CheckLoad();
 
 		GlobalAudioManager.Instance.PlayAudio(music);
 	}
@@ -63,13 +63,13 @@ public class TitleScene : Node2D
 
 	private void LoadGame()
 	{
-		buttonMenu.PlayPress(audioStreamPlayer);
+		ButtonMenu.PlayPress(audioStreamPlayer);
 		GlobalSaveManager.Instance.LoadGame();
 	}
 
 	private void StartGame()
 	{
-		buttonMenu.PlayPress(audioStreamPlayer);
+		ButtonMenu.PlayPress(audioStreamPlayer);
 		GlobalLevelManager.Instance.LoadNewLevel(START_LEVEL, "", Vector2.Zero);
 	}
 
@@ -77,7 +77,7 @@ public class TitleScene : Node2D
 	{
 		GlobalPlayerManager.Instance.Player.Show();
 		PlayerHUD.Instance.Show();
-		PauseMenu.Instance.PauseMode = PauseModeEnum.Process;
+		PauseMenu.Instance.ProcessMode = ProcessModeEnum.Always;
 		QueueFree();
 	}
 }

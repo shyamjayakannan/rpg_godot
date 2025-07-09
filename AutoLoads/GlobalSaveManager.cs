@@ -2,20 +2,20 @@ using System.Collections.Generic;
 using Godot;
 using Newtonsoft.Json;
 
-public class GlobalSaveManager : Node
+public partial class GlobalSaveManager : Node
 {
 	// Signals
 	[Signal]
-	private delegate void GameSaved();
+	private delegate void GameSavedEventHandler();
 	[Signal]
-	public delegate void GameLoaded();
+	public delegate void GameLoadedEventHandler();
 
 	// properties
 	public static GlobalSaveManager Instance { get; private set; }
 	public struct ItemData
 	{
 		public int Quantity { get; set; }
-		public string Path { get; set; }
+		public string Path3D { get; set; }
 	}
 	public struct QuestData
 	{
@@ -48,7 +48,7 @@ public class GlobalSaveManager : Node
 		public List<QuestData> Quests { get; set; }
 		public Dictionary<string, List<(ItemData, Vector2)>> DroppedItems { get; set; }
 	}
-	private SaveData currentSaveData = new SaveData()
+	private SaveData currentSaveData = new()
 	{
 		Player = new Player
 		{
@@ -82,22 +82,20 @@ public class GlobalSaveManager : Node
 		UpdateItems();
 		UpdateQuests();
 
-		File file = new File();
-		file.Open(SAVEPATH + "savegame.sav", File.ModeFlags.Write);
+		FileAccess file = FileAccess.Open(SAVEPATH + "savegame.sav", FileAccess.ModeFlags.Write);
 		file.StoreLine(JsonConvert.SerializeObject(currentSaveData));
 		file.Close();
 		EmitSignal(nameof(GameSaved));
 	}
 
-	public bool CheckLoad()
+	public static bool CheckLoad()
 	{
-		return new File().FileExists(SAVEPATH + "savegame.sav");
+		return FileAccess.FileExists(SAVEPATH + "savegame.sav");
 	}
 
 	public void LoadGame()
 	{
-		File file = new File();
-		file.Open(SAVEPATH + "savegame.sav", File.ModeFlags.Read);
+		FileAccess file = FileAccess.Open(SAVEPATH + "savegame.sav", FileAccess.ModeFlags.Read);
 		currentSaveData = JsonConvert.DeserializeObject<SaveData>(file.GetLine());
 		file.Close();
 
@@ -112,12 +110,12 @@ public class GlobalSaveManager : Node
 		SetQuests();
 		SetDroppedItems();
 
-		GlobalLevelManager.Instance.Connect(nameof(GlobalLevelManager.LevelLoaded), this, nameof(OnLevelLoaded));
+		GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoaded, new(this, MethodName.OnLevelLoaded));
 	}
 
 	private void OnLevelLoaded()
 	{
-		GlobalLevelManager.Instance.Disconnect(nameof(GlobalLevelManager.LevelLoaded), this, nameof(OnLevelLoaded));
+		GlobalLevelManager.Instance.Disconnect(GlobalLevelManager.SignalName.LevelLoaded, new(this, MethodName.OnLevelLoaded));
 		EmitSignal(nameof(GameLoaded));
 	}
 
@@ -127,8 +125,8 @@ public class GlobalSaveManager : Node
 		{
 			Hp = GlobalPlayerManager.Instance.Player.Hp,
 			MaxHp = GlobalPlayerManager.Instance.Player.MaxHp,
-			PosX = GlobalPlayerManager.Instance.Player.GlobalPosition.x,
-			PosY = GlobalPlayerManager.Instance.Player.GlobalPosition.y,
+			PosX = GlobalPlayerManager.Instance.Player.GlobalPosition.X,
+			PosY = GlobalPlayerManager.Instance.Player.GlobalPosition.Y,
 			Level = GlobalPlayerManager.Instance.Player.Level,
 			Xp = GlobalPlayerManager.Instance.Player.Xp,
 			Attack = GlobalPlayerManager.Instance.Player.Attack,
@@ -138,7 +136,7 @@ public class GlobalSaveManager : Node
 
 	private void UpdateScenePath()
 	{
-		currentSaveData.ScenePath = GetTree().Root.GetNode<Node2D>("Level").Filename;
+		currentSaveData.ScenePath = GetTree().Root.GetNode<Node2D>("Level").SceneFilePath;
 	}
 
 	private void UpdateItems()

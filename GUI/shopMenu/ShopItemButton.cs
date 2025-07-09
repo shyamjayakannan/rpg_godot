@@ -1,6 +1,6 @@
 using Godot;
 
-public class ShopItemButton : Button
+public partial class ShopItemButton : Button
 {
     // private
     private Label label;
@@ -16,14 +16,14 @@ public class ShopItemButton : Button
         priceLabel = GetNode<Label>("HBoxContainer/MarginContainer/Label2");
         ellipsis = GetNode<Label>("HBoxContainer/Ellipsis");
         textureRect = GetNode<TextureRect>("HBoxContainer/TextureRect");
-        font = GetFont("m5x7");
+        font = GetThemeFont("m5x7");
     }
 
     public void SetupItem(Items items)
     {
         label.Text = items.Name;
         priceLabel.Text = items.Cost.ToString();
-        textureRect.Texture = items.Texture;
-        ellipsis.Visible = font.GetStringSize(label.Text).x > label.RectSize.x;
+        textureRect.Texture = items.Texture2D;
+        ellipsis.Visible = font.GetStringSize(label.Text).X > label.Size.X;
     }
 }

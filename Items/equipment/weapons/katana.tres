@@ -1,9 +1,9 @@
 [gd_resource type="Resource" load_steps=7 format=2]
 
 [ext_resource path="res://Items/scripts/EquipableItem.cs" type="Script" id=1]
-[ext_resource path="res://Items/sprites/player_equipment/gear.png" type="Texture" id=2]
+[ext_resource path="res://Items/sprites/player_equipment/gear.png" type="Texture2D" id=2]
 [ext_resource path="res://Items/scripts/EquipableItemModifier.cs" type="Script" id=3]
-[ext_resource path="res://Items/sprites/player_equipment/player_sprite_sword_katana.png" type="Texture" id=4]
+[ext_resource path="res://Items/sprites/player_equipment/player_sprite_sword_katana.png" type="Texture2D" id=4]
 
 [sub_resource type="Resource" id=1]
 script = ExtResource( 3 )
@@ -18,7 +18,7 @@ region = Rect2( 64, 0, 32, 32 )
 script = ExtResource( 1 )
 Name = "Katana"
 Description = "Highly Sharp"
-Texture = SubResource( 2 )
+Texture2D = SubResource( 2 )
 effects = [  ]
 Cost = 400
 StatsDescription = "Type: Weapon

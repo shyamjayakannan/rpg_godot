@@ -1,23 +1,23 @@
 using Godot;
 
-public class ChargeState : State
+public partial class ChargeState : State
 {
     // Export
     [Export]
-    private readonly float chargeDuration = 1;
+    private float chargeDuration = 1;
     [Export]
-    private readonly float moveSpeed = 80;
+    private float moveSpeed = 80;
     [Export]
-    private readonly AudioStream sfxCharged;
+    private AudioStream sfxCharged;
     [Export]
-    private readonly AudioStream sfxSpin;
+    private AudioStream sfxSpin;
 
     // private
     private IdleState idleState;
     private bool isAttacking = false;
     private bool walking = false;
-    private Particles2D particles;
-    private ParticlesMaterial particlesMaterial;
+    private GpuParticles2D particles;
+    private ParticleProcessMaterial particlesMaterial;
     private Timer timer;
     private HurtBox hurtBox;
     private AudioStreamPlayer2D audioStreamPlayer2D;
@@ -28,14 +28,14 @@ public class ChargeState : State
     {
         idleState = GetNode<IdleState>("../IdleState");
         timer = GetNode<Timer>("Timer");
-        hurtBox = GetNode<HurtBox>("../../Sprite/ChargeHurtBox");
+        hurtBox = GetNode<HurtBox>("../../Sprite2D/ChargeHurtBox");
         audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("../../Audio/AttackSound");
-        animationPlayer = GetNode<AnimationPlayer>("../../Sprite/SpinSprite/AnimationPlayer");
-        particles = GetNode<Particles2D>("../../Sprite/ChargeHurtBox/Particles2D");
-        particlesMaterial = (ParticlesMaterial)particles.ProcessMaterial;
+        animationPlayer = GetNode<AnimationPlayer>("../../Sprite2D/SpinSprite/AnimationPlayer");
+        particles = GetNode<GpuParticles2D>("../../Sprite2D/ChargeHurtBox/GPUParticles2D");
+        particlesMaterial = (ParticleProcessMaterial)particles.ProcessMaterial;
 
         particles.Emitting = false;
-        timer.Connect("timeout", this, nameof(OnTimerTimeout));
+        timer.Connect(Timer.SignalName.Timeout, new(this, MethodName.OnTimerTimeout));
     }
 
     public override void Enter()
@@ -101,10 +101,10 @@ public class ChargeState : State
         Player.AnimationPlayer.Seek(GetSpinFrame());
         PlayAudio(sfxSpin);
 
-        float duration = Player.AnimationPlayer.CurrentAnimationLength;
-        Player.MakeInvulnerable(duration);
+        double duration = Player.AnimationPlayer.CurrentAnimationLength;
+        Player.MakeInvulnerable((float)duration);
 
-        GetTree().CreateTimer(duration * 0.875f, false).Connect("timeout", this, nameof(ChargeAttack2));
+        GetTree().CreateTimer(duration * 0.875f, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.ChargeAttack2));
     }
 
     private void ChargeAttack2()
@@ -112,7 +112,7 @@ public class ChargeState : State
         StateMachine.ChangeState(idleState);
     }
 
-    private float GetSpinFrame()
+    private static float GetSpinFrame()
     {
         float interval = 0.05f;
 
@@ -135,6 +135,6 @@ public class ChargeState : State
         PlayAudio(sfxCharged);
         particles.Amount = 100;
         particles.Explosiveness = 1;
-        particlesMaterial.InitialVelocity = 100;
+        particlesMaterial.ini = 100;
     }
 }

@@ -1,6 +1,6 @@
 using Godot;
 
-public class IdleState : State
+public partial class IdleState : State
 {
 	// private
 	private WalkState walkState;

@@ -1,10 +1,10 @@
 using Godot;
 
-public class GlobalPlayerManager : Node
+public partial class GlobalPlayerManager : Node
 {
     // Signals
     [Signal]
-    public delegate void InteractPressed();
+    public delegate void InteractPressedEventHandler();
 
     // properties
     public static GlobalPlayerManager Instance { get; private set; }
@@ -17,12 +17,12 @@ public class GlobalPlayerManager : Node
     public override void _Ready()
     {
         Instance = this;
-        Player = (Player)GD.Load<PackedScene>("res://Player/Player.tscn").Instance();
+        Player = (Player)GD.Load<PackedScene>("res://Player/Player.tscn").Instantiate();
 
         // we dont have a way to know if playerspawn nodes exist and we want PlayerSpawned to be true
         // so we wait a bit so that a PlayerSpawn node, if it exists, can set it to true.
         // we cant set it to true in the beginninng because PlayerSpawn nodes require it to be false first.
-        GetTree().CreateTimer(0.2f, false).Connect("timeout", this, nameof(Ready2));
+        GetTree().CreateTimer(0.2f, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Ready2));
     }
 
     private void Ready2()

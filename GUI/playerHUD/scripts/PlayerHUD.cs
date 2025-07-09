@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using Godot;
 
-public class PlayerHUD : CanvasLayer
+public partial class PlayerHUD : CanvasLayer
 {
 	// private
-	private readonly List<HeartGUI> hearts = new List<HeartGUI>();
+	private List<HeartGUI> hearts = new();
 	private Control gameOver;
 	private Button continueButton;
 	private Button menuButton;
@@ -13,7 +13,7 @@ public class PlayerHUD : CanvasLayer
 	private AudioStreamPlayer audioStreamPlayer;
 	private Control BossHpBar;
 	private NotificationBar notificationBar;
-	private TextureProgress textureProgress;
+	private TextureProgressBar textureProgress;
 	private Label BossNameLabel;
 	private Label arrowLabel;
 	private Label bombLabel;
@@ -34,7 +34,7 @@ public class PlayerHUD : CanvasLayer
 		audioStreamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
 		BossHpBar = GetNode<Control>("Control/BossHpBar");
 		notificationBar = GetNode<NotificationBar>("Control/CanvasLayer/NotificationBar");
-		textureProgress = GetNode<TextureProgress>("Control/BossHpBar/TextureProgress");
+		textureProgress = GetNode<TextureProgressBar>("Control/BossHpBar/TextureProgressBar");
 		BossNameLabel = GetNode<Label>("Control/BossHpBar/Label");
 		abilities = GetNode<HBoxContainer>("Control/Abilities");
 		arrowLabel = abilities.GetNode<Label>("Panel3/Label");
@@ -51,11 +51,11 @@ public class PlayerHUD : CanvasLayer
 
 		HideBossHealthBar();
 		HideGameOverScreen();
-		menuButton.Connect("pressed", this, nameof(BackToMenu));
-		continueButton.Connect("pressed", this, nameof(LoadGame));
+		menuButton.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.BackToMenu));
+		continueButton.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.LoadGame));
 		buttonMenu.ConnectFocus(menuButton, audioStreamPlayer);
 		buttonMenu.ConnectFocus(continueButton, audioStreamPlayer);
-		GlobalLevelManager.Instance.Connect(nameof(GlobalLevelManager.LevelLoadStarted), this, nameof(HideGameOverScreen));
+		GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoadStarted, new(this, MethodName.HideGameOverScreen));
 	}
 
 	public void QueueNotification(string title, string message)
@@ -90,13 +90,13 @@ public class PlayerHUD : CanvasLayer
 		gameOver.Show();
 		gameOver.MouseFilter = Control.MouseFilterEnum.Stop;
 		animationPlayer.Play("showGameOver");
-		continueButton.Visible = GlobalSaveManager.Instance.CheckLoad();
-		animationPlayer.Connect("animation_finished", this, nameof(ShowGameOverScreen2));
+		continueButton.Visible = GlobalSaveManager.CheckLoad();
+		animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.ShowGameOverScreen2));
 	}
 
 	private void ShowGameOverScreen2(string animName)
 	{
-		animationPlayer.Disconnect("animation_finished", this, nameof(ShowGameOverScreen2));
+		animationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, nameof(ShowGameOverScreen2)));
 
 		if (!continueButton.Visible)
 			menuButton.GrabFocus();
@@ -106,22 +106,22 @@ public class PlayerHUD : CanvasLayer
 
 	private void LoadGame()
 	{
-		buttonMenu.PlayPress(audioStreamPlayer);
-		GetTree().CreateTimer(FadeToBlack(), false).Connect("timeout", this, nameof(LoadGame2));
+		ButtonMenu.PlayPress(audioStreamPlayer);
+		GetTree().CreateTimer(FadeToBlack(), false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.LoadGame2));
 	}
 
-	private void LoadGame2()
+	private static void LoadGame2()
 	{
 		GlobalSaveManager.Instance.LoadGame();
 	}
 
 	private void BackToMenu()
 	{
-		buttonMenu.PlayPress(audioStreamPlayer);
-		GetTree().CreateTimer(FadeToBlack(), false).Connect("timeout", this, nameof(BackToMenu2));
+		ButtonMenu.PlayPress(audioStreamPlayer);
+		GetTree().CreateTimer(FadeToBlack(), false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.BackToMenu2));
 	}
 
-	private void BackToMenu2()
+	private static void BackToMenu2()
 	{
 		GlobalLevelManager.Instance.LoadNewLevel("res://title_screen/TitleScene.tscn", "", Vector2.Zero);
 	}
@@ -130,7 +130,7 @@ public class PlayerHUD : CanvasLayer
 	{
 		animationPlayer.Play("fadeToBlack");
 		GlobalPlayerManager.Instance.Player.RevivePlayer();
-		return animationPlayer.CurrentAnimationLength;
+		return (float)animationPlayer.CurrentAnimationLength;
 	}
 
 	public void UpdateHP(int hp, int maxHp)
@@ -172,6 +172,6 @@ public class PlayerHUD : CanvasLayer
 				abilities.GetChild<Panel>(i).SelfModulate = new Color(1, 1, 1, 1);
 		}
 
-		buttonMenu.PlayFocus(audioStreamPlayer);
+		ButtonMenu.PlayFocus(audioStreamPlayer);
 	}
 }

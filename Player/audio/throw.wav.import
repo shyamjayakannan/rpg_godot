@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/throw.wav-a2865b71cfa5356703288e524d114a9b.sample"
+type="AudioStreamWAV"
+uid="uid://dfo1hrfp88tjc"
+path="res://.godot/imported/throw.wav-a2865b71cfa5356703288e524d114a9b.sample"
 
 [deps]
 
 source_file="res://Player/audio/throw.wav"
-dest_files=[ "res://.import/throw.wav-a2865b71cfa5356703288e524d114a9b.sample" ]
+dest_files=["res://.godot/imported/throw.wav-a2865b71cfa5356703288e524d114a9b.sample"]
 
 [params]
 

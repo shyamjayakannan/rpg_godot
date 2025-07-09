@@ -2,7 +2,7 @@ using Godot;
 using MonoCustomResourceRegistry;
 
 [RegisteredType(nameof(SlotData), "", nameof(Resource))]
-public class SlotData : Resource
+public partial class SlotData : Resource
 {
 	// Exports
 	[Export]

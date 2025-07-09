@@ -13,6 +13,6 @@ Item = ExtResource( 1 )
 script = ExtResource( 2 )
 Title = "Long Quest"
 Description = "Long Quest"
-Steps = PoolStringArray( "do", "haha" )
+Steps = PackedStringArray( "do", "haha" )
 RewardXp = 19
 RewardItems = [ SubResource( 1 ) ]

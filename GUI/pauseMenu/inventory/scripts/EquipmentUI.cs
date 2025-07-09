@@ -1,14 +1,14 @@
-using System.Collections.Generic;
 using Godot;
+using Godot.Collections;
 
-public class EquipmentUI : HBoxContainer
+public partial class EquipmentUI : HBoxContainer
 {
     // Exports
     [Export]
     public InventoryData Equipment { get; private set; }
 
     // private
-    private readonly PackedScene inventorySlotScene = GD.Load<PackedScene>("res://GUI/pauseMenu/inventory/InventorySlot.tscn");
+    private PackedScene inventorySlotScene = GD.Load<PackedScene>("res://GUI/pauseMenu/inventory/InventorySlot.tscn");
 
     // properties
     public HBoxContainer[] EquipmentContainers { get; private set; }
@@ -26,7 +26,7 @@ public class EquipmentUI : HBoxContainer
 
         GlobalPlayerManager.Instance.PlayerEquipmentInventory = Equipment;
 
-        GlobalSaveManager.Instance.Connect(nameof(GlobalSaveManager.GameLoaded), this, nameof(OnGameLoaded));
+        GlobalSaveManager.Instance.Connect(GlobalSaveManager.SignalName.GameLoaded, new(this, MethodName.OnGameLoaded));
 
         // so that pausemenu.stats exists (after pausemenu's ready call)
         await ToSignal(GetTree(), "idle_frame");
@@ -43,9 +43,9 @@ public class EquipmentUI : HBoxContainer
 
     private void InitializeEquipment()
     {
-        List<SlotData> list = new List<SlotData> { null, null, null, null };
+        Array<SlotData> list = new() { null, null, null, null };
 
-        foreach (var slot in Equipment.Slots)
+        foreach (SlotData slot in Equipment.Slots)
         {
             if (slot?.Item is EquipableItem eq)
             {
@@ -88,7 +88,7 @@ public class EquipmentUI : HBoxContainer
     {
         foreach (SlotData data in Equipment.Slots)
         {
-            InventorySlot slot = (InventorySlot)inventorySlotScene.Instance();
+            InventorySlot slot = (InventorySlot)inventorySlotScene.Instantiate();
 
             // here we need to add child slot first before setting slotData because slotData's setter
             // requires texture and label data that will only be loaded once its _Ready runs
@@ -104,7 +104,7 @@ public class EquipmentUI : HBoxContainer
         {
             if (hBoxContainer.GetChildCount() < 2)
             {
-                InventorySlot slot = (InventorySlot)inventorySlotScene.Instance();
+                InventorySlot slot = (InventorySlot)inventorySlotScene.Instantiate();
                 hBoxContainer.AddChild(slot);
             }
         }
@@ -112,7 +112,7 @@ public class EquipmentUI : HBoxContainer
         GetChildOrNull<Button>(0)?.GrabFocus();
     }
 
-    public int[] CalculateSingleModifier(EquipableItem equipableItem)
+    public static int[] CalculateSingleModifier(EquipableItem equipableItem)
     {
         int[] modifiers = new int[4] { 0, 0, 0, 0 };
 

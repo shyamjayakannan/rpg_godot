@@ -3,10 +3,10 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(DialogChoice), "res://GUI/dialogSystem/icons/question_bubble.png", nameof(Node2D))]
-public class DialogChoice : DialogItem
+public partial class DialogChoice : DialogItem
 {
 	// methods
-	public override string _GetConfigurationWarning()
+	public override string[] _GetConfigurationWarnings()
 	{
 		int atLeastTwoValidChildren = 0;
 
@@ -15,11 +15,11 @@ public class DialogChoice : DialogItem
 				atLeastTwoValidChildren++;
 
 		if (atLeastTwoValidChildren < 2)
-			return "please add at least two DialogBranch as child";
+			return new[] { "please add at least two DialogBranch as child" };
 		else if (atLeastTwoValidChildren > 4)
-			return "please add at most four DialogBranch as child";
+			return new[] { "please add at most four DialogBranch as child" };
 		else
-			return "";
+			return System.Array.Empty<string>();
 	}
 
 	public override void _Notification(int what)

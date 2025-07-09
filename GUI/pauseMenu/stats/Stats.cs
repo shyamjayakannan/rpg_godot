@@ -1,6 +1,6 @@
 using Godot;
 
-public class Stats : PanelContainer
+public partial class Stats : PanelContainer
 {
     // private
     private Label level;

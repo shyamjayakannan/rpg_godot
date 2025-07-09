@@ -1,20 +1,20 @@
 using Godot;
 
-public class FootstepAudioPlayer : AudioStreamPlayer2D
+public partial class FootstepAudioPlayer : AudioStreamPlayer2D
 {
     // private
     [Export]
-    private readonly AudioStream[] footstepVariations;
+    private AudioStream[] footstepVariations;
 
     // private
     private LevelTileMap tileMap;
-    private AudioStreamRandomPitch audioStreamRandomPitch;
+    private AudioStreamPlayer2D audioStreamRandomPitch;
 
     // methods
     public override void _Ready()
     {
-        audioStreamRandomPitch = (AudioStreamRandomPitch)Stream;
-        GlobalLevelManager.Instance.Connect(nameof(GlobalLevelManager.LevelLoaded), this, nameof(OnLevelLoaded));
+        audioStreamRandomPitch = (AudioStreamRandomizer)Stream;
+        GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoaded, new(this, MethodName.OnLevelLoaded));
         OnLevelLoaded();
     }
 
@@ -33,25 +33,13 @@ public class FootstepAudioPlayer : AudioStreamPlayer2D
     // called in animationplayer function call track of player
     private void PlayFootsteps()
     {
-        switch (tileMap.TileSet.TileGetName(tileMap.GetCellv(tileMap.ToLocal(GlobalPosition) / tileMap.CellQuadrantSize)))
+        audioStreamRandomPitch.ad = (object)tileMap.TileSet.TileGetName(tileMap.GetCellAtlasCoords(tileMap.ToLocal(GlobalPosition) / tileMap.TileSet.TileSize)) switch
         {
-            case "grass.png":
-                audioStreamRandomPitch.AudioStream = footstepVariations[0];
-                break;
-
-            case "pathway.png":
-                audioStreamRandomPitch.AudioStream = footstepVariations[1];
-                break;
-
-            case "floor.png":
-                audioStreamRandomPitch.AudioStream = footstepVariations[2];
-                break;
-
-            default:
-                audioStreamRandomPitch.AudioStream = footstepVariations[1];
-                break;
-        }
-
+            "grass.png" => footstepVariations[0],
+            "pathway.png" => footstepVariations[1],
+            "floor.png" => footstepVariations[2],
+            _ => footstepVariations[1],
+        };
         Play();
     }
 }

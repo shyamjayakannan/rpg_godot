@@ -1,18 +1,18 @@
 using Godot;
 
-public class ShopMenu : CanvasLayer
+public partial class ShopMenu : CanvasLayer
 {
     // Signals
     [Signal]
-    private delegate void Shown();
+    private delegate void ShownEventHandler();
     [Signal]
-    private delegate void Hidden();
+    private delegate void HiddenEventHandler();
 
     // private
     private AcceptDialog acceptDialog;
     private ColorRect colorRect;
-    private readonly PackedScene shopItemButtonScene = GD.Load<PackedScene>("res://GUI/shopMenu/ShopItemButton.tscn");
-    private readonly Items gem = GD.Load<Items>("res://Items/items/gem.tres");
+    private PackedScene shopItemButtonScene = GD.Load<PackedScene>("res://GUI/shopMenu/ShopItemButton.tscn");
+    private Items gem = GD.Load<Items>("res://Items/items/gem.tres");
     private Items currentItem;
     private Button closeButton;
     private Button buyButton;
@@ -27,9 +27,9 @@ public class ShopMenu : CanvasLayer
     private Label total;
     private LineEdit lineEdit;
     private AnimationPlayer animationPlayer;
-    private readonly AudioStream openShopAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/open_shop.wav");
-    private readonly AudioStream purchaseAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/purchase.wav");
-    private readonly AudioStream errorAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/error.wav");
+    private AudioStream openShopAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/open_shop.wav");
+    private AudioStream purchaseAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/purchase.wav");
+    private AudioStream errorAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/error.wav");
 
     // methods
     public override void _Ready()
@@ -52,10 +52,10 @@ public class ShopMenu : CanvasLayer
         colorRect.Hide();
         Initialize();
 
-        acceptDialog.Connect("popup_hide", this, nameof(OnPopupHidden));
-        buyButton.Connect("pressed", this, nameof(OnBuyButtonPressed));
-        lineEdit.Connect("text_changed", this, nameof(OnLineEditTextChanged));
-        closeButton.Connect("pressed", this, nameof(SetMenu), new Godot.Collections.Array(false));
+        acceptDialog.Connect(AcceptDialog.SignalName.Canceled, new(this, MethodName.OnPopupHidden));
+        buyButton.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.OnBuyButtonPressed));
+        lineEdit.Connect(LineEdit.SignalName.TextChanged, new(this, MethodName.OnLineEditTextChanged));
+        closeButton.Connect(BaseButton.SignalName.Pressed, Callable.From(() => SetMenu(false)));
     }
 
     private void Initialize()
@@ -89,15 +89,15 @@ public class ShopMenu : CanvasLayer
             if (currentItem is EquipableItem equipableItem && GlobalPlayerManager.Instance.IsEquipmentPresent(equipableItem))
             {
                 acceptDialog.DialogText = "The equipment is already present in the inventory";
-                acceptDialog.WindowTitle = "Equipment Duplicate Found!";
+                acceptDialog.Title = "Equipment Duplicate Found!";
             }
             else
             {
                 acceptDialog.DialogText = "The Inventory is full";
-                acceptDialog.WindowTitle = "Alert!";
+                acceptDialog.Title = "Alert!";
             }
 
-            acceptDialog.Popup_();
+            acceptDialog.Popup();
             colorRect.Show();
             PlayAudio(errorAudio);
             return;
@@ -112,7 +112,7 @@ public class ShopMenu : CanvasLayer
 
     private void OnLineEditTextChanged(string newText)
     {
-        int cursorPos = lineEdit.CaretPosition;
+        int cursorPos = lineEdit.CaretColumn;
         string filtered = "";
 
         foreach (char c in newText)
@@ -120,7 +120,7 @@ public class ShopMenu : CanvasLayer
                 filtered += c;
 
         lineEdit.Text = filtered.Length == 0 ? "0" : filtered;
-        lineEdit.CaretPosition = Mathf.Min(cursorPos, lineEdit.Text.Length);
+        lineEdit.CaretColumn = Mathf.Min(cursorPos, lineEdit.Text.Length);
 
         total.Text = (lineEdit.Text.ToInt() * currentItem.Cost).ToString();
     }
@@ -131,7 +131,7 @@ public class ShopMenu : CanvasLayer
             return;
 
         // dont let pausemenu be called when closing using esc key
-        GetTree().SetInputAsHandled();
+        GetViewport().SetInputAsHandled();
         SetMenu(false);
     }
 
@@ -164,14 +164,14 @@ public class ShopMenu : CanvasLayer
 
         foreach (Items item in items)
         {
-            ShopItemButton shopItemButton = (ShopItemButton)shopItemButtonScene.Instance();
+            ShopItemButton shopItemButton = (ShopItemButton)shopItemButtonScene.Instantiate();
             buttonMenu.AddChild(shopItemButton);
             shopItemButton.SetupItem(item);
             buttonMenu.ConnectFocus(shopItemButton, audioStreamPlayer);
-            shopItemButton.Connect("focus_entered", this, nameof(OnShopItemButtonFocused), new Godot.Collections.Array(item));
+            shopItemButton.Connect(Control.SignalName.FocusEntered, Callable.From(() => OnShopItemButtonFocused(item)));
         }
 
-        GetTree().CreateTimer(0.1f).Connect("timeout", this, nameof(OnTimerTimeout));
+        GetTree().CreateTimer(0.1f).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.OnTimerTimeout));
     }
 
     private void OnTimerTimeout()
@@ -183,7 +183,7 @@ public class ShopMenu : CanvasLayer
     {
         currentItem = item;
         price.Text = item.Cost.ToString();
-        textureRect.Texture = item.Texture;
+        textureRect.Texture = item.Texture2D;
         title.Text = item.Name;
         description.Text = item.Description;
         lineEdit.Text = "1";

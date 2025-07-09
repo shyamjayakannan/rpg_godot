@@ -1,14 +1,14 @@
 using Godot;
 
-public class Enemy : KinematicBody2D
+public partial class Enemy : CharacterBody2D
 {
 	// Signals
 	[Signal]
-	public delegate void EnemyDamaged(HurtBox hurtBox);
+	public delegate void EnemyDamagedEventHandler(HurtBox hurtBox);
 	[Signal]
-	public delegate void EnemyDestroyed(HurtBox hurtBox);
+	public delegate void EnemyDestroyedEventHandler(HurtBox hurtBox);
 	[Signal]
-	public delegate void EnemyDirectionChanged(Vector2 newDirection);
+	public delegate void EnemyDirectionChangedEventHandler(Vector2 newDirection);
 
 	// Exports
 	[Export]
@@ -18,29 +18,28 @@ public class Enemy : KinematicBody2D
 
 	// private
 	private Vector2 cardinalDirection = Vector2.Down;
-	private Sprite sprite;
+	private Sprite2D sprite;
 	private EnemyStateMachine stateMachine;
 	private HitBox hitBox;
 
 	// properties
 	public AnimationPlayer AnimationPlayer { get; private set; }
 	public bool Invulnerable { get; set; } = false;
-	public Vector2 Velocity { get; set; } = Vector2.Zero;
 
 	// methods
 	public override void _Ready()
 	{
 		AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-		sprite = GetNode<Sprite>("Sprite");
+		sprite = GetNode<Sprite2D>("Sprite2D");
 		stateMachine = GetNode<EnemyStateMachine>("EnemyStateMachine");
 		hitBox = GetNode<HitBox>("HitBox");
-		hitBox.Connect(nameof(HitBox.Damaged), this, nameof(OnHitBoxDamaged));
+		hitBox.Connect(HitBox.SignalName.Damaged, new(this, MethodName.OnHitBoxDamaged));
 		stateMachine.Initialize(this);
 	}
 
-	public override void _PhysicsProcess(float delta)
+	public override void _PhysicsProcess(double delta)
 	{
-		MoveAndSlide(Velocity);
+		MoveAndSlide();
 	}
 
 	public void UpdateAnimation(string state)
@@ -63,14 +62,14 @@ public class Enemy : KinematicBody2D
 		if (direction == Vector2.Zero)
 			return false;
 
-		if (direction.x != 0)
-			cardinalDirection = direction.x > 0 ? Vector2.Right : Vector2.Left;
+		if (direction.X != 0)
+			cardinalDirection = direction.X > 0 ? Vector2.Right : Vector2.Left;
 		else
-			cardinalDirection = direction.y >= 0 ? Vector2.Down : Vector2.Up;
+			cardinalDirection = direction.Y >= 0 ? Vector2.Down : Vector2.Up;
 
 		EmitSignal(nameof(EnemyDirectionChanged), cardinalDirection);
 
-		if (cardinalDirection.x < 0)
+		if (cardinalDirection.X < 0)
 			sprite.Scale = new Vector2(-1, 1);
 		else
 			sprite.Scale = new Vector2(1, 1);

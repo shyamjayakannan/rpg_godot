@@ -1,10 +1,10 @@
 using Godot;
 
-public class WalkState : State
+public partial class WalkState : State
 {
 	// Exports
 	[Export]
-	private readonly int speed = 100;
+	private int speed = 100;
 
 	// private
 	private IdleState idleState;

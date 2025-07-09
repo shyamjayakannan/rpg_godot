@@ -1,9 +1,9 @@
 using Godot;
 
-public class PressurePlate : Node2D
+public partial class PressurePlate : Node2D
 {
     [Signal]
-    private delegate void PressurePlateActivated();
+    private delegate void PressurePlateActivatedEventHandler();
 
     // private
     private bool isActive = false;
@@ -11,9 +11,9 @@ public class PressurePlate : Node2D
     private Rect2 offRect;
     private Area2D area2D;
     private AudioStreamPlayer2D audioStreamPlayer2D;
-    private Sprite sprite;
-    private readonly AudioStream audioActivate = GD.Load<AudioStream>("res://Interactables/dungeon/lever-01.wav");
-    private readonly AudioStream audioDeactivate = GD.Load<AudioStream>("res://Interactables/dungeon/lever-02.wav");
+    private Sprite2D sprite;
+    private AudioStream audioActivate = GD.Load<AudioStream>("res://Interactables/dungeon/lever-01.wav");
+    private AudioStream audioDeactivate = GD.Load<AudioStream>("res://Interactables/dungeon/lever-02.wav");
     private PersistentDataHandler persistentDataHandler;
 
     // methods
@@ -21,18 +21,18 @@ public class PressurePlate : Node2D
     {
         area2D = GetNode<Area2D>("Area2D");
         audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
-        sprite = GetNode<Sprite>("Sprite");
+        sprite = GetNode<Sprite2D>("Sprite2D");
         persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
         offRect = sprite.RegionRect;
 
-        persistentDataHandler.Connect(nameof(PersistentDataHandler.DataLoaded), this, nameof(SetState));
+        persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetState));
         persistentDataHandler.GetValue();
 
-        area2D.Connect("body_entered", this, nameof(OnArea2DBodyEntered));
-        area2D.Connect("body_exited", this, nameof(OnArea2DBodyExited));
-        GlobalSignalManager.Instance.Connect(nameof(GlobalSignalManager.BarredDoorStateChanged), this, nameof(SetValue));
-        GlobalLevelManager.Instance.Connect(nameof(GlobalLevelManager.LevelLoadStarted), this, nameof(SetIsActive));
+        area2D.Connect(Area2D.SignalName.BodyEntered, new(this, MethodName.OnArea2DBodyEntered));
+        area2D.Connect(Area2D.SignalName.BodyExited, new(this, MethodName.OnArea2DBodyExited));
+        GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.BarredDoorStateChanged, new(this, MethodName.SetValue));
+        GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoadStarted, new(this, MethodName.SetIsActive));
     }
 
     private void SetIsActive()
@@ -58,8 +58,8 @@ public class PressurePlate : Node2D
         isActive = true;
         sprite.RegionRect = new Rect2(
             new Vector2(
-                offRect.Position.x - 32,
-                sprite.RegionRect.Position.y
+                offRect.Position.X - 32,
+                sprite.RegionRect.Position.Y
             ),
             sprite.RegionRect.Size
         );
@@ -85,8 +85,8 @@ public class PressurePlate : Node2D
             isActive = true;
             sprite.RegionRect = new Rect2(
                 new Vector2(
-                    offRect.Position.x - 32,
-                    sprite.RegionRect.Position.y
+                    offRect.Position.X - 32,
+                    sprite.RegionRect.Position.Y
                 ),
                 sprite.RegionRect.Size
             );
@@ -99,8 +99,8 @@ public class PressurePlate : Node2D
             isActive = false;
             sprite.RegionRect = new Rect2(
                 new Vector2(
-                    offRect.Position.x,
-                    sprite.RegionRect.Position.y
+                    offRect.Position.X,
+                    sprite.RegionRect.Position.Y
                 ),
                 sprite.RegionRect.Size
             );

@@ -2,16 +2,16 @@ using System.Collections.Generic;
 using Godot;
 using Newtonsoft.Json;
 
-public class GlobalQuestManager : Node
+public partial class GlobalQuestManager : Node
 {
     // Signals
     [Signal]
-    public delegate void QuestUpdated(string title, bool isStarted);
+    public delegate void QuestUpdatedEventHandler(string title, bool isStarted);
 
     // private
-    private readonly List<QuestResource> quests = new List<QuestResource>();
+    private List<QuestResource> quests = new();
     private const string QUEST_LOCATION = "res://Quests/quests";
-    private Dictionary<string, string> questTitleToFile = new Dictionary<string, string>();
+    private Dictionary<string, string> questTitleToFile = new();
 
     // properties
     public static GlobalQuestManager Instance { get; private set; }
@@ -25,8 +25,7 @@ public class GlobalQuestManager : Node
 
     private void LoadQuestMapping()
     {
-        File file = new File();
-        file.Open($"{QUEST_LOCATION}/questMap.json", File.ModeFlags.Read);
+        FileAccess file = FileAccess.Open($"{QUEST_LOCATION}/questMap.json", FileAccess.ModeFlags.Read);
         string json = file.GetAsText();
         file.Close();
         questTitleToFile = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
@@ -123,7 +122,8 @@ public class GlobalQuestManager : Node
     {
         quests.Add(questResource);
 
-        GlobalSaveManager.QuestData questData = new GlobalSaveManager.QuestData
+        GlobalSaveManager.QuestData questData = new()
+
         {
             Title = title,
             IsComplete = false,
@@ -137,7 +137,7 @@ public class GlobalQuestManager : Node
         PlayerHUD.Instance.QueueNotification("Quest Added", title);
     }
 
-    private void DisperseRewards(QuestResource quest)
+    private static void DisperseRewards(QuestResource quest)
     {
         GlobalPlayerManager.Instance.Player.UpdateXP(quest.RewardXp);
         string message = $"{quest.RewardXp}xp";

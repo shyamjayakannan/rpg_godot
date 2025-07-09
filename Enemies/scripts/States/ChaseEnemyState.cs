@@ -1,14 +1,14 @@
 using Godot;
 
-public class ChaseEnemyState : EnemyState
+public partial class ChaseEnemyState : EnemyState
 {
 	// Exports
 	[Export]
-	private readonly int speed = 100;
+	private int speed = 100;
 	[Export]
-	private readonly float stateAnimationDuration = 0.6f;
+	private float stateAnimationDuration = 0.6f;
 	[Export]
-	private readonly float turnRate = 0.25f;
+	private float turnRate = 0.25f;
 
 	// private
 	private VisionArea visionArea;
@@ -16,7 +16,7 @@ public class ChaseEnemyState : EnemyState
 	private float timer;
 	private Vector2 direction;
 	private bool canSeePlayer = false;
-	private readonly PackedScene pathFinderScene = GD.Load<PackedScene>("res://Enemies/PathFinder.tscn");
+	private PackedScene pathFinderScene = GD.Load<PackedScene>("res://Enemies/PathFinder.tscn");
 	private PathFinder pathFinder;
 
 	// methods
@@ -25,15 +25,15 @@ public class ChaseEnemyState : EnemyState
 		base._Ready();
 
 		visionArea = GetNode<VisionArea>("../../VisionArea");
-		attackArea = GetNode<HurtBox>("../../Sprite/AttackHurtBox");
+		attackArea = GetNode<HurtBox>("../../Sprite2D/AttackHurtBox");
 
-		visionArea.Connect(nameof(VisionArea.PlayerEntered), this, nameof(OnPlayerEntered));
-		visionArea.Connect(nameof(VisionArea.PlayerExited), this, nameof(OnPlayerExited));
+		visionArea.Connect(VisionArea.SignalName.PlayerEntered, new(this, MethodName.OnPlayerEntered));
+		visionArea.Connect(VisionArea.SignalName.PlayerExited, new(this, MethodName.OnPlayerExited));
 	}
 
 	public override void Enter()
 	{
-		pathFinder = (PathFinder)pathFinderScene.Instance();
+		pathFinder = (PathFinder)pathFinderScene.Instantiate();
 		Enemy.AddChild(pathFinder);
 		timer = stateAnimationDuration;
 		attackArea.SetDeferred("monitorable", true);
@@ -48,14 +48,14 @@ public class ChaseEnemyState : EnemyState
 		canSeePlayer = false;
 	}
 
-	public override EnemyState Process(float delta)
+	public override EnemyState Process(double delta)
 	{
 		if (GlobalPlayerManager.Instance.Player.Hp <= 0)
 			return NextState;
 
 		direction = new Vector2(
-			Mathf.Lerp(direction.x, pathFinder.BestPath.x, turnRate),
-			Mathf.Lerp(direction.y, pathFinder.BestPath.y, turnRate)
+			Mathf.Lerp(direction.X, pathFinder.BestPath.X, turnRate),
+			Mathf.Lerp(direction.Y, pathFinder.BestPath.Y, turnRate)
 		);
 		Enemy.Velocity = direction * speed;
 		if (Enemy.SetDirection(direction))
@@ -65,7 +65,7 @@ public class ChaseEnemyState : EnemyState
 			timer = stateAnimationDuration;
 		else
 		{
-			timer -= delta;
+			timer -= (float)delta;
 
 			if (timer <= 0)
 				return NextState;

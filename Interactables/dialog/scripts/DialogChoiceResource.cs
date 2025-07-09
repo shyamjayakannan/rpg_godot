@@ -1,12 +1,12 @@
-using System.Collections.Generic;
 using Godot;
+using Godot.Collections;
 using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(DialogChoiceResource), "res://GUI/dialogSystem/icons/question_bubble.png", nameof(Resource))]
-public class DialogChoiceResource : DialogItemResource
+public partial class DialogChoiceResource : DialogItemResource
 {
 	// Exports
 	[Export]
-	public List<DialogBranchResource> DialogBranchResources = new List<DialogBranchResource>();
+	public Array<DialogBranchResource> DialogBranchResources = new();
 }

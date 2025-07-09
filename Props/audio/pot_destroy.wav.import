@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/pot_destroy.wav-36e849df4fbf2be1de6496bb319df333.sample"
+type="AudioStreamWAV"
+uid="uid://r6126dgqacwg"
+path="res://.godot/imported/pot_destroy.wav-36e849df4fbf2be1de6496bb319df333.sample"
 
 [deps]
 
 source_file="res://Props/audio/pot_destroy.wav"
-dest_files=[ "res://.import/pot_destroy.wav-36e849df4fbf2be1de6496bb319df333.sample" ]
+dest_files=["res://.godot/imported/pot_destroy.wav-36e849df4fbf2be1de6496bb319df333.sample"]
 
 [params]
 

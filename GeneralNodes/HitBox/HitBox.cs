@@ -1,22 +1,22 @@
 using Godot;
 
-public class HitBox : Area2D
+public partial class HitBox : Area2D
 {
 	// Signals
 	[Signal]
-	public delegate void Damaged(HurtBox hurtBox);
+	public delegate void DamagedEventHandler(HurtBox hurtBox);
 
 	// methods
 	public override void _Ready()
 	{
-		Connect("area_entered", this, nameof(OnHitBoxAreaEntered));
+		Connect(Area2D.SignalName.AreaEntered, new(this, MethodName.OnHitBoxAreaEntered));
 	}
 
 	private void OnHitBoxAreaEntered(Area2D area)
 	{
 		if (area is HurtBox hurtBox)
 		{
-			hurtBox.EmitSignal(nameof(HurtBox.DidDamage));
+			hurtBox.EmitSignal(HurtBox.SignalName.DidDamage);
 			EmitSignal(nameof(Damaged), hurtBox);
 		}
 	}

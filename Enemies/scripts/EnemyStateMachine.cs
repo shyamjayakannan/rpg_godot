@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 
-public class EnemyStateMachine : Node
+public partial class EnemyStateMachine : Node
 {
 	// private
 	private List<EnemyState> states;
@@ -12,15 +12,15 @@ public class EnemyStateMachine : Node
 	// methods
 	public override void _Ready()
 	{
-		PauseMode = PauseModeEnum.Stop;
+		ProcessMode = ProcessModeEnum.Disabled;
 	}
 
-	public override void _Process(float delta)
+	public override void _Process(double delta)
 	{
 		ChangeState(CurrentState.Process(delta));
 	}
 
-	public override void _PhysicsProcess(float delta)
+	public override void _PhysicsProcess(double delta)
 	{
 		ChangeState(CurrentState.PhysicsProcess(delta));
 	}
@@ -43,7 +43,7 @@ public class EnemyStateMachine : Node
 		if (states.Count > 0)
 		{
 			ChangeState(states[0]);
-			PauseMode = PauseModeEnum.Inherit; // Set pause mode to inherit so it pauses when the game is paused
+			ProcessMode = ProcessModeEnum.Inherit; // Set pause mode to inherit so it pauses when the game is paused
 		}
 	}
 

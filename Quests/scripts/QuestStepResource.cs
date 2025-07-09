@@ -3,7 +3,7 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(QuestStepResource), "", nameof(Resource))]
-public class QuestStepResource : Resource
+public partial class QuestStepResource : Resource
 {
     // Exports
     [Export]

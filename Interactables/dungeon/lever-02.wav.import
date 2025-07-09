@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/lever-02.wav-a00c481e8b21905a16b6c6443f22dfd4.sample"
+type="AudioStreamWAV"
+uid="uid://buqhmelba3he5"
+path="res://.godot/imported/lever-02.wav-a00c481e8b21905a16b6c6443f22dfd4.sample"
 
 [deps]
 
 source_file="res://Interactables/dungeon/lever-02.wav"
-dest_files=[ "res://.import/lever-02.wav-a00c481e8b21905a16b6c6443f22dfd4.sample" ]
+dest_files=["res://.godot/imported/lever-02.wav-a00c481e8b21905a16b6c6443f22dfd4.sample"]
 
 [params]
 

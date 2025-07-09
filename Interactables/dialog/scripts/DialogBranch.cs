@@ -3,7 +3,7 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(DialogBranch), "res://GUI/dialogSystem/icons/answer_bubble.png", nameof(Node2D))]
-public class DialogBranch : DialogItem
+public partial class DialogBranch : DialogItem
 {
 	// methods
 	public override void _Ready()
@@ -11,7 +11,7 @@ public class DialogBranch : DialogItem
 		base._Ready();
 
 		// child duplication doesnt fire NotificationChildOrderChanged so need to send it manually
-		GetParent()?.Notification(NotificationChildOrderChanged);
+		GetParent()?.Notification((int)NotificationChildOrderChanged);
 	}
 
 	public override void SetEditorDisplay()

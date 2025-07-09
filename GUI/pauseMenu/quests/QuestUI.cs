@@ -1,11 +1,12 @@
+using System.Linq;
 using Godot;
 
-public class QuestUI : Control
+public partial class QuestUI : Control
 {
     // private
-    private readonly PackedScene questItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestItem.tscn");
-    private readonly PackedScene questStepItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestStepItem.tscn");
-    private readonly PackedScene itemDeliverQuestStepItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/ItemDeliverQuestStepItem.tscn");
+    private PackedScene questItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestItem.tscn");
+    private PackedScene questStepItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/QuestStepItem.tscn");
+    private PackedScene itemDeliverQuestStepItemScene = GD.Load<PackedScene>("res://GUI/pauseMenu/quests/ItemDeliverQuestStepItem.tscn");
     private ButtonMenu vBoxContainer;
     private VBoxContainer stepContainer;
     private Label title;
@@ -19,12 +20,12 @@ public class QuestUI : Control
         description = GetNode<Label>("VBoxContainer/Description");
         stepContainer = GetNode<VBoxContainer>("VBoxContainer/ScrollContainer/VBoxContainer");
 
-        Connect("visibility_changed", this, nameof(OnVisibilityChanged));
+        Connect(CanvasItem.SignalName.VisibilityChanged, new(this, MethodName.OnVisibilityChanged));
     }
 
     private void OnVisibilityChanged()
     {
-        foreach (QuestItem questItem in vBoxContainer.GetChildren())
+        foreach (QuestItem questItem in vBoxContainer.GetChildren().Cast<QuestItem>())
             questItem.QueueFree();
 
         if (!Visible)
@@ -37,17 +38,17 @@ public class QuestUI : Control
             if (questResource == null)
                 continue;
 
-            QuestItem questItem = (QuestItem)questItemScene.Instance();
+            QuestItem questItem = (QuestItem)questItemScene.Instantiate();
 
             // VERY IMPORTANT
             // do addchild before initialize because initialize required onready variables
             vBoxContainer.AddChild(questItem);
             questItem.Initialize(questResource, questData);
-            questItem.Connect("focus_entered", this, nameof(OnFocusEntered), new Godot.Collections.Array(questItem.Quest));
+            questItem.Connect(Control.SignalName.FocusEntered, Callable.From(() => OnFocusEntered(questItem.Quest)));
         }
 
         ClearDescription();
-        GetTree().CreateTimer(0.1f).Connect("timeout", this, nameof(OnTimerTimeout));
+        GetTree().CreateTimer(0.1f).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.OnTimerTimeout));
     }
 
     private void OnTimerTimeout()
@@ -60,18 +61,18 @@ public class QuestUI : Control
         title.Text = "";
         description.Text = "";
 
-        foreach (QuestStepItem questStepItem in stepContainer.GetChildren())
+        foreach (QuestStepItem questStepItem in stepContainer.GetChildren().Cast<QuestStepItem>())
             questStepItem.QueueFree();
     }
 
     private void OnFocusEntered(QuestResource quest)
     {
         ClearDescription();
-        vBoxContainer.PlayFocus(PauseMenu.Instance.AudioStreamPlayer);
+        ButtonMenu.PlayFocus(PauseMenu.Instance.AudioStreamPlayer);
         title.Text = quest.Title;
         description.Text = quest.Description;
 
-        foreach (QuestStepItem questStepItem in stepContainer.GetChildren())
+        foreach (QuestStepItem questStepItem in stepContainer.GetChildren().Cast<QuestStepItem>())
             questStepItem.QueueFree();
 
         GlobalSaveManager.QuestData questData = GlobalQuestManager.Instance.FindQuest(quest);
@@ -85,7 +86,7 @@ public class QuestUI : Control
             // do addchild before initialize because initialize required onready variables
             if (questStep is ItemDeliverQuestStepResource itemDeliverQuestStepResource)
             {
-                ItemDeliverQuestStepItem itemDeliverQuestStepItem = (ItemDeliverQuestStepItem)itemDeliverQuestStepItemScene.Instance();
+                ItemDeliverQuestStepItem itemDeliverQuestStepItem = (ItemDeliverQuestStepItem)itemDeliverQuestStepItemScene.Instantiate();
                 stepContainer.AddChild(itemDeliverQuestStepItem);
                 bool isComplete = questData.CompletedSteps.Contains(itemDeliverQuestStepResource.Step);
                 int stepCount;
@@ -99,7 +100,7 @@ public class QuestUI : Control
             }
             else
             {
-                QuestStepItem questStepItem = (QuestStepItem)questStepItemScene.Instance();
+                QuestStepItem questStepItem = (QuestStepItem)questStepItemScene.Instantiate();
                 stepContainer.AddChild(questStepItem);
                 questStepItem.Initialize(questData.CompletedSteps.Contains(questStep.Step), questStep.Step);
             }

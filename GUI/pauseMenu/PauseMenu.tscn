@@ -1,20 +1,20 @@
 [gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://GUI/pauseMenu/PauseMenu.cs" type="Script" id=1]
-[ext_resource path="res://Items/sprites/items.png" type="Texture" id=2]
+[ext_resource path="res://Items/sprites/items.png" type="Texture2D" id=2]
 [ext_resource path="res://GeneralNodes/ButtonMenu/ButtonMenu.tscn" type="PackedScene" id=3]
 [ext_resource path="res://GUI/pauseMenu/inventory/scripts/InventoryUI.cs" type="Script" id=4]
 [ext_resource path="res://GUI/pauseMenu/inventory/PlayerInventory.tres" type="Resource" id=5]
 [ext_resource path="res://GUI/pauseMenu/quests/QuestUI.cs" type="Script" id=6]
 [ext_resource path="res://GUI/pauseMenu/quests/QuestItem.tscn" type="PackedScene" id=7]
-[ext_resource path="res://GUI/dialogSystem/fonts/Abaddon Bold.ttf" type="DynamicFontData" id=8]
+[ext_resource path="res://GUI/dialogSystem/fonts/Abaddon Bold.ttf" type="FontFile" id=8]
 [ext_resource path="res://GUI/pauseMenu/quests/QuestStepItem.tscn" type="PackedScene" id=9]
 [ext_resource path="res://GUI/pauseMenu/inventory/InventorySlot.tscn" type="PackedScene" id=10]
 [ext_resource path="res://GUI/pauseMenu/stats/Stats.tscn" type="PackedScene" id=11]
-[ext_resource path="res://Items/sprites/player_equipment/gear.png" type="Texture" id=12]
+[ext_resource path="res://Items/sprites/player_equipment/gear.png" type="Texture2D" id=12]
 [ext_resource path="res://GUI/pauseMenu/inventory/PlayerEquipmentInventory.tres" type="Resource" id=13]
 [ext_resource path="res://GUI/pauseMenu/inventory/scripts/EquipmentUI.cs" type="Script" id=14]
-[ext_resource path="res://Player/sprites/ability-icons.png" type="Texture" id=15]
+[ext_resource path="res://Player/sprites/ability-icons.png" type="Texture2D" id=15]
 [ext_resource path="res://GUI/pauseMenu/inventory/AbilityButton.tscn" type="PackedScene" id=16]
 [ext_resource path="res://GUI/pauseMenu/quests/ItemDeliverQuestStepItem.tscn" type="PackedScene" id=17]
 
@@ -39,10 +39,10 @@ content_margin_top = 10.0
 content_margin_bottom = 10.0
 texture = ExtResource( 2 )
 region_rect = Rect2( 96, 0, 32, 32 )
-margin_left = 16.0
-margin_right = 16.0
-margin_top = 16.0
-margin_bottom = 16.0
+offset_left = 16.0
+offset_right = 16.0
+offset_top = 16.0
+offset_bottom = 16.0
 
 [sub_resource type="AtlasTexture" id=12]
 atlas = ExtResource( 15 )
@@ -76,11 +76,11 @@ region = Rect2( 16, 0, 16, 16 )
 atlas = ExtResource( 12 )
 region = Rect2( 16, 16, 16, 16 )
 
-[sub_resource type="DynamicFont" id=5]
+[sub_resource type="FontFile" id=5]
 font_data = ExtResource( 8 )
 
 [node name="PauseMenu" type="CanvasLayer"]
-pause_mode = 2
+process_mode = 3
 layer = 2
 script = ExtResource( 1 )
 
@@ -96,10 +96,10 @@ color = Color( 0, 0, 0, 0.588235 )
 [node name="Label" type="Label" parent="Control"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = 208.0
-margin_top = 5.0
-margin_right = 254.0
-margin_bottom = 19.0
+offset_left = 208.0
+offset_top = 5.0
+offset_right = 254.0
+offset_bottom = 19.0
 text = "Paused"
 align = 1
 
@@ -107,29 +107,29 @@ align = 1
 anchor_right = 1.0
 anchor_bottom = 1.0
 focus_mode = 2
-custom_styles/tab_fg = SubResource( 2 )
-custom_styles/tab_bg = SubResource( 3 )
-custom_styles/panel = SubResource( 4 )
-tab_align = 0
+theme_override_styles/tab_selected = SubResource( 2 )
+theme_override_styles/tab_unselected = SubResource( 3 )
+theme_override_styles/panel = SubResource( 4 )
+tab_alignment = 0
 drag_to_rearrange_enabled = true
 
 [node name="Inventory" type="Control" parent="Control/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = 23.0
+offset_top = 23.0
 
 [node name="Items" type="PanelContainer" parent="Control/TabContainer/Inventory"]
-margin_left = 96.0
-margin_top = 9.0
-margin_right = 292.0
-margin_bottom = 169.0
-custom_styles/panel = SubResource( 1 )
+offset_left = 96.0
+offset_top = 9.0
+offset_right = 292.0
+offset_bottom = 169.0
+theme_override_styles/panel = SubResource( 1 )
 
 [node name="GridContainer" type="GridContainer" parent="Control/TabContainer/Inventory/Items"]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 186.0
-margin_bottom = 150.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 186.0
+offset_bottom = 150.0
 columns = 5
 script = ExtResource( 4 )
 data = ExtResource( 5 )
@@ -137,331 +137,331 @@ data = ExtResource( 5 )
 [node name="InventorySlot" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 32.0
-margin_bottom = 32.0
+offset_right = 32.0
+offset_bottom = 32.0
 
 [node name="InventorySlot2" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 36.0
-margin_right = 68.0
-margin_bottom = 32.0
+offset_left = 36.0
+offset_right = 68.0
+offset_bottom = 32.0
 
 [node name="InventorySlot3" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 72.0
-margin_right = 104.0
-margin_bottom = 32.0
+offset_left = 72.0
+offset_right = 104.0
+offset_bottom = 32.0
 
 [node name="InventorySlot4" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 108.0
-margin_right = 140.0
-margin_bottom = 32.0
+offset_left = 108.0
+offset_right = 140.0
+offset_bottom = 32.0
 
 [node name="InventorySlot5" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 144.0
-margin_right = 176.0
-margin_bottom = 32.0
+offset_left = 144.0
+offset_right = 176.0
+offset_bottom = 32.0
 
 [node name="InventorySlot6" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 36.0
-margin_right = 32.0
-margin_bottom = 68.0
+offset_top = 36.0
+offset_right = 32.0
+offset_bottom = 68.0
 
 [node name="InventorySlot7" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 36.0
-margin_top = 36.0
-margin_right = 68.0
-margin_bottom = 68.0
+offset_left = 36.0
+offset_top = 36.0
+offset_right = 68.0
+offset_bottom = 68.0
 
 [node name="InventorySlot8" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 72.0
-margin_top = 36.0
-margin_right = 104.0
-margin_bottom = 68.0
+offset_left = 72.0
+offset_top = 36.0
+offset_right = 104.0
+offset_bottom = 68.0
 
 [node name="InventorySlot9" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 108.0
-margin_top = 36.0
-margin_right = 140.0
-margin_bottom = 68.0
+offset_left = 108.0
+offset_top = 36.0
+offset_right = 140.0
+offset_bottom = 68.0
 
 [node name="InventorySlot10" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 144.0
-margin_top = 36.0
-margin_right = 176.0
-margin_bottom = 68.0
+offset_left = 144.0
+offset_top = 36.0
+offset_right = 176.0
+offset_bottom = 68.0
 
 [node name="InventorySlot11" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 72.0
-margin_right = 32.0
-margin_bottom = 104.0
+offset_top = 72.0
+offset_right = 32.0
+offset_bottom = 104.0
 
 [node name="InventorySlot12" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 36.0
-margin_top = 72.0
-margin_right = 68.0
-margin_bottom = 104.0
+offset_left = 36.0
+offset_top = 72.0
+offset_right = 68.0
+offset_bottom = 104.0
 
 [node name="InventorySlot13" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 72.0
-margin_top = 72.0
-margin_right = 104.0
-margin_bottom = 104.0
+offset_left = 72.0
+offset_top = 72.0
+offset_right = 104.0
+offset_bottom = 104.0
 
 [node name="InventorySlot14" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 108.0
-margin_top = 72.0
-margin_right = 140.0
-margin_bottom = 104.0
+offset_left = 108.0
+offset_top = 72.0
+offset_right = 140.0
+offset_bottom = 104.0
 
 [node name="InventorySlot15" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 144.0
-margin_top = 72.0
-margin_right = 176.0
-margin_bottom = 104.0
+offset_left = 144.0
+offset_top = 72.0
+offset_right = 176.0
+offset_bottom = 104.0
 
 [node name="InventorySlot16" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 108.0
-margin_right = 32.0
-margin_bottom = 140.0
+offset_top = 108.0
+offset_right = 32.0
+offset_bottom = 140.0
 
 [node name="InventorySlot17" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 36.0
-margin_top = 108.0
-margin_right = 68.0
-margin_bottom = 140.0
+offset_left = 36.0
+offset_top = 108.0
+offset_right = 68.0
+offset_bottom = 140.0
 
 [node name="InventorySlot18" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 72.0
-margin_top = 108.0
-margin_right = 104.0
-margin_bottom = 140.0
+offset_left = 72.0
+offset_top = 108.0
+offset_right = 104.0
+offset_bottom = 140.0
 
 [node name="InventorySlot19" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 108.0
-margin_top = 108.0
-margin_right = 140.0
-margin_bottom = 140.0
+offset_left = 108.0
+offset_top = 108.0
+offset_right = 140.0
+offset_bottom = 140.0
 
 [node name="InventorySlot20" parent="Control/TabContainer/Inventory/Items/GridContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 144.0
-margin_top = 108.0
-margin_right = 176.0
-margin_bottom = 140.0
+offset_left = 144.0
+offset_top = 108.0
+offset_right = 176.0
+offset_bottom = 140.0
 
 [node name="Abilities" type="PanelContainer" parent="Control/TabContainer/Inventory"]
-margin_left = 24.0
-margin_top = 57.0
-margin_right = 76.0
-margin_bottom = 217.0
-custom_styles/panel = SubResource( 1 )
+offset_left = 24.0
+offset_top = 57.0
+offset_right = 76.0
+offset_bottom = 217.0
+theme_override_styles/panel = SubResource( 1 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Inventory/Abilities"]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 42.0
-margin_bottom = 150.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 42.0
+offset_bottom = 150.0
 
 [node name="AbilityButton" parent="Control/TabContainer/Inventory/Abilities/VBoxContainer" instance=ExtResource( 16 )]
-Texture = SubResource( 12 )
+Texture2D = SubResource( 12 )
 
 [node name="AbilityButton2" parent="Control/TabContainer/Inventory/Abilities/VBoxContainer" instance=ExtResource( 16 )]
-margin_top = 36.0
-margin_bottom = 68.0
-Texture = SubResource( 13 )
+offset_top = 36.0
+offset_bottom = 68.0
+Texture2D = SubResource( 13 )
 
 [node name="AbilityButton3" parent="Control/TabContainer/Inventory/Abilities/VBoxContainer" instance=ExtResource( 16 )]
-margin_top = 72.0
-margin_bottom = 104.0
-Texture = SubResource( 14 )
+offset_top = 72.0
+offset_bottom = 104.0
+Texture2D = SubResource( 14 )
 
 [node name="AbilityButton4" parent="Control/TabContainer/Inventory/Abilities/VBoxContainer" instance=ExtResource( 16 )]
-margin_top = 108.0
-margin_bottom = 140.0
-Texture = SubResource( 15 )
+offset_top = 108.0
+offset_bottom = 140.0
+Texture2D = SubResource( 15 )
 
 [node name="Description" type="PanelContainer" parent="Control/TabContainer/Inventory"]
-margin_left = 320.0
-margin_top = 137.0
-margin_right = 516.0
-margin_bottom = 273.0
-custom_styles/panel = SubResource( 1 )
+offset_left = 320.0
+offset_top = 137.0
+offset_right = 516.0
+offset_bottom = 273.0
+theme_override_styles/panel = SubResource( 1 )
 
 [node name="ItemDescription" type="Label" parent="Control/TabContainer/Inventory/Description"]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 186.0
-margin_bottom = 126.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 186.0
+offset_bottom = 126.0
 size_flags_vertical = 1
 autowrap = true
 
 [node name="Equipment" type="PanelContainer" parent="Control/TabContainer/Inventory"]
-margin_left = 96.0
-margin_top = 185.0
-margin_right = 292.0
-margin_bottom = 273.0
-custom_styles/panel = SubResource( 1 )
+offset_left = 96.0
+offset_top = 185.0
+offset_right = 292.0
+offset_bottom = 273.0
+theme_override_styles/panel = SubResource( 1 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/TabContainer/Inventory/Equipment"]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 186.0
-margin_bottom = 78.0
-custom_constants/separation = 40
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 186.0
+offset_bottom = 78.0
+theme_override_constants/separation = 40
 script = ExtResource( 14 )
 Equipment = ExtResource( 13 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer"]
-margin_right = 68.0
-margin_bottom = 68.0
+offset_right = 68.0
+offset_bottom = 68.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer"]
-margin_right = 68.0
-margin_bottom = 32.0
+offset_right = 68.0
+offset_bottom = 32.0
 
 [node name="TextureRect" type="TextureRect" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer/HBoxContainer"]
-margin_right = 32.0
-margin_bottom = 32.0
-rect_min_size = Vector2( 32, 0 )
+offset_right = 32.0
+offset_bottom = 32.0
+custom_minimum_size = Vector2( 32, 0 )
 texture = SubResource( 6 )
 expand = true
 
 [node name="InventorySlot" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 36.0
-margin_right = 68.0
-margin_bottom = 32.0
+offset_left = 36.0
+offset_right = 68.0
+offset_bottom = 32.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer"]
-margin_top = 36.0
-margin_right = 68.0
-margin_bottom = 68.0
+offset_top = 36.0
+offset_right = 68.0
+offset_bottom = 68.0
 
 [node name="TextureRect2" type="TextureRect" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer/HBoxContainer2"]
-margin_right = 32.0
-margin_bottom = 32.0
-rect_min_size = Vector2( 32, 0 )
+offset_right = 32.0
+offset_bottom = 32.0
+custom_minimum_size = Vector2( 32, 0 )
 texture = SubResource( 7 )
 expand = true
 
 [node name="InventorySlot2" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer/HBoxContainer2" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 36.0
-margin_right = 68.0
-margin_bottom = 32.0
+offset_left = 36.0
+offset_right = 68.0
+offset_bottom = 32.0
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer"]
-margin_left = 108.0
-margin_right = 176.0
-margin_bottom = 68.0
+offset_left = 108.0
+offset_right = 176.0
+offset_bottom = 68.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer2"]
-margin_right = 68.0
-margin_bottom = 32.0
+offset_right = 68.0
+offset_bottom = 32.0
 
 [node name="TextureRect3" type="TextureRect" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer2/HBoxContainer"]
-margin_right = 32.0
-margin_bottom = 32.0
-rect_min_size = Vector2( 32, 0 )
+offset_right = 32.0
+offset_bottom = 32.0
+custom_minimum_size = Vector2( 32, 0 )
 texture = SubResource( 8 )
 expand = true
 
 [node name="InventorySlot3" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer2/HBoxContainer" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 36.0
-margin_right = 68.0
-margin_bottom = 32.0
+offset_left = 36.0
+offset_right = 68.0
+offset_bottom = 32.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer2"]
-margin_top = 36.0
-margin_right = 68.0
-margin_bottom = 68.0
+offset_top = 36.0
+offset_right = 68.0
+offset_bottom = 68.0
 
 [node name="TextureRect4" type="TextureRect" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer2/HBoxContainer2"]
-margin_right = 32.0
-margin_bottom = 32.0
-rect_min_size = Vector2( 32, 0 )
+offset_right = 32.0
+offset_bottom = 32.0
+custom_minimum_size = Vector2( 32, 0 )
 texture = SubResource( 9 )
 expand = true
 
 [node name="InventorySlot4" parent="Control/TabContainer/Inventory/Equipment/HBoxContainer/VBoxContainer2/HBoxContainer2" instance=ExtResource( 10 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 36.0
-margin_right = 68.0
-margin_bottom = 32.0
+offset_left = 36.0
+offset_right = 68.0
+offset_bottom = 32.0
 
 [node name="Stats" parent="Control/TabContainer/Inventory" instance=ExtResource( 11 )]
-margin_left = 320.0
-margin_top = 23.0
-margin_right = 516.0
-margin_bottom = 107.0
+offset_left = 320.0
+offset_top = 23.0
+offset_right = 516.0
+offset_bottom = 107.0
 
 [node name="StatsLabel" type="Label" parent="Control/TabContainer/Inventory"]
-margin_left = 328.0
-margin_top = 9.0
-margin_right = 368.0
-margin_bottom = 22.0
+offset_left = 328.0
+offset_top = 9.0
+offset_right = 368.0
+offset_bottom = 22.0
 text = "Stats"
 
 [node name="DescriptionLabel" type="Label" parent="Control/TabContainer/Inventory"]
-margin_left = 330.0
-margin_top = 121.0
-margin_right = 387.0
-margin_bottom = 134.0
+offset_left = 330.0
+offset_top = 121.0
+offset_right = 387.0
+offset_bottom = 134.0
 text = "Description"
 
 [node name="Quests" type="Control" parent="Control/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = 23.0
+offset_top = 23.0
 script = ExtResource( 6 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Control/TabContainer/Quests"]
-margin_left = 32.0
-margin_top = 25.0
-margin_right = 256.0
-margin_bottom = 267.0
+offset_left = 32.0
+offset_top = 25.0
+offset_right = 256.0
+offset_bottom = 267.0
 follow_focus = true
 scroll_horizontal_enabled = false
 
@@ -470,94 +470,94 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 0.0
-margin_top = 0.0
-margin_right = 224.0
-margin_bottom = 192.0
-rect_min_size = Vector2( 224, 192 )
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 224.0
+offset_bottom = 192.0
+custom_minimum_size = Vector2( 224, 192 )
 
 [node name="QuestItem" parent="Control/TabContainer/Quests/ScrollContainer/ButtonMenu" instance=ExtResource( 7 )]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Quests"]
-margin_left = 304.0
-margin_top = 25.0
-margin_right = 518.0
-margin_bottom = 249.0
+offset_left = 304.0
+offset_top = 25.0
+offset_right = 518.0
+offset_bottom = 249.0
 
 [node name="Title" type="Label" parent="Control/TabContainer/Quests/VBoxContainer"]
-margin_right = 214.0
-margin_bottom = 18.0
-rect_min_size = Vector2( 214, 0 )
-custom_fonts/font = SubResource( 5 )
+offset_right = 214.0
+offset_bottom = 18.0
+custom_minimum_size = Vector2( 214, 0 )
+theme_override_fonts/font = SubResource( 5 )
 text = "Quest Name"
 autowrap = true
 
 [node name="Description" type="Label" parent="Control/TabContainer/Quests/VBoxContainer"]
 modulate = Color( 1, 1, 1, 0.501961 )
-margin_top = 22.0
-margin_right = 214.0
-margin_bottom = 35.0
-rect_min_size = Vector2( 200, 0 )
+offset_top = 22.0
+offset_right = 214.0
+offset_bottom = 35.0
+custom_minimum_size = Vector2( 200, 0 )
 text = "Description"
 autowrap = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Control/TabContainer/Quests/VBoxContainer"]
-margin_top = 39.0
-margin_right = 214.0
-margin_bottom = 224.0
+offset_top = 39.0
+offset_right = 214.0
+offset_bottom = 224.0
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer"]
-margin_right = 168.0
-margin_bottom = 176.0
+offset_right = 168.0
+offset_bottom = 176.0
 
 [node name="QuestStepItem" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 9 )]
-margin_right = 168.0
+offset_right = 168.0
 
 [node name="ItemDeliverQuestStepItem" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 17 )]
-margin_top = 36.0
-margin_bottom = 68.0
+offset_top = 36.0
+offset_bottom = 68.0
 
 [node name="ItemDeliverQuestStepItem2" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 17 )]
-margin_top = 72.0
-margin_bottom = 104.0
+offset_top = 72.0
+offset_bottom = 104.0
 
 [node name="ItemDeliverQuestStepItem3" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 17 )]
-margin_top = 108.0
-margin_bottom = 140.0
+offset_top = 108.0
+offset_bottom = 140.0
 
 [node name="ItemDeliverQuestStepItem4" parent="Control/TabContainer/Quests/VBoxContainer/ScrollContainer/VBoxContainer" instance=ExtResource( 17 )]
-margin_top = 144.0
-margin_bottom = 176.0
+offset_top = 144.0
+offset_bottom = 176.0
 
 [node name="System" type="Control" parent="Control/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = 23.0
+offset_top = 23.0
 
 [node name="ButtonMenu" parent="Control/TabContainer/System" instance=ExtResource( 3 )]
-margin_left = -55.0
-margin_top = -38.5
-margin_right = 55.0
-margin_bottom = 38.5
-custom_constants/separation = 10
+offset_left = -55.0
+offset_top = -38.5
+offset_right = 55.0
+offset_bottom = 38.5
+theme_override_constants/separation = 10
 
 [node name="Save" type="Button" parent="Control/TabContainer/System/ButtonMenu"]
-margin_right = 110.0
-margin_bottom = 19.0
+offset_right = 110.0
+offset_bottom = 19.0
 text = "Save"
 
 [node name="Load" type="Button" parent="Control/TabContainer/System/ButtonMenu"]
-margin_top = 29.0
-margin_right = 110.0
-margin_bottom = 48.0
+offset_top = 29.0
+offset_right = 110.0
+offset_bottom = 48.0
 text = "Load"
 
 [node name="Menu" type="Button" parent="Control/TabContainer/System/ButtonMenu"]
-margin_top = 58.0
-margin_right = 110.0
-margin_bottom = 77.0
+offset_top = 58.0
+offset_right = 110.0
+offset_bottom = 77.0
 text = "Back To Main Menu"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

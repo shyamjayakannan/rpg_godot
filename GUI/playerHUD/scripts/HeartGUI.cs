@@ -1,9 +1,9 @@
 using Godot;
 
-public class HeartGUI : Control
+public partial class HeartGUI : Control
 {
     // private
-    private Sprite heartSprite;
+    private Sprite2D heartSprite;
     private int frameNumber;
 
     // properties
@@ -20,7 +20,7 @@ public class HeartGUI : Control
     // methods
     public override void _Ready()
     {
-        heartSprite = GetNode<Sprite>("Sprite");
+        heartSprite = GetNode<Sprite2D>("Sprite2D");
     }
 
     private void UpdateSprite()

@@ -1,10 +1,10 @@
 using Godot;
 
-public class PersistentDataHandler : Node
+public partial class PersistentDataHandler : Node
 {
     // Signals
     [Signal]
-    public delegate void DataLoaded(bool value);
+    public delegate void DataLoadedEventHandler(bool value);
 
     // private
     private bool value = false;
@@ -34,6 +34,6 @@ public class PersistentDataHandler : Node
 
     private string GetItemName()
     {
-        return $"{GetTree().CurrentScene.Filename}/{GetParent().Name}/{Name}";
+        return $"{GetTree().CurrentScene.SceneFilePath}/{GetParent().Name}/{Name}";
     }
 }

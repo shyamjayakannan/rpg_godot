@@ -11,13 +11,13 @@ namespace MonoCustomResourceRegistry
 {
 #if TOOLS
 	[Tool]
-	public class Plugin : EditorPlugin
+	public partial class Plugin : EditorPlugin
 	{
 		// We're not going to hijack the Mono Build button since it actually takes time to build
 		// and we can't be sure how long that is. I guess we have to leave refreshing to the user for now.
 		// There isn't any automation we can do to fix that.
 		// private Button MonoBuildButton => GetNode<Button>("/root/EditorNode/@@580/@@581/@@589/@@590/ToolButton");
-		private readonly List<string> customTypes = new List<string>();
+		private List<string> customTypes = new();
 		private Button refreshButton;
 
 		public override void _EnterTree()
@@ -27,7 +27,7 @@ namespace MonoCustomResourceRegistry
 
 			AddControlToContainer(CustomControlContainer.Toolbar, refreshButton);
 			refreshButton.Icon = refreshButton.GetIcon("Reload", "EditorIcons");
-			refreshButton.Connect("pressed", this, nameof(OnRefreshPressed));
+			refreshButton.Connect(BaseButton.SignalName.Pressed, new(this, nameof(OnRefreshPressed)));
 
 			Settings.Init();
 			RefreshCustomClasses();
@@ -78,7 +78,7 @@ namespace MonoCustomResourceRegistry
 			{
 				if (file.FileExists(attribute.iconPath))
 				{
-					Texture rawIcon = ResourceLoader.Load<Texture>(attribute.iconPath);
+					Texture2D rawIcon = ResourceLoader.Load<Texture2D>(attribute.iconPath);
 					if (rawIcon != null)
 					{
 						Image image = rawIcon.GetData();
@@ -136,7 +136,7 @@ namespace MonoCustomResourceRegistry
 
 		private static string FindClassPathRecursiveHelper(Type type, string directory)
 		{
-			Directory dir = new Directory();
+			DirAccess dir = new();
 
 			if (dir.Open(directory) == Error.Ok)
 			{

@@ -1,10 +1,10 @@
-using System.Collections.Generic;
 using Godot;
+using Godot.Collections;
 using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(DialogBranchResource), "res://GUI/dialogSystem/icons/answer_bubble.png", nameof(Resource))]
-public class DialogBranchResource : DialogItemResource
+public partial class DialogBranchResource : DialogItemResource
 {
 	// Exports
 	[Export]
@@ -18,7 +18,7 @@ public class DialogBranchResource : DialogItemResource
 		}
 	}
 	[Export]
-	public List<DialogItemResource> DialogItemResources { get; private set; } = new List<DialogItemResource>();
+	public Array<DialogItemResource> DialogItemResources { get; private set; } = new();
 
 	// private
 	private string text = "Ok...";

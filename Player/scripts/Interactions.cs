@@ -1,11 +1,11 @@
 using Godot;
 
-public class Interactions : Node2D
+public partial class Interactions : Node2D
 {
     // methods
     public override void _Ready()
     {
-        GlobalPlayerManager.Instance.Player.Connect(nameof(Player.PlayerDirectionChanged), this, nameof(OnPlayerDirectionChanged));
+        GlobalPlayerManager.Instance.Player.Connect(Player.SignalName.PlayerDirectionChanged, new(this, MethodName.OnPlayerDirectionChanged));
     }
 
     private void OnPlayerDirectionChanged(Vector2 newDirection)

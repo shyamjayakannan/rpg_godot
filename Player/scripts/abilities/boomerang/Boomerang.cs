@@ -1,12 +1,12 @@
 using Godot;
 
-public class Boomerang : Node2D
+public partial class Boomerang : Node2D
 {
     // Exports
     [Export]
-    private readonly float acceleration = 500.0f;
+    private float acceleration = 500.0f;
     [Export]
-    private readonly float maxSpeed = 400.0f;
+    private float maxSpeed = 400.0f;
 
     // private
     private float speed = 0;
@@ -37,7 +37,7 @@ public class Boomerang : Node2D
         Hide();
     }
 
-    public override void _PhysicsProcess(float delta)
+    public override void _PhysicsProcess(double delta)
     {
         switch (BoomerangState)
         {
@@ -45,7 +45,7 @@ public class Boomerang : Node2D
                 return;
 
             case State.THROW:
-                speed -= acceleration * delta;
+                speed -= acceleration * (float)delta;
 
                 if (speed <= 0)
                     BoomerangState = State.RETURN;
@@ -65,12 +65,12 @@ public class Boomerang : Node2D
                     itemMagnet.Monitoring = false;
                 }
 
-                speed += acceleration * delta;
+                speed += acceleration * (float)delta;
                 direction = GlobalPosition.DirectionTo(player.GlobalPosition);
                 break;
         }
 
-        Position += speed * direction * delta;
+        Position += speed * direction * (float)delta;
     }
 
     public void Throw(Vector2 throwDirection)

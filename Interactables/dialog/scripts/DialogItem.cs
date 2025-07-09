@@ -13,7 +13,7 @@ public abstract partial class DialogItem : Node2D
         if (editorSelection == null)
             return;
 
-        Godot.Collections.Array selectedNodes = editorSelection.GetSelectedNodes();
+        Godot.Collections.Array<Node> selectedNodes = editorSelection.GetSelectedNodes();
 
         // not this because in case of duplication, the duplicate also references the same examplesystem.
         // because of this, when on duplication the duplicate receives a child examplesystem, the examplesystem is not
@@ -40,7 +40,7 @@ public abstract partial class DialogItem : Node2D
         if (selectedNodes.Count == 0 || this != selectedNodes[0])
             return;
 
-        ExampleSystem = (DialogSystem)dialogSystemScene.Instance();
+        ExampleSystem = (DialogSystem)dialogSystemScene.Instantiate();
         ExampleSystem.Offset = GetParentGlobalPosition() + new Vector2(32, -200);
         AddChild(ExampleSystem);
 
@@ -71,7 +71,7 @@ public abstract partial class DialogItem : Node2D
 
     // private
     private DialogItemResource dialogItemResource;
-    private readonly PackedScene dialogSystemScene = GD.Load<PackedScene>("res://GUI/dialogSystem/DialogSystem.tscn");
+    private PackedScene dialogSystemScene = GD.Load<PackedScene>("res://GUI/dialogSystem/DialogSystem.tscn");
 
     // properties
     protected DialogSystem ExampleSystem { get; private set; }
@@ -81,10 +81,10 @@ public abstract partial class DialogItem : Node2D
     public override void _Ready()
     {
 #if TOOLS
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
         {
-            editorSelection = new EditorPlugin().GetEditorInterface().GetSelection();
-            editorSelection.Connect("selection_changed", this, nameof(OnSelectionChanged));
+            editorSelection = EditorInterface.Singleton.GetSelection();
+            editorSelection.Connect(EditorSelection.SignalName.SelectionChanged, new(this, MethodName.OnSelectionChanged));
             return;
         }
 #endif
@@ -144,7 +144,7 @@ public abstract partial class DialogItem : Node2D
 
     public virtual void OnResourceLoaded()
     {
-        if (!DialogItemResource.IsConnected("changed", this, nameof(SetEditorDisplay)))
-            DialogItemResource.Connect("changed", this, nameof(SetEditorDisplay));
+        if (!DialogItemResource.IsConnected(Resource.SignalName.Changed, new(this, MethodName.SetEditorDisplay)))
+            DialogItemResource.Connect(Resource.SignalName.Changed, new(this, MethodName.SetEditorDisplay));
     }
 }

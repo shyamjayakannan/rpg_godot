@@ -3,7 +3,7 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(QuestAdvanceResource), "res://Quests/utilityNodes/icons/quest_advance.png", nameof(Resource))]
-public class QuestAdvanceResource : QuestNodeResource
+public partial class QuestAdvanceResource : QuestNodeResource
 {
     // methods
     public void AdvanceQuest()
@@ -14,7 +14,7 @@ public class QuestAdvanceResource : QuestNodeResource
         QuestStepResource step = GetStep();
 
         // this step can be any of the itemdeliver steps in the quest. we will check and update all
-        if (!(step is ItemDeliverQuestStepResource))
+        if (step is not ItemDeliverQuestStepResource)
         {
             GlobalQuestManager.Instance.UpdateQuest(LinkedQuest.Title, LinkedQuest, step.Step == "N/A" ? "" : step.Step);
             return;

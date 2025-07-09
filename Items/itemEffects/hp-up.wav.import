@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/hp-up.wav-5923741ebbcd4a11b9db6308f4241725.sample"
+type="AudioStreamWAV"
+uid="uid://ccg74arghxmar"
+path="res://.godot/imported/hp-up.wav-5923741ebbcd4a11b9db6308f4241725.sample"
 
 [deps]
 
 source_file="res://Items/itemEffects/hp-up.wav"
-dest_files=[ "res://.import/hp-up.wav-5923741ebbcd4a11b9db6308f4241725.sample" ]
+dest_files=["res://.godot/imported/hp-up.wav-5923741ebbcd4a11b9db6308f4241725.sample"]
 
 [params]
 

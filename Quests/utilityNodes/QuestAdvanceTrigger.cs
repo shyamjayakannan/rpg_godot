@@ -3,20 +3,20 @@ using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(QuestAdvanceTrigger), "res://Quests/utilityNodes/icons/quest_advance.png", nameof(Node2D))]
-public class QuestAdvanceTrigger : QuestNode
+public partial class QuestAdvanceTrigger : QuestNode
 {
     // Exports
     [Export]
-    private readonly string signal;
+    private string signal;
 
     // methods
     public override void _Ready()
     {
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
-        GetNode<Sprite>("Sprite").QueueFree();
-        GetParent().Connect(signal, this, nameof(AdvanceQuest));
+        GetNode<Sprite2D>("Sprite2D").QueueFree();
+        GetParent().Connect(signal, new(this, MethodName.AdvanceQuest));
     }
 
     private void AdvanceQuest()

@@ -1,14 +1,14 @@
 using Godot;
 
-public class InventorySlot : Button
+public partial class InventorySlot : Button
 {
 	// Signals
 	[Signal]
-	public delegate void EquipmentSelected(EquipableItem item);
+	public delegate void EquipmentSelectedEventHandler(EquipableItem item);
 	[Signal]
-	public delegate void EquipmentFocused(EquipableItem item, bool update);
+	public delegate void EquipmentFocusedEventHandler(EquipableItem item, bool update);
 	[Signal]
-	public delegate void MouseEntered();
+	public delegate void MouseEnteredEventHandler();
 
 	// private
 	private SlotData slotData;
@@ -16,7 +16,7 @@ public class InventorySlot : Button
 	private Label label;
 	private bool buttonDown = false;
 	private TextureRect dragTexture;
-	private readonly float dragThreshold = 0.2f;
+	private float dragThreshold = 0.2f;
 	private float timer = 0;
 	private bool alreadyEmitted = false;
 
@@ -36,7 +36,7 @@ public class InventorySlot : Button
 				return;
 			}
 
-			textureRect.Texture = slotData.Item.Texture;
+			textureRect.Texture = slotData.Item.Texture2D;
 			label.Text = slotData.Item is EquipableItem ? "" : slotData.Quantity.ToString();
 		}
 	}
@@ -51,13 +51,13 @@ public class InventorySlot : Button
 		textureRect.Texture = null;
 		label.Text = "";
 
-		Connect("pressed", this, nameof(OnInventorySlotPressed));
-		Connect("focus_entered", this, nameof(OnInventorySlotFocusEntered));
-		Connect("focus_exited", this, nameof(OnInventorySlotFocusExited));
-		Connect("button_down", this, nameof(OnButtonDown));
+		Connect(BaseButton.SignalName.Pressed, new(this, MethodName.OnInventorySlotPressed));
+		Connect(Control.SignalName.FocusEntered, new(this, MethodName.OnInventorySlotFocusEntered));
+		Connect(Control.SignalName.FocusExited, new(this, MethodName.OnInventorySlotFocusExited));
+		Connect(BaseButton.SignalName.ButtonDown, new(this, MethodName.OnButtonDown));
 	}
 
-	public override void _Process(float delta)
+	public override void _Process(double delta)
 	{
 		if (GetGlobalRect().HasPoint(GetGlobalMousePosition()))
 		{
@@ -72,7 +72,7 @@ public class InventorySlot : Button
 
 		if (buttonDown && !Dragging)
 		{
-			timer += delta;
+			timer += (float)delta;
 
 			if (timer > dragThreshold)
 			{
@@ -84,7 +84,7 @@ public class InventorySlot : Button
 			timer = 0;
 
 		if (Dragging)
-			dragTexture.RectGlobalPosition = GetGlobalMousePosition() - dragTexture.RectSize / 2;
+			dragTexture.GlobalPosition = GetGlobalMousePosition() - dragTexture.Size / 2;
 	}
 
 	public void OnButtonUp()
@@ -98,15 +98,15 @@ public class InventorySlot : Button
 	{
 		buttonDown = true;
 		dragTexture = (TextureRect)textureRect.Duplicate();
-		dragTexture.RectGlobalPosition = textureRect.RectGlobalPosition;
+		dragTexture.GlobalPosition = textureRect.GlobalPosition;
 		dragTexture.MouseFilter = MouseFilterEnum.Ignore;
 		PauseMenu.Instance.AddChild(dragTexture);
 	}
 
 	private void PlayAudio(AudioStream audioStream)
 	{
-		if (AudioStreamPlayer.IsConnected("finished", this, nameof(PlayAudio)))
-			AudioStreamPlayer.Disconnect("finished", this, nameof(PlayAudio));
+		if (AudioStreamPlayer.IsConnected("finished", new(this, nameof(PlayAudio))))
+			AudioStreamPlayer.Disconnect("finished", new(this, nameof(PlayAudio)));
 
 		AudioStreamPlayer.Stream = audioStream;
 		AudioStreamPlayer.Play();
@@ -115,7 +115,7 @@ public class InventorySlot : Button
 	private void OnInventorySlotFocusEntered()
 	{
 		if (AudioStreamPlayer.Playing)
-			AudioStreamPlayer.Connect("finished", this, nameof(PlayAudio), new Godot.Collections.Array(ButtonMenu.ButtonFocusSound));
+			AudioStreamPlayer.Connect(AudioStreamPlayer.SignalName.Finished, Callable.From(() => PlayAudio(ButtonMenu.ButtonFocusSound)));
 		else
 			PlayAudio(ButtonMenu.ButtonFocusSound);
 
@@ -132,7 +132,7 @@ public class InventorySlot : Button
 		PauseMenu.Instance.UpdateDescription(SlotData.Item.Description);
 	}
 
-	private void OnInventorySlotFocusExited()
+	private static void OnInventorySlotFocusExited()
 	{
 		PauseMenu.Instance.UpdateDescription("");
 		PauseMenu.Instance.Stats.UpdateStats(0, 0);
@@ -155,7 +155,7 @@ public class InventorySlot : Button
 		if (slotData.Quantity == 1)
 		{
 			QueueFree();
-			int index = GetPositionInParent();
+			int index = GetIndex();
 			GlobalPlayerManager.Instance.PlayerInventory.Slots.RemoveAt(index);
 			PauseMenu.Instance.EmitSignal(nameof(PauseMenu.ItemRemoved));
 

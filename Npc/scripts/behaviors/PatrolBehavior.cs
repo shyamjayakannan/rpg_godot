@@ -3,18 +3,18 @@ using System.Linq;
 using Godot;
 
 [Tool]
-public class PatrolBehavior : NPCBehavior
+public partial class PatrolBehavior : NPCBehavior
 {
     // Exports
     [Export]
-    private readonly float walkSpeed = 30.0f;
+    private float walkSpeed = 30.0f;
 
     // private
     private bool alreadyCalled = false;
-    private readonly List<PatrolLocation> patrolLocations = new List<PatrolLocation>();
+    private List<PatrolLocation> patrolLocations = new();
     private PatrolLocation target;
     private int currentIndex = 0;
-    private readonly Color[] colors = new Color[] { new Color(0, 0, 1), new Color(0, 1, 0), new Color(1, 0, 0), new Color(0, 1, 1), new Color(1, 0, 1), new Color(1, 1, 0) };
+    private Color[] colors = new Color[] { new(0, 0, 1), new(0, 1, 0), new(1, 0, 0), new(0, 1, 1), new(1, 0, 1), new(1, 1, 0) };
 
     // methods
     public override void _Ready()
@@ -22,7 +22,7 @@ public class PatrolBehavior : NPCBehavior
         base._Ready();
         UpdatePatrolLocations();
 
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
         if (patrolLocations.Count == 0)
@@ -37,7 +37,7 @@ public class PatrolBehavior : NPCBehavior
 
     public override void _Notification(int what)
     {
-        if (!Engine.EditorHint)
+        if (!Engine.IsEditorHint())
             return;
 
         if (what != NotificationChildOrderChanged)
@@ -46,9 +46,9 @@ public class PatrolBehavior : NPCBehavior
         UpdatePatrolLocations();
     }
 
-    public override void _Process(float delta)
+    public override void _Process(double delta)
     {
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
         if (!alreadyCalled && Npc.GlobalPosition.DistanceTo(target.TargetPosition) < 1)
@@ -58,20 +58,20 @@ public class PatrolBehavior : NPCBehavior
     public void UpdatePatrolLocations()
     {
         patrolLocations.Clear();
-        Godot.Collections.Array children = GetChildren();
+        Godot.Collections.Array<Node> children = GetChildren();
 
         for (int i = 0; i < children.Count; i++)
         {
             PatrolLocation patrolLocation = (PatrolLocation)children[i];
             patrolLocations.Add(patrolLocation);
 
-            if (!Engine.EditorHint)
+            if (!Engine.IsEditorHint())
                 continue;
 
             ChangePatrolLocations(i);
         }
 
-        if (children.Count > 0 && Engine.EditorHint)
+        if (children.Count > 0 && Engine.IsEditorHint())
             patrolLocations.Last().UpdateLine(patrolLocations[0].GlobalPosition);
     }
 
@@ -95,8 +95,8 @@ public class PatrolBehavior : NPCBehavior
         patrolLocations[i].Modulate = colors[i % colors.Length];
         patrolLocations[i].Index = i;
 
-        if (!patrolLocations[i].IsConnected(nameof(PatrolLocation.TransformChanged), this, nameof(OnTransformChanged)))
-            patrolLocations[i].Connect(nameof(PatrolLocation.TransformChanged), this, nameof(OnTransformChanged));
+        if (!patrolLocations[i].IsConnected(PatrolLocation.SignalName.TransformChanged, new(this, MethodName.OnTransformChanged)))
+            patrolLocations[i].Connect(PatrolLocation.SignalName.TransformChanged, new(this, MethodName.OnTransformChanged));
     }
 
     protected override void Start()
@@ -115,7 +115,7 @@ public class PatrolBehavior : NPCBehavior
         Npc.Velocity = Vector2.Zero;
         Npc.UpdateAnimation();
 
-        GetTree().CreateTimer(target.WaitTime, false).Connect("timeout", this, nameof(Start2));
+        GetTree().CreateTimer(target.WaitTime, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Start2));
     }
 
     private void Start2()

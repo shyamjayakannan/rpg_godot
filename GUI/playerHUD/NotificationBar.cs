@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using Godot;
 
-public class NotificationBar : Control
+public partial class NotificationBar : Control
 {
     // private
     private PanelContainer panelContainer;
     private AnimationPlayer animationPlayer;
     private Label title;
     private Label message;
-    private readonly Queue<Notification> notifications = new Queue<Notification>();
+    private Queue<Notification> notifications = new();
 
     // properties
     public new struct Notification
@@ -26,7 +26,7 @@ public class NotificationBar : Control
         message = GetNode<Label>("PanelContainer/VBoxContainer/Message");
         panelContainer.Hide();
 
-        animationPlayer.Connect("animation_finished", this, nameof(DisplayNotification));
+        animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.DisplayNotification));
     }
 
     private void DisplayNotification(string animName = null)

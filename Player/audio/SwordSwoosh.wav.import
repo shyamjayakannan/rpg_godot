@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/SwordSwoosh.wav-becdece7c98872eab8b1ea06def51f2a.sample"
+type="AudioStreamWAV"
+uid="uid://cyft3aplvqlod"
+path="res://.godot/imported/SwordSwoosh.wav-becdece7c98872eab8b1ea06def51f2a.sample"
 
 [deps]
 
 source_file="res://Player/audio/SwordSwoosh.wav"
-dest_files=[ "res://.import/SwordSwoosh.wav-becdece7c98872eab8b1ea06def51f2a.sample" ]
+dest_files=["res://.godot/imported/SwordSwoosh.wav-becdece7c98872eab8b1ea06def51f2a.sample"]
 
 [params]
 

@@ -1,15 +1,15 @@
 using System.Linq;
 using Godot;
 
-public class Player : KinematicBody2D
+public partial class Player : CharacterBody2D
 {
 	// Signals
 	[Signal]
-	public delegate void AttackAnimationOver();
+	public delegate void AttackAnimationOverEventHandler();
 	[Signal]
-	public delegate void PlayerDamaged(HurtBox hurtBox);
+	public delegate void PlayerDamagedEventHandler(HurtBox hurtBox);
 	[Signal]
-	public delegate void PlayerDirectionChanged(Vector2 newDirection);
+	public delegate void PlayerDirectionChangedEventHandler(Vector2 newDirection);
 
 	// private
 	private AnimationPlayer attackAnimationPlayer;
@@ -25,7 +25,7 @@ public class Player : KinematicBody2D
 	private int attack = 1;
 
 	// properties
-	public Sprite Sprite { get; private set; }
+	public Sprite2D Sprite2D { get; private set; }
 	public int[] LevelUpXpRequirements { get; private set; } = new int[4] { 0, 50, 100, 200 };
 	public AnimationPlayer AnimationPlayer { get; private set; }
 	public int Hp { get; private set; } = 4;
@@ -48,9 +48,8 @@ public class Player : KinematicBody2D
 		}
 	}
 	public int Bombs = 10;
-	public int Arrows = 0;
+	public int Arrows = 10;
 	public Vector2 Direction { get; private set; } = Vector2.Zero;
-	public Vector2 Velocity { get; set; } = Vector2.Zero;
 	public AnimationPlayer EffectAnimationPlayer { get; private set; }
 	public Throwable Throwable { get; set; }
 
@@ -60,20 +59,20 @@ public class Player : KinematicBody2D
 		UpdateHP(MaxHp);
 
 		AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-		attackAnimationPlayer = GetNode<AnimationPlayer>("Sprite/AttackEffects/AnimationPlayer");
+		attackAnimationPlayer = GetNode<AnimationPlayer>("Sprite2D/AttackEffects/AnimationPlayer");
 		EffectAnimationPlayer = GetNode<AnimationPlayer>("EffectAnimationPlayer");
-		Sprite = GetNode<Sprite>("Sprite");
-		attackHurtBox = Sprite.GetNode<HurtBox>("HurtBox");
-		chargeAttackHurtBox = Sprite.GetNode<HurtBox>("ChargeHurtBox");
+		Sprite2D = GetNode<Sprite2D>("Sprite2D");
+		attackHurtBox = Sprite2D.GetNode<HurtBox>("HurtBox");
+		chargeAttackHurtBox = Sprite2D.GetNode<HurtBox>("ChargeHurtBox");
 		stateMachine = GetNode<PlayerStateMachine>("PlayerStateMachine");
 		liftState = GetNode<LiftState>("PlayerStateMachine/LiftState");
 		idleState = GetNode<IdleState>("PlayerStateMachine/IdleState");
 		hitBox = GetNode<HitBox>("HitBox");
-		heldItems = GetNode<Node2D>("Sprite/HeldItems");
+		heldItems = GetNode<Node2D>("Sprite2D/HeldItems");
 
-		hitBox.Connect(nameof(HitBox.Damaged), this, nameof(OnHitBoxDamaged));
-		AnimationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
-		GlobalLevelManager.Instance.Connect(nameof(GlobalLevelManager.LevelLoaded), this, nameof(OnLevelLoaded));
+		hitBox.Connect(HitBox.SignalName.Damaged, new(this, MethodName.OnHitBoxDamaged));
+		AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
+		GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoaded, new(this, MethodName.OnLevelLoaded));
 
 		stateMachine.Initialize(this);
 	}
@@ -97,16 +96,16 @@ public class Player : KinematicBody2D
 		Direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
 	}
 
-	public override void _PhysicsProcess(float delta)
+	public override void _PhysicsProcess(double delta)
 	{
-		MoveAndSlide(Velocity, Vector2.Up, false, 4, Mathf.Pi / 4, false);
+		MoveAndSlide();
 
-		if (GetSlideCount() == 0)
+		if (GetSlideCollisionCount() == 0)
 			return;
 
 		KinematicCollision2D collision = GetSlideCollision(0);
 
-		if (collision.Collider is RigidBody2D body2D)
+		if (collision.GetCollider() is RigidBody2D body2D)
 			body2D.ApplyCentralImpulse(Direction * 1000.0f);
 	}
 
@@ -133,17 +132,17 @@ public class Player : KinematicBody2D
 		if (Direction == Vector2.Zero)
 			return false;
 
-		if (Direction.x != 0)
-			CardinalDirection = Direction.x > 0 ? Vector2.Right : Vector2.Left;
+		if (Direction.X != 0)
+			CardinalDirection = Direction.X > 0 ? Vector2.Right : Vector2.Left;
 		else
-			CardinalDirection = Direction.y >= 0 ? Vector2.Down : Vector2.Up;
+			CardinalDirection = Direction.Y >= 0 ? Vector2.Down : Vector2.Up;
 
 		EmitSignal(nameof(PlayerDirectionChanged), CardinalDirection);
 
-		if (CardinalDirection.x < 0)
-			Sprite.Scale = new Vector2(-1, 1);
+		if (CardinalDirection.X < 0)
+			Sprite2D.Scale = new Vector2(-1, 1);
 		else
-			Sprite.Scale = new Vector2(1, 1);
+			Sprite2D.Scale = new Vector2(1, 1);
 
 		return true;
 	}
@@ -196,7 +195,7 @@ public class Player : KinematicBody2D
 	{
 		invulnerable = true;
 		SetDeferred("hitBox.Monitoring", false);
-		GetTree().CreateTimer(stunDuration, false).Connect("timeout", this, nameof(MakeInvulnerable2));
+		GetTree().CreateTimer(stunDuration, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.MakeInvulnerable2));
 	}
 
 	private void MakeInvulnerable2()
@@ -228,5 +227,10 @@ public class Player : KinematicBody2D
 	public State GetCurrentState()
 	{
 		return stateMachine.GetCurrentState();
+	}
+
+	public void SetCurrentState(State state)
+	{
+		stateMachine.ChangeState(state);
 	}
 }

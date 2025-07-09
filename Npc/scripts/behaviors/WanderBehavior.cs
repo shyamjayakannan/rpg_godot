@@ -1,36 +1,37 @@
+using System.Linq;
 using Godot;
 
 [Tool]
-public class WanderBehavior : NPCBehavior
+public partial class WanderBehavior : NPCBehavior
 {
     // Exports
     [Export]
-    private readonly float wanderSpeed = 30.0f;
+    private float wanderSpeed = 30.0f;
     [Export]
-    private readonly float wanderDuration = 5.0f;
+    private float wanderDuration = 5.0f;
     [Export]
-    private readonly float idleDuration = 1.0f;
+    private float idleDuration = 1.0f;
 
     // private
-    private readonly Vector2[] directions = new Vector2[] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
+    private Vector2[] directions = new Vector2[] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
     private Area2D area2D;
 
     // methods
     public override void _Ready()
     {
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
             return;
 
         base._Ready();
-        Npc.Connect(nameof(Npc.DoBehaviorEnabled), this, nameof(Start));
+        Npc.Connect(Npc.SignalName.DoBehaviorEnabled, new(this, MethodName.Start));
         area2D = GetNode<Area2D>("Area2D");
         area2D.CollisionMask = 8;
         RemoveChild(area2D);
         area2D.GlobalPosition = GlobalPosition;
         Npc.GetParent().CallDeferred("add_child", area2D);
 
-        Connect("tree_exited", this, nameof(Destroy));
-        area2D.Connect("body_exited", this, nameof(OnAreaExited));
+        Connect(Node.SignalName.TreeExited, new(this, MethodName.Destroy));
+        area2D.Connect(Area2D.SignalName.BodyExited, new(this, MethodName.OnAreaExited));
     }
 
     private void Destroy()
@@ -38,14 +39,14 @@ public class WanderBehavior : NPCBehavior
         area2D.QueueFree();
     }
 
-    public override string _GetConfigurationWarning()
+    public override string[] _GetConfigurationWarnings()
     {
         int count = 0;
 
-        foreach (Area2D child in GetChildren())
+        foreach (Area2D child in GetChildren().Cast<Area2D>())
             count++;
 
-        return count < 1 ? "please add one area2d node" : count > 1 ? "please add only one are2d node" : "";
+        return count < 1 ? new[] { "please add one area2d node" } : count > 1 ? new[] { "please add only one are2d node" } : System.Array.Empty<string>();
     }
 
     private void OnAreaExited(Node body)
@@ -70,7 +71,7 @@ public class WanderBehavior : NPCBehavior
         Npc.Velocity = Vector2.Zero;
         Npc.UpdateAnimation();
 
-        GetTree().CreateTimer(idleDuration * GD.Randf(), false).Connect("timeout", this, nameof(Start2));
+        GetTree().CreateTimer(idleDuration * GD.Randf(), false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Start2));
     }
 
     private void Start2()
@@ -85,7 +86,7 @@ public class WanderBehavior : NPCBehavior
         Npc.UpdateDirection(direction);
         Npc.UpdateAnimation();
 
-        GetTree().CreateTimer(wanderDuration * GD.Randf(), false).Connect("timeout", this, nameof(Start));
+        GetTree().CreateTimer(wanderDuration * GD.Randf(), false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Start));
     }
 
 }

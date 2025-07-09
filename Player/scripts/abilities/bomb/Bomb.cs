@@ -1,14 +1,14 @@
 using Godot;
 
-public class Bomb : Throwable
+public partial class Bomb : Throwable
 {
     // Export
     [Export]
-    private readonly float fuseDuration = 4;
+    private float fuseDuration = 4;
     [Export]
-    private readonly float bounciness = 2;
+    private float bounciness = 2;
     [Export]
-    private readonly int maxBounces = 5;
+    private int maxBounces = 5;
 
     // private
     private int bounceCount = 0;
@@ -20,13 +20,14 @@ public class Bomb : Throwable
         base._Ready();
         throwDistance = ThrowDistance;
         AnimationPlayer.Queue("explode");
-        AnimationPlayer.Connect("animation_changed", this, nameof(OnAnimationChanged));
-        AnimationPlayer.PlaybackSpeed = AnimationPlayer.CurrentAnimationLength / fuseDuration;
+        AnimationPlayer.Connect(AnimationPlayer.SignalName.AnimationChanged, new(this, MethodName.OnAnimationChanged));
+        AnimationPlayer.SpeedScale = (float)AnimationPlayer.CurrentAnimationLength / fuseDuration;
     }
 
     private void OnAnimationChanged(string oldName, string newName)
     {
-        AnimationPlayer.PlaybackSpeed = 1;
+        AnimationPlayer.SpeedScale = 1;
+        Shadow?.Hide();
     }
 
     protected override void OnCollision()
@@ -46,7 +47,7 @@ public class Bomb : Throwable
             ThrowSpeedWallDetect = -1 * SpeedAtTouchDown;
             Timer.WaitTime = 2 * SpeedAtTouchDown / Gravity;
             Vector2 landLocation = throwDistance * 32 * ThrowDirection;
-            ThrowVelocity = new Vector2(landLocation.x, landLocation.y - 0.5f * Gravity * Mathf.Pow(Timer.WaitTime, 2)) / Timer.WaitTime;
+            ThrowVelocity = new Vector2(landLocation.X, landLocation.Y - 0.5f * Gravity * Mathf.Pow((float)Timer.WaitTime, 2)) / (float)Timer.WaitTime;
             Timer.Start();
         }
         else
@@ -59,8 +60,8 @@ public class Bomb : Throwable
             WallDetect.Monitorable = false;
 
             // so that it can be picked up again
-            Connect("area_entered", this, nameof(OnArea2DAreaEntered));
-            Connect("area_exited", this, nameof(OnArea2DAreaExited));
+            Connect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
+            Connect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
         }
     }
 }

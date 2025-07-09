@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 
-public class PlayerStateMachine : Node
+public partial class PlayerStateMachine : Node
 {
 	// private
 	private List<State> states;
@@ -13,17 +13,17 @@ public class PlayerStateMachine : Node
 	// methods
 	public override void _Ready()
 	{
-		PauseMode = PauseModeEnum.Stop;
+		ProcessMode = ProcessModeEnum.Disabled;
 	}
 
-	public override void _Process(float delta)
+	public override void _Process(double delta)
 	{
-		ChangeState(currentState.Process(delta));
+		ChangeState(currentState.Process((float)delta));
 	}
 
-	public override void _PhysicsProcess(float delta)
+	public override void _PhysicsProcess(double delta)
 	{
-		ChangeState(currentState.PhysicsProcess(delta));
+		ChangeState(currentState.PhysicsProcess((float)delta));
 	}
 
 	// using event here because 'event' is a reserved keyword in C#
@@ -49,7 +49,7 @@ public class PlayerStateMachine : Node
 				state.Init();
 
 			ChangeState(states[0]);
-			PauseMode = PauseModeEnum.Inherit;
+			ProcessMode = ProcessModeEnum.Inherit;
 		}
 	}
 

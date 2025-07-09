@@ -1,14 +1,14 @@
 using Godot;
 
-public class StunState : State
+public partial class StunState : State
 {
 	// Exports
 	[Export]
-	private readonly float stunDuration = 1.0f;
+	private float stunDuration = 1.0f;
 	[Export]
-	private readonly float knockbackSpeed = 200f;
+	private float knockbackSpeed = 200f;
 	[Export]
-	private readonly float deceleration = 5;
+	private float deceleration = 5;
 
 	// private
 	private Vector2 direction;
@@ -28,7 +28,7 @@ public class StunState : State
 
 	public override void Init()
 	{
-		Player.Connect(nameof(Player.PlayerDamaged), this, nameof(OnPlayerPlayerDamaged));
+		Player.Connect(Player.SignalName.PlayerDamaged, new(this, MethodName.OnPlayerPlayerDamaged));
 	}
 
 	public override void Enter()
@@ -40,13 +40,13 @@ public class StunState : State
 		// do these after setting the velocity and direction to avoid flickering
 		Player.UpdateAnimation("stun");
 		Player.EffectAnimationPlayer.Play("default");
-		animationPlayer.Connect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
+		animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
 		Player.MakeInvulnerable(stunDuration);
 	}
 
 	public override void Exit()
 	{
-		animationPlayer.Disconnect("animation_finished", this, nameof(OnAnimationPlayerAnimationFinished));
+		animationPlayer.Disconnect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
 		nextState = null;
 	}
 

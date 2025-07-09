@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/boss_destroy.wav-d7630b509e9ca184a92eacc894fe4c3c.sample"
+type="AudioStreamWAV"
+uid="uid://dvxayyg3rnkqf"
+path="res://.godot/imported/boss_destroy.wav-d7630b509e9ca184a92eacc894fe4c3c.sample"
 
 [deps]
 
 source_file="res://wizard_boss/audio/boss_destroy.wav"
-dest_files=[ "res://.import/boss_destroy.wav-d7630b509e9ca184a92eacc894fe4c3c.sample" ]
+dest_files=["res://.godot/imported/boss_destroy.wav-d7630b509e9ca184a92eacc894fe4c3c.sample"]
 
 [params]
 

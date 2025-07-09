@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/locked_door.wav-16c56a73cb291c61a1c16aae1d94f304.sample"
+type="AudioStreamWAV"
+uid="uid://dup68nwves8vo"
+path="res://.godot/imported/locked_door.wav-16c56a73cb291c61a1c16aae1d94f304.sample"
 
 [deps]
 
 source_file="res://Interactables/dungeon/locked_door.wav"
-dest_files=[ "res://.import/locked_door.wav-16c56a73cb291c61a1c16aae1d94f304.sample" ]
+dest_files=["res://.godot/imported/locked_door.wav-16c56a73cb291c61a1c16aae1d94f304.sample"]
 
 [params]
 

@@ -1,25 +1,26 @@
 using System.Collections.Generic;
 using Godot;
+using Godot.Collections;
 using MonoCustomResourceRegistry;
 
 [Tool]
 [RegisteredType(nameof(DialogSystem), "res://GUI/dialogSystem/icons/star_bubble.png", nameof(CanvasLayer))]
-public class DialogSystem : CanvasLayer
+public partial class DialogSystem : CanvasLayer
 {
     // Signals
     [Signal]
-    public delegate void Finished();
+    public delegate void FinishedEventHandler();
     [Signal]
-    public delegate void LetterAdded(string letter);
+    public delegate void LetterAddedEventHandler(string letter);
     [Signal]
-    public delegate void BranchSelected(int index);
+    public delegate void BranchSelectedEventHandler(int index);
 
     // private
-    private readonly float textSpeed = 0.02f;
+    private float textSpeed = 0.02f;
     private int textLength;
     private string plainText;
-    private List<DialogItemResource> dialogItemResources;
-    private List<DialogBranchResource> dialogBranchResources;
+    private Array<DialogItemResource> dialogItemResources;
+    private Array<DialogBranchResource> dialogBranchResources;
     private int dialogItemIndex;
     private RichTextLabel richTextLabel;
     private VBoxContainer choiceContainer;
@@ -30,14 +31,14 @@ public class DialogSystem : CanvasLayer
     private float timer = 0;
     private bool timerStarted = false;
     private AudioStreamPlayer audioStreamPlayer;
-    private readonly Vector2[][] uiPositions = new Vector2[][]
+    private Vector2[][] uiPositions = new Vector2[][]
     {
-        new Vector2[]{new Vector2(88, 176), new Vector2(128, 176)},
-        new Vector2[]{new Vector2(376, 152), new Vector2(128, 152)},
-        new Vector2[]{new Vector2(481, 216), new Vector2(64, 216)},
-        new Vector2[]{new Vector2(24, 256), new Vector2(481, 256)},
+        new Vector2[]{new(88, 176), new(128, 176)},
+        new Vector2[]{new(376, 152), new(128, 152)},
+        new Vector2[]{new(481, 216), new(64, 216)},
+        new Vector2[]{new(24, 256), new(481, 256)},
     };
-    private readonly List<Button> choiceButtons = new List<Button>();
+    private List<Button> choiceButtons = new();
     private DialogInteraction dialogInteraction;
 
     // properties
@@ -56,13 +57,13 @@ public class DialogSystem : CanvasLayer
         panelContainer = GetNode<PanelContainer>("DialogUI/PanelContainer");
         label = GetNode<Label>("DialogUI/DialogProgressIndicator/Label");
         audioStreamPlayer = GetNode<AudioStreamPlayer>("DialogUI/AudioStreamPlayer");
-        portraitSprite = (PortraitSprite)GetNode<Sprite>("DialogUI/PortraitSprite");
+        portraitSprite = (PortraitSprite)GetNode<Sprite2D>("DialogUI/PortraitSprite");
 
-        if (Engine.EditorHint)
+        if (Engine.IsEditorHint())
         {
             Node parent = GetParent();
 
-            if (!(parent is DialogItem))
+            if (parent is not DialogItem)
                 parent.RemoveChild(this);
             else
                 InitializeButtons();
@@ -72,18 +73,18 @@ public class DialogSystem : CanvasLayer
 
         SetUIState(false);
         InitializeButtons();
-        DialogProgressIndicator.Connect("pressed", this, nameof(OnDialogProgressIndicatorPressed));
+        DialogProgressIndicator.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.OnDialogProgressIndicatorPressed));
 
         // cannot connect in portrait sprite because its onready runs before this
-        Connect(nameof(LetterAdded), portraitSprite, nameof(PortraitSprite.OnLetterAdded));
+        Connect(SignalName.LetterAdded, new(portraitSprite, PortraitSprite.MethodName.OnLetterAdded));
     }
 
-    public override void _Process(float delta)
+    public override void _Process(double delta)
     {
         if (!timerStarted)
             return;
 
-        timer += delta;
+        timer += (float)delta;
 
         if (timer > textSpeed)
         {
@@ -95,12 +96,12 @@ public class DialogSystem : CanvasLayer
 
     private void InitializeButtons()
     {
-        Godot.Collections.Array children = choiceContainer.GetChildren();
+        Array<Node> children = choiceContainer.GetChildren();
 
         for (int i = 0; i < children.Count; i++)
         {
             Button button = (Button)children[i];
-            button.Connect("pressed", this, nameof(OnChoiceButtonPressed), new Godot.Collections.Array(i));
+            button.Connect(BaseButton.SignalName.Pressed, Callable.From(() => OnChoiceButtonPressed(i)));
             choiceButtons.Add(button);
         }
     }
@@ -130,7 +131,7 @@ public class DialogSystem : CanvasLayer
         GlobalPlayerManager.Instance.Player.ChangeStateToIdle();
     }
 
-    public void ShowDialog(List<DialogItemResource> items, DialogInteraction _dialogInteraction)
+    public void ShowDialog(Array<DialogItemResource> items, DialogInteraction _dialogInteraction)
     {
         if (items.Count == 0)
         {
@@ -166,10 +167,10 @@ public class DialogSystem : CanvasLayer
 
         int i = dialogItemResources[dialogItemIndex].NpcResource.Name == "Hero" ? 0 : 1;
 
-        panelContainer.RectPosition = uiPositions[0][i];
-        nameLabel.RectPosition = uiPositions[1][i];
+        panelContainer.Position = uiPositions[0][i];
+        nameLabel.Position = uiPositions[1][i];
         portraitSprite.Position = uiPositions[2][i];
-        DialogProgressIndicator.RectPosition = uiPositions[3][i];
+        DialogProgressIndicator.Position = uiPositions[3][i];
         portraitSprite.Scale = new Vector2(i == 0 ? -1 : 1, 1);
     }
 
@@ -198,12 +199,17 @@ public class DialogSystem : CanvasLayer
 
     private void SetChoiceDialog(DialogChoiceResource dialogChoice)
     {
-        dialogBranchResources = dialogChoice.DialogBranchResources.FindAll(dialogBranch => dialogBranch.QuestConditionResource == null || dialogBranch.QuestConditionResource.CheckIsActivated());
+        dialogBranchResources.Clear();
+
+        foreach (DialogBranchResource dialogBranch in dialogChoice.DialogBranchResources)
+            if (dialogBranch.QuestConditionResource == null || dialogBranch.QuestConditionResource.CheckIsActivated())
+                dialogBranchResources.Add(dialogBranch);
+
         SetChoiceDisplay(dialogBranchResources);
         choiceButtons[0].GrabFocus();
     }
 
-    public void SetChoiceDisplay(List<DialogBranchResource> dialogBranches)
+    public void SetChoiceDisplay(Array<DialogBranchResource> dialogBranches)
     {
         choiceContainer.Show();
         richTextLabel.Hide();

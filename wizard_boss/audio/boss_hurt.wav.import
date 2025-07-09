@@ -1,13 +1,14 @@
 [remap]
 
 importer="wav"
-type="AudioStreamSample"
-path="res://.import/boss_hurt.wav-4beac9ae915772bca0d33f0cd98e34a5.sample"
+type="AudioStreamWAV"
+uid="uid://ksmed3k4rai7"
+path="res://.godot/imported/boss_hurt.wav-4beac9ae915772bca0d33f0cd98e34a5.sample"
 
 [deps]
 
 source_file="res://wizard_boss/audio/boss_hurt.wav"
-dest_files=[ "res://.import/boss_hurt.wav-4beac9ae915772bca0d33f0cd98e34a5.sample" ]
+dest_files=["res://.godot/imported/boss_hurt.wav-4beac9ae915772bca0d33f0cd98e34a5.sample"]
 
 [params]
 

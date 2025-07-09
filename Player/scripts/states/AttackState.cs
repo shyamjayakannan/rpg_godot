@@ -1,12 +1,12 @@
 using Godot;
 
-public class AttackState : State
+public partial class AttackState : State
 {
 	// Exports
 	[Export(PropertyHint.Range, "0.1, 10.0")]
-	private readonly float deceleration = 5f;
+	private float deceleration = 5f;
 	[Export]
-	private readonly AudioStream audioStream;
+	private AudioStream audioStream;
 
 	// private
 	private IdleState idleState;
@@ -23,19 +23,19 @@ public class AttackState : State
 		walkState = GetNode<WalkState>("../WalkState");
 		chargeState = GetNode<ChargeState>("../ChargeState");
 		attackSound = GetNode<AudioStreamPlayer2D>("../../Audio/AttackSound");
-		hurtBox = GetNode<HurtBox>("../../Sprite/HurtBox");
+		hurtBox = GetNode<HurtBox>("../../Sprite2D/HurtBox");
 	}
 
 	public override void Enter()
 	{
 		Player.UpdateAnimation("attack");
-		Player.Connect(nameof(Player.AttackAnimationOver), this, nameof(OnPlayerAttackAnimationOver));
+		Player.Connect(Player.SignalName.AttackAnimationOver, new(this, MethodName.OnPlayerAttackAnimationOver));
 		attackSound.Stream = audioStream;
 		attackSound.Play();
 		isAttacking = true;
 
 		// wait for sword to reach middle before enabling hurtbox
-		GetTree().CreateTimer(0.2f, false).Connect("timeout", this, nameof(Enter2));
+		GetTree().CreateTimer(0.2f, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Enter2));
 	}
 
 	private void Enter2()
@@ -52,7 +52,7 @@ public class AttackState : State
 
 	public override void Exit()
 	{
-		Player.Disconnect(nameof(Player.AttackAnimationOver), this, nameof(OnPlayerAttackAnimationOver));
+		Player.Disconnect(nameof(Player.AttackAnimationOver), new(this, nameof(OnPlayerAttackAnimationOver)));
 		hurtBox.SetDeferred("monitorable", false);
 		isAttacking = false;
 	}

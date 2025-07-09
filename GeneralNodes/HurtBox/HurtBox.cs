@@ -1,10 +1,10 @@
 using Godot;
 
-public class HurtBox : Area2D
+public partial class HurtBox : Area2D
 {
 	// Signals
 	[Signal]
-	public delegate void DidDamage();
+	public delegate void DidDamageEventHandler();
 
 	// Exports
 	[Export]
