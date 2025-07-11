@@ -1,10 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://ce0fyu4kdnihe"]
 
-[ext_resource path="res://Items/sprites/items.png" type="Texture2D" id=1]
-[ext_resource path="res://GUI/pauseMenu/inventory/scripts/InventorySlot.cs" type="Script" id=2]
+[ext_resource type="Texture2D" uid="uid://ix525oersolo" path="res://Items/sprites/items.png" id="1"]
+[ext_resource type="Script" uid="uid://bb8m8d7vga4hm" path="res://GUI/pauseMenu/inventory/scripts/InventorySlot.cs" id="2"]
 
-[sub_resource type="StyleBoxFlat" id=2]
-bg_color = Color( 0.6, 0.6, 0.6, 0 )
+[sub_resource type="StyleBoxFlat" id="2"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -14,33 +14,34 @@ corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
-[sub_resource type="AtlasTexture" id=1]
-atlas = ExtResource( 1 )
-region = Rect2( 192, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="1"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 32, 32)
 
 [node name="InventorySlot" type="Button"]
-self_modulate = Color( 1, 1, 1, 0.784314 )
+self_modulate = Color(1, 1, 1, 0.784314)
+custom_minimum_size = Vector2(32, 32)
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -448.0
-offset_bottom = -238.0
-custom_minimum_size = Vector2( 32, 32 )
-theme_override_styles/hover = SubResource( 2 )
-theme_override_styles/focus = SubResource( 2 )
-script = ExtResource( 2 )
+offset_right = -512.0
+offset_bottom = -274.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/focus = SubResource("2")
+theme_override_styles/hover = SubResource("2")
+script = ExtResource("2")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
 offset_right = 32.0
 offset_bottom = 32.0
-texture = SubResource( 1 )
+texture = SubResource("1")
 
 [node name="Label" type="Label" parent="."]
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -12.0
-offset_top = 1.0
-offset_bottom = 14.0
-grow_horizontal = 0
-scale = Vector2( 0.75, 0.75 )
-text = "99"
-align = 2
+layout_mode = 0
+offset_right = 38.0
+offset_bottom = 13.0
+scale = Vector2(0.8, 0.8)
+text = "100"
+horizontal_alignment = 2

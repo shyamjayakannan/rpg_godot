@@ -1,14 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://bbikblgr4pnb8"]
 
-[ext_resource path="res://GeneralNodes/footstepsAudio/FootstepAudioPlayer.cs" type="Script" id=1]
-[ext_resource path="res://GeneralNodes/footstepsAudio/footstep_01.wav" type="AudioStream" id=2]
-[ext_resource path="res://GeneralNodes/footstepsAudio/footstep_03.wav" type="AudioStream" id=3]
-[ext_resource path="res://GeneralNodes/footstepsAudio/footstep_02.wav" type="AudioStream" id=4]
-
-[sub_resource type="AudioStreamRandomizer" id=1]
+[ext_resource type="Script" uid="uid://bnq7w7u5luqqe" path="res://GeneralNodes/footstepsAudio/FootstepAudioPlayer.cs" id="1"]
+[ext_resource type="AudioStream" uid="uid://rkag0kw41prn" path="res://GeneralNodes/footstepsAudio/footstep_01.wav" id="2"]
+[ext_resource type="AudioStream" uid="uid://dhwakpe0ufxas" path="res://GeneralNodes/footstepsAudio/footstep_03.wav" id="3"]
+[ext_resource type="AudioStream" uid="uid://ufeiot2t0cc1" path="res://GeneralNodes/footstepsAudio/footstep_02.wav" id="4"]
 
 [node name="FootstepAudioPlayer" type="AudioStreamPlayer2D"]
-stream = SubResource( 1 )
 volume_db = -16.0
-script = ExtResource( 1 )
-footstepVariations = [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 2 ) ]
+script = ExtResource("1")
+footstepVariations = [ExtResource("3"), ExtResource("4"), ExtResource("2")]

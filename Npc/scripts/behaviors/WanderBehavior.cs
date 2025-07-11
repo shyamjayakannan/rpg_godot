@@ -13,7 +13,7 @@ public partial class WanderBehavior : NPCBehavior
     private float idleDuration = 1.0f;
 
     // private
-    private Vector2[] directions = new Vector2[] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
+    private Vector2[] directions = new Vector2[4] { Vector2.Up, Vector2.Right, Vector2.Down, Vector2.Left };
     private Area2D area2D;
 
     // methods
@@ -41,7 +41,7 @@ public partial class WanderBehavior : NPCBehavior
         foreach (Area2D child in GetChildren().Cast<Area2D>())
             count++;
 
-        return count < 1 ? new[] { "please add one area2d node" } : count > 1 ? new[] { "please add only one are2d node" } : System.Array.Empty<string>();
+        return count < 1 ? new string[1] { "please add one area2d node" } : count > 1 ? new string[1] { "please add only one are2d node" } : System.Array.Empty<string>();
     }
 
     private void OnAreaExited(Node body)

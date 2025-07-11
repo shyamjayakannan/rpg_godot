@@ -20,7 +20,7 @@ public partial class WanderEnemyState : EnemyState
 	public override void Enter()
 	{
 		timer = (GD.Randi() % (maxCycles - minCycles + 1) + minCycles) * stateAnimationDuration;
-		direction = new Vector2[]{
+		direction = new Vector2[4]{
 			Vector2.Left,
 			Vector2.Right,
 			Vector2.Up,

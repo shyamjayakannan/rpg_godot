@@ -78,9 +78,9 @@ public partial class Npc : CharacterBody2D
         else
         {
             if (Direction.X < 0)
-                sprite.Scale = new Vector2(-1, 1);
+                sprite.Scale = new(-1, 1);
             else
-                sprite.Scale = new Vector2(1, 1);
+                sprite.Scale = new(1, 1);
 
             directionName = "Side";
         }

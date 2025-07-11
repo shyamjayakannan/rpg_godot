@@ -14,9 +14,9 @@ public partial class DialogChoice : DialogItem
 				atLeastTwoValidChildren++;
 
 		if (atLeastTwoValidChildren < 2)
-			return new[] { "please add at least two DialogBranch as child" };
+			return new string[1] { "please add at least two DialogBranch as child" };
 		else if (atLeastTwoValidChildren > 4)
-			return new[] { "please add at most four DialogBranch as child" };
+			return new string[1] { "please add at most four DialogBranch as child" };
 		else
 			return System.Array.Empty<string>();
 	}

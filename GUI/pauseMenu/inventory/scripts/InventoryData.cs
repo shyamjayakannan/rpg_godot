@@ -25,13 +25,13 @@ public partial class InventoryData : Resource
 
 			if (firstNullIndex1 >= 0)
 			{
-				Slots[firstNullIndex1] = new SlotData(quantity, item);
+				Slots[firstNullIndex1] = new(quantity, item);
 				return true;
 			}
 
 			if (firstNullIndex2 >= 0)
 			{
-				Slots[firstNullIndex2] = new SlotData(quantity, item);
+				Slots[firstNullIndex2] = new(quantity, item);
 				return true;
 			}
 
@@ -49,7 +49,7 @@ public partial class InventoryData : Resource
 		if (firstNullIndex < 0)
 			return false;
 
-		Slots[firstNullIndex] = new SlotData(quantity, item);
+		Slots[firstNullIndex] = new(quantity, item);
 		return true;
 	}
 
@@ -84,7 +84,7 @@ public partial class InventoryData : Resource
 		{
 			if (slot == null)
 			{
-				list.Add(new GlobalSaveManager.ItemData
+				list.Add(new()
 				{
 					Path3D = "",
 					Quantity = 0
@@ -93,7 +93,7 @@ public partial class InventoryData : Resource
 				continue;
 			}
 
-			list.Add(new GlobalSaveManager.ItemData
+			list.Add(new()
 			{
 				Path3D = slot.Item.ResourcePath,
 				Quantity = slot.Quantity
@@ -115,7 +115,7 @@ public partial class InventoryData : Resource
 				continue;
 			}
 
-			slots.Add(new SlotData(
+			slots.Add(new(
 				item.Quantity,
 				GD.Load<Items>(item.Path3D)
 			));

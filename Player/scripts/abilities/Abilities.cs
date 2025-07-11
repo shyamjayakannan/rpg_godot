@@ -99,11 +99,13 @@ public partial class Abilities : Node
         if (boomerang == null)
         {
             boomerang = (Boomerang)boomerangScene.Instantiate();
-            player.AddChild(boomerang);
+            player.GetParent().AddChild(boomerang);
         }
 
         if (boomerang.BoomerangState != Boomerang.State.INACTIVE)
             return;
+
+        boomerang.GlobalPosition = GlobalPlayerManager.Instance.Player.GlobalPosition;
 
         if (player.Direction == Vector2.Zero)
             boomerang.Throw(player.CardinalDirection);

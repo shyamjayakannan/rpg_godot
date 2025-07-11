@@ -53,7 +53,7 @@ public partial class ChaseEnemyState : EnemyState
 		if (GlobalPlayerManager.Instance.Player.Hp <= 0)
 			return NextState;
 
-		direction = new Vector2(
+		direction = new(
 			Mathf.Lerp(direction.X, pathFinder.BestPath.X, turnRate),
 			Mathf.Lerp(direction.Y, pathFinder.BestPath.Y, turnRate)
 		);

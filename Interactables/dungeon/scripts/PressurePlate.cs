@@ -52,13 +52,7 @@ public partial class PressurePlate : Node2D
             return;
 
         isActive = true;
-        sprite.RegionRect = new Rect2(
-            new Vector2(
-                offRect.Position.X - 32,
-                sprite.RegionRect.Position.Y
-            ),
-            sprite.RegionRect.Size
-        );
+        sprite.RegionRect = sprite.RegionRect with { Position = sprite.RegionRect.Position with { X = offRect.Position.X - 32 } };
     }
 
     private void OnArea2DBodyEntered(Node body)
@@ -78,13 +72,7 @@ public partial class PressurePlate : Node2D
         if (bodies > 0 && !isActive)
         {
             isActive = true;
-            sprite.RegionRect = new Rect2(
-                new Vector2(
-                    offRect.Position.X - 32,
-                    sprite.RegionRect.Position.Y
-                ),
-                sprite.RegionRect.Size
-            );
+            sprite.RegionRect = sprite.RegionRect with { Position = sprite.RegionRect.Position with { X = offRect.Position.X - 32 } };
             PlayAudio(audioActivate);
             EmitSignal(nameof(PressurePlateActivated));
             GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.PressurePlateActivated);
@@ -92,13 +80,7 @@ public partial class PressurePlate : Node2D
         else if (bodies <= 0 && isActive)
         {
             isActive = false;
-            sprite.RegionRect = new Rect2(
-                new Vector2(
-                    offRect.Position.X,
-                    sprite.RegionRect.Position.Y
-                ),
-                sprite.RegionRect.Size
-            );
+            sprite.RegionRect = sprite.RegionRect with { Position = sprite.RegionRect.Position with { X = offRect.Position.X } };
             PlayAudio(audioDeactivate);
             GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.PressurePlateDeactivated);
         }

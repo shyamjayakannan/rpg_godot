@@ -33,7 +33,7 @@ public partial class EquipableItem : Items
 
             // Disconnect old signals
             // need to do this because godot doesn't automatically disconnect signals for resources
-            if (modifiers != null)
+            if (modifiers.Length > 0)
                 foreach (EquipableItemModifier mod in modifiers)
                     if (mod != null && mod.IsConnected(Resource.SignalName.Changed, new(this, MethodName.UpdateDescription)))
                         mod.Disconnect(Resource.SignalName.Changed, new(this, MethodName.UpdateDescription));
@@ -41,9 +41,10 @@ public partial class EquipableItem : Items
             modifiers = value;
 
             // Connect new signals
-            if (modifiers != null)
+            if (modifiers.Length > 0)
                 foreach (EquipableItemModifier mod in modifiers)
-                    mod?.Connect(Resource.SignalName.Changed, new(this, MethodName.UpdateDescription));
+                    if (mod != null && !mod.IsConnected(Resource.SignalName.Changed, new(this, MethodName.UpdateDescription)))
+                        mod.Connect(Resource.SignalName.Changed, new(this, MethodName.UpdateDescription));
 
             UpdateDescription();
         }

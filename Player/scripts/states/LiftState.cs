@@ -25,7 +25,7 @@ public partial class LiftState : State
         if (startLate)
             Player.AnimationPlayer.Seek(0.19f); // just before end of lift animation (immediate carry for bomb)
 
-        Player.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, Callable.From(() => StateMachine.ChangeState(carryState)), (uint)ConnectFlags.OneShot);
+        Player.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, Callable.From((StringName _) => StateMachine.ChangeState(carryState)), (uint)ConnectFlags.OneShot);
         audioStreamPlayer2D.Stream = audioStream;
         audioStreamPlayer2D.Play();
     }

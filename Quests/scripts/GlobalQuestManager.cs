@@ -15,7 +15,7 @@ public partial class GlobalQuestManager : Node
 
     // properties
     public static GlobalQuestManager Instance { get; private set; }
-    public List<GlobalSaveManager.QuestData> CurrentQuests { get; set; } = new List<GlobalSaveManager.QuestData>();
+    public List<GlobalSaveManager.QuestData> CurrentQuests { get; set; } = new();
 
     // methods
     public override void _Ready()
@@ -123,12 +123,11 @@ public partial class GlobalQuestManager : Node
         quests.Add(questResource);
 
         GlobalSaveManager.QuestData questData = new()
-
         {
             Title = title,
             IsComplete = false,
-            CompletedSteps = new List<string>(),
-            InCompleteSteps = new List<(string, int)>()
+            CompletedSteps = new(),
+            InCompleteSteps = new()
         };
 
         CurrentQuests.Add(questData);
@@ -157,11 +156,11 @@ public partial class GlobalQuestManager : Node
             if (questData.Title == quest.Title)
                 return questData;
 
-        return new GlobalSaveManager.QuestData
+        return new()
         {
             Title = "not found",
             IsComplete = false,
-            CompletedSteps = new List<string>()
+            CompletedSteps = new()
         };
     }
 

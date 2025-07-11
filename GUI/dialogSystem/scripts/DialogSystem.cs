@@ -30,12 +30,12 @@ public partial class DialogSystem : CanvasLayer
     private float timer = 0;
     private bool timerStarted = false;
     private AudioStreamPlayer audioStreamPlayer;
-    private Vector2[][] uiPositions = new Vector2[][]
+    private Vector2[][] uiPositions = new Vector2[4][]
     {
-        new Vector2[]{new(88, 176), new(128, 176)},
-        new Vector2[]{new(376, 152), new(128, 152)},
-        new Vector2[]{new(481, 216), new(64, 216)},
-        new Vector2[]{new(24, 256), new(481, 256)},
+        new Vector2[2] { new(88, 176), new(128, 176) },
+        new Vector2[2] { new(376, 152), new(128, 152) },
+        new Vector2[2] { new(481, 216), new(64, 216) },
+        new Vector2[2] { new(24, 256), new(481, 256) },
     };
     private List<Button> choiceButtons = new();
     private DialogInteraction dialogInteraction;
@@ -170,7 +170,7 @@ public partial class DialogSystem : CanvasLayer
         nameLabel.Position = uiPositions[1][i];
         portraitSprite.Position = uiPositions[2][i];
         DialogProgressIndicator.Position = uiPositions[3][i];
-        portraitSprite.Scale = new Vector2(i == 0 ? -1 : 1, 1);
+        portraitSprite.Scale = new(i == 0 ? -1 : 1, 1);
     }
 
     public void CommonDisplay(NpcResource npcResource)

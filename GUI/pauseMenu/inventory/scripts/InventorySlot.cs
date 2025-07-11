@@ -7,8 +7,6 @@ public partial class InventorySlot : Button
 	public delegate void EquipmentSelectedEventHandler(EquipableItem item);
 	[Signal]
 	public delegate void EquipmentFocusedEventHandler(EquipableItem item, bool update);
-	[Signal]
-	public delegate void MouseEnteredEventHandler();
 
 	// private
 	private SlotData slotData;
@@ -18,7 +16,6 @@ public partial class InventorySlot : Button
 	private TextureRect dragTexture;
 	private float dragThreshold = 0.2f;
 	private float timer = 0;
-	private bool alreadyEmitted = false;
 
 	// properites
 	public bool Dragging = false;
@@ -59,17 +56,6 @@ public partial class InventorySlot : Button
 
 	public override void _Process(double delta)
 	{
-		if (GetGlobalRect().HasPoint(GetGlobalMousePosition()))
-		{
-			if (!alreadyEmitted)
-			{
-				alreadyEmitted = true;
-				EmitSignal(SignalName.MouseEntered);
-			}
-		}
-		else
-			alreadyEmitted = false;
-
 		if (buttonDown && !Dragging)
 		{
 			timer += (float)delta;

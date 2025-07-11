@@ -34,7 +34,7 @@ public partial class PlayerStateMachine : Node
 
 	public void Initialize(Player player)
 	{
-		states = new List<State>();
+		states = new();
 
 		foreach (Node child in GetChildren())
 			if (child is State state)

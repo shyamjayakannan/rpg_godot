@@ -50,7 +50,7 @@ public partial class GlobalSaveManager : Node
 	}
 	private SaveData currentSaveData = new()
 	{
-		Player = new Player
+		Player = new()
 		{
 			Hp = 1,
 			MaxHp = 1,
@@ -62,11 +62,11 @@ public partial class GlobalSaveManager : Node
 			Defence = 1
 		},
 		ScenePath = "",
-		Items = new List<ItemData>(),
-		Equipment = new List<ItemData>(),
-		Persistence = new List<string>(),
-		Quests = new List<QuestData>(),
-		DroppedItems = new Dictionary<string, List<(ItemData, Vector2)>>()
+		Items = new(),
+		Equipment = new(),
+		Persistence = new(),
+		Quests = new(),
+		DroppedItems = new()
 	};
 
 	// methods
@@ -115,7 +115,7 @@ public partial class GlobalSaveManager : Node
 
 	private void UpdatePlayer()
 	{
-		currentSaveData.Player = new Player
+		currentSaveData.Player = new()
 		{
 			Hp = GlobalPlayerManager.Instance.Player.Hp,
 			MaxHp = GlobalPlayerManager.Instance.Player.MaxHp,
@@ -147,7 +147,7 @@ public partial class GlobalSaveManager : Node
 
 	private void SetPlayer()
 	{
-		GlobalPlayerManager.Instance.SetPlayerPosition(new Vector2(
+		GlobalPlayerManager.Instance.SetPlayerPosition(new(
 			currentSaveData.Player.PosX,
 			currentSaveData.Player.PosY
 		));

@@ -26,7 +26,7 @@ public partial class StunEnemyState : EnemyState
 		Enemy.SetDirection(direction);
 		Enemy.Velocity = direction * (-knockbackSpeed);
 		Enemy.UpdateAnimation("stun");
-		Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, Callable.From(() => animationFinished = true), (uint)ConnectFlags.OneShot);
+		Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, Callable.From((StringName _) => animationFinished = true), (uint)ConnectFlags.OneShot);
 		Enemy.Invulnerable = true;
 	}
 

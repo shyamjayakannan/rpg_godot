@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dstluwgtig08j"]
+
+[ext_resource type="Script" uid="uid://bx6p4te6favgd" path="res://GeneralNodes/ySortHandler/YSortHandler.cs" id="1_w1b0l"]
+
+[node name="YSortHandler" type="Node"]
+script = ExtResource("1_w1b0l")

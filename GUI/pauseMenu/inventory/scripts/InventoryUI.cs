@@ -64,7 +64,7 @@ public partial class InventoryUI : GridContainer
 			slot.Connect(InventorySlot.SignalName.EquipmentSelected, new(this, MethodName.OnEquipmentSelected));
 			slot.Connect(InventorySlot.SignalName.EquipmentFocused, new(this, MethodName.OnEquipmentFocused));
 			slot.Connect(BaseButton.SignalName.ButtonUp, Callable.From(() => OnInventorySlotButtonUp(slot)));
-			slot.Connect(InventorySlot.SignalName.MouseEntered, Callable.From(() => OnInventorySlotMouseEntered(slot)));
+			slot.Connect(Control.SignalName.MouseEntered, Callable.From(() => OnInventorySlotMouseEntered(slot)));
 		}
 
 		equipmentUI.UpdateInventory();

@@ -39,9 +39,7 @@ GlobalEffectManager="*res://AutoLoads/GlobalEffectManager.cs"
 
 window/size/viewport_width=544
 window/size/viewport_height=306
-window/size/window_width_override=1280
-window/size/window_height_override=720
-window/stretch/mode="2d"
+window/stretch/mode="viewport"
 
 [dotnet]
 
@@ -57,28 +55,39 @@ texture=false
 
 [gui]
 
-theme/custom_font="res://GUI/dialogSystem/fonts/new_dynamicfont.tres"
+theme/custom_font="uid://dm7oum2f78xed"
 common/drop_mouse_on_gui_input_disabled=true
 
 [importer_defaults]
 
 texture={
 "compress/bptc_ldr": 0,
+"compress/channel_pack": 0,
+"compress/hdr_compression": 1,
 "compress/hdr_mode": 0,
+"compress/high_quality": false,
 "compress/lossy_quality": 0.7,
 "compress/mode": 0,
 "compress/normal_map": 0,
 "detect_3d": false,
+"detect_3d/compress_to": 0,
 "flags/anisotropic": false,
 "flags/filter": false,
 "flags/mipmaps": false,
 "flags/repeat": 0,
 "flags/srgb": 2,
+"mipmaps/generate": false,
+"mipmaps/limit": -1,
 "process/HDR_as_SRGB": false,
 "process/fix_alpha_border": true,
+"process/hdr_as_srgb": false,
+"process/hdr_clamp_exposure": false,
 "process/invert_color": false,
 "process/normal_map_invert_y": false,
 "process/premult_alpha": false,
+"process/size_limit": 0,
+"roughness/mode": 0,
+"roughness/src_normal": "",
 "size_limit": 0,
 "stream": false,
 "svg/scale": 1.0
@@ -159,4 +168,5 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_environment="res://default_env.tres"

@@ -10,7 +10,7 @@ public partial class QuestResource : Resource
     [Export(PropertyHint.MultilineText)]
     public string Description { get; private set; }
     [Export]
-    public QuestStepResource[] Steps { get; private set; }
+    public QuestStepResource[] Steps { get; private set; } = System.Array.Empty<QuestStepResource>();
     [Export]
     public int RewardXp { get; private set; }
     [Export]

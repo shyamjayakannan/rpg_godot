@@ -27,3 +27,5 @@ public class QuestAdvanceTrigger : QuestNode
 Ex:
 (✅)private DialogItemResource dialogTextResource = GD.Load<DialogItemResource>("res://Interactables/dialog/blankResources/dialogTextResource.tres");
 (❌)private DialogTextResource dialogTextResource = GD.Load<DialogTextResource>("res://Interactables/dialog/blankResources/dialogTextResource.tres");
+
+10) Resources cannot be abstract classes

@@ -157,7 +157,7 @@ public partial class WizardBoss : Node2D
 
     private void UpdateAnimation()
     {
-        bossNode.Scale = new Vector2(1, 1);
+        bossNode.Scale = new(1, 1);
         Hand2.FlipH = true;
 
         switch (currentPosition)
@@ -174,7 +174,7 @@ public partial class WizardBoss : Node2D
 
             default:
                 if (currentPosition == 2)
-                    bossNode.Scale = new Vector2(-1, 1);
+                    bossNode.Scale = new(-1, 1);
 
                 Hand2.FlipH = false;
                 SetHandRegion("side");
@@ -201,8 +201,8 @@ public partial class WizardBoss : Node2D
                 break;
         }
 
-        Hand1.RegionRect = new Rect2(x1, 0, Hand1.RegionRect.Size.X, Hand1.RegionRect.Size.Y);
-        Hand2.RegionRect = new Rect2(x2, 0, Hand2.RegionRect.Size.X, Hand2.RegionRect.Size.Y);
+        Hand1.RegionRect = new(x1, 0, Hand1.RegionRect.Size.X, Hand1.RegionRect.Size.Y);
+        Hand2.RegionRect = new(x2, 0, Hand2.RegionRect.Size.X, Hand2.RegionRect.Size.Y);
     }
 
     private void OnHitBoxDamaged(HurtBox @hurtBox)
@@ -230,7 +230,7 @@ public partial class WizardBoss : Node2D
         animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.Finish));
     }
 
-    private void Finish(string animName)
+    private void Finish(string _)
     {
         EmitSignal(SignalName.DarkWizardDefeated);
         GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.EnemiesDestroyed, false);

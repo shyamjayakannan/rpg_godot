@@ -70,9 +70,9 @@ public partial class Enemy : CharacterBody2D
 		EmitSignal(SignalName.EnemyDirectionChanged, cardinalDirection);
 
 		if (cardinalDirection.X < 0)
-			sprite.Scale = new Vector2(-1, 1);
+			sprite.Scale = new(-1, 1);
 		else
-			sprite.Scale = new Vector2(1, 1);
+			sprite.Scale = new(1, 1);
 
 		return true;
 	}

@@ -94,7 +94,7 @@ public partial class PlayerHUD : CanvasLayer
 		animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.ShowGameOverScreen2), (uint)ConnectFlags.OneShot);
 	}
 
-	private void ShowGameOverScreen2(string animName)
+	private void ShowGameOverScreen2(string _)
 	{
 		if (!continueButton.Visible)
 			menuButton.GrabFocus();
@@ -155,9 +155,9 @@ public partial class PlayerHUD : CanvasLayer
 		for (int i = 0; i < abilities.GetChildCount(); i++)
 		{
 			if (i != index)
-				abilities.GetChild<Panel>(i).SelfModulate = new Color(1, 1, 1, 0);
+				abilities.GetChild<Panel>(i).SelfModulate = new(1, 1, 1, 0);
 			else
-				abilities.GetChild<Panel>(i).SelfModulate = new Color(1, 1, 1, 1);
+				abilities.GetChild<Panel>(i).SelfModulate = new(1, 1, 1, 1);
 		}
 
 		ButtonMenu.PlayFocus(audioStreamPlayer);

@@ -1,237 +1,244 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=3 uid="uid://dyr3a445m4gaf"]
 
-[ext_resource path="res://Interactables/treasureChest/treasure-chest.png" type="Texture2D" id=1]
-[ext_resource path="res://GeneralNodes/persistentDataHandler/PersistentDataHandler.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Interactables/treasureChest/treasure-open.wav" type="AudioStream" id=3]
-[ext_resource path="res://Interactables/treasureChest/TreasureChest.cs" type="Script" id=4]
+[ext_resource type="Texture2D" uid="uid://1xp5kfretxsn" path="res://Interactables/treasureChest/treasure-chest.png" id="1"]
+[ext_resource type="PackedScene" path="res://GeneralNodes/persistentDataHandler/PersistentDataHandler.tscn" id="2"]
+[ext_resource type="AudioStream" uid="uid://clvpjvmttbc8f" path="res://Interactables/treasureChest/treasure-open.wav" id="3"]
+[ext_resource type="Script" uid="uid://b7j822ap4xf2q" path="res://Interactables/treasureChest/TreasureChest.cs" id="4"]
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id="7"]
 length = 0.001
 tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
 tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
 tracks/0/keys = {
-"times": PackedFloat32Array( 0 ),
-"transitions": PackedFloat32Array( 1 ),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ 0 ]
+"values": [0]
 }
 tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
 tracks/1/path = NodePath("ItemSprite:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
 tracks/1/keys = {
-"times": PackedFloat32Array( 0 ),
-"transitions": PackedFloat32Array( 1 ),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [ Vector2( 0, -6 ) ]
+"values": [Vector2(0, -6)]
 }
 tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
 tracks/2/path = NodePath("ItemSprite:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
 tracks/2/keys = {
-"times": PackedFloat32Array( 0 ),
-"transitions": PackedFloat32Array( 1 ),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ) ]
+"values": [Color(1, 1, 1, 1)]
 }
 tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
 tracks/3/path = NodePath("ItemSprite:visible")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
 tracks/3/keys = {
-"times": PackedFloat32Array( 0 ),
-"transitions": PackedFloat32Array( 1 ),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ true ]
+"values": [true]
 }
 tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
 tracks/4/path = NodePath("Sprite2D:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
-tracks/4/imported = false
-tracks/4/enabled = true
 tracks/4/keys = {
-"times": PackedFloat32Array( 0 ),
-"transitions": PackedFloat32Array( 1 ),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ true ]
+"values": [true]
 }
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id="4"]
 resource_name = "closed"
 length = 0.1
 tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
 tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
 tracks/0/keys = {
-"times": PackedFloat32Array( 0 ),
-"transitions": PackedFloat32Array( 1 ),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ 0 ]
+"values": [0]
 }
 tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
 tracks/1/path = NodePath("ItemSprite:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
 tracks/1/keys = {
-"times": PackedFloat32Array( 0 ),
-"transitions": PackedFloat32Array( 1 ),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ false ]
+"values": [false]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id="6"]
 resource_name = "openChest"
 length = 1.5
 tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
 tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
 tracks/0/keys = {
-"times": PackedFloat32Array( 0, 0.1 ),
-"transitions": PackedFloat32Array( 1, 1 ),
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [ 0, 1 ]
+"values": [0, 1]
 }
 tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
 tracks/1/path = NodePath("ItemSprite:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
 tracks/1/keys = {
-"times": PackedFloat32Array( 0, 0.1, 1.5 ),
-"transitions": PackedFloat32Array( 1, 1, 1 ),
+"times": PackedFloat32Array(0, 0.1, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [ false, true, false ]
+"values": [false, true, false]
 }
 tracks/2/type = "audio"
+tracks/2/imported = false
+tracks/2/enabled = true
 tracks/2/path = NodePath("AudioStreamPlayer2D")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
 tracks/2/keys = {
-"clips": [ {
+"clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
-"stream": ExtResource( 3 )
-} ],
-"times": PackedFloat32Array( 0.1 )
+"stream": ExtResource("3")
+}],
+"times": PackedFloat32Array(0.1)
 }
+tracks/2/use_blend = true
 tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
 tracks/3/path = NodePath("ItemSprite:position")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
-tracks/3/imported = false
-tracks/3/enabled = true
 tracks/3/keys = {
-"times": PackedFloat32Array( 0.1, 0.3, 0.5 ),
-"transitions": PackedFloat32Array( -2, -2, -2 ),
+"times": PackedFloat32Array(0.1, 0.3, 0.5),
+"transitions": PackedFloat32Array(-2, -2, -2),
 "update": 0,
-"values": [ Vector2( 0, -4 ), Vector2( 0, -64 ), Vector2( 0, -48 ) ]
+"values": [Vector2(0, -4), Vector2(0, -64), Vector2(0, -48)]
 }
 tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
 tracks/4/path = NodePath("ItemSprite:modulate")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
-tracks/4/imported = false
-tracks/4/enabled = true
 tracks/4/keys = {
-"times": PackedFloat32Array( 0.1, 0.3, 0.5, 1, 1.5 ),
-"transitions": PackedFloat32Array( -2, -2, -2, 1, 1 ),
+"times": PackedFloat32Array(0.1, 0.3, 0.5, 1, 1.5),
+"transitions": PackedFloat32Array(-2, -2, -2, 1, 1),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 2, 2, 2, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+"values": [Color(1, 1, 1, 1), Color(2, 2, 2, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
-[sub_resource type="Animation" id=5]
+[sub_resource type="Animation" id="5"]
 resource_name = "opened"
 length = 0.1
 tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
 tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
 tracks/0/keys = {
-"times": PackedFloat32Array( 0 ),
-"transitions": PackedFloat32Array( 1 ),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ 1 ]
+"values": [1]
 }
 tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
 tracks/1/path = NodePath("ItemSprite:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
 tracks/1/keys = {
-"times": PackedFloat32Array( 0 ),
-"transitions": PackedFloat32Array( 1 ),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [ false ]
+"values": [false]
 }
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 16, 8 )
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_10jmb"]
+_data = {
+&"RESET": SubResource("7"),
+&"closed": SubResource("4"),
+&"openChest": SubResource("6"),
+&"opened": SubResource("5")
+}
 
-[sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 20, 12 )
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(32, 16)
+
+[sub_resource type="RectangleShape2D" id="3"]
+size = Vector2(40, 24)
 
 [node name="TreasureChest" type="Node2D"]
 process_mode = 3
-script = ExtResource( 4 )
+script = ExtResource("4")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2( 0, -6 )
-texture = ExtResource( 1 )
+position = Vector2(0, -6)
+texture = ExtResource("1")
 hframes = 2
 
 [node name="ItemSprite" type="Sprite2D" parent="."]
-position = Vector2( 0, -6 )
+position = Vector2(0, -6)
 
 [node name="Label" type="Label" parent="ItemSprite"]
 offset_left = 12.0
 offset_top = -4.0
 offset_right = 45.0
 offset_bottom = 10.0
-scale = Vector2( 0.8, 0.8 )
-theme_override_colors/font_shadow_color = Color( 0, 0, 0, 1 )
+scale = Vector2(0.8, 0.8)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 0
 text = "x1"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/RESET = SubResource( 7 )
-anims/closed = SubResource( 4 )
-anims/openChest = SubResource( 6 )
-anims/opened = SubResource( 5 )
+libraries = {
+&"": SubResource("AnimationLibrary_10jmb")
+}
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource( 3 )
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2( 0, 8 )
-shape = SubResource( 2 )
+position = Vector2(0, 8)
+shape = SubResource("2")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
@@ -239,7 +246,7 @@ collision_mask = 4
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2( 0, 8 )
-shape = SubResource( 3 )
+position = Vector2(0, 8)
+shape = SubResource("3")
 
-[node name="PersistentDataHandler" parent="." instance=ExtResource( 2 )]
+[node name="PersistentDataHandler" parent="." instance=ExtResource("2")]

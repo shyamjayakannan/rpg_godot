@@ -121,7 +121,7 @@ public partial class DialogInteraction : Interactables
         if (npcDialogFolder != null && npcDialogFolder != "")
             return Array.Empty<string>();
 
-        return new[] { "please add at least one DialogItem/DialogItemResource or set npc dialog folder path" };
+        return new string[1] { "please add at least one DialogItem/DialogItemResource or set npc dialog folder path" };
     }
 
     public override void OnInteractPressed()
@@ -131,8 +131,8 @@ public partial class DialogInteraction : Interactables
         async void Wait()
         {
             // need to wait for two idle frames so that animation plays and npc faces player
-            await ToSignal(GetTree(), "idle_frame");
-            await ToSignal(GetTree(), "idle_frame");
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+            await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
             DialogSystem.Instance.ShowDialog(DialogInteractionResource.DialogItemResources, this);
 
@@ -222,9 +222,9 @@ public partial class DialogInteraction : Interactables
         List<DialogItemResource> items = null;
 
         if (dialogItem is DialogBranch)
-            items = new List<DialogItemResource>(((DialogBranchResource)dialogItem.DialogItemResource).DialogItemResources);
+            items = new(((DialogBranchResource)dialogItem.DialogItemResource).DialogItemResources);
         else if (dialogItem is DialogChoice)
-            items = new List<DialogItemResource>(((DialogChoiceResource)dialogItem.DialogItemResource).DialogBranchResources);
+            items = new(((DialogChoiceResource)dialogItem.DialogItemResource).DialogBranchResources);
 
         foreach (DialogItemResource dialogItemResource in items)
             AddDialogItem(dialogItemResource, dialogItem);

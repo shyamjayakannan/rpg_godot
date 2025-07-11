@@ -29,7 +29,7 @@ public partial class EquipmentUI : HBoxContainer
         GlobalSaveManager.Instance.Connect(GlobalSaveManager.SignalName.GameLoaded, new(this, MethodName.OnGameLoaded));
 
         // so that pausemenu.stats exists (after pausemenu's ready call)
-        await ToSignal(GetTree(), "idle_frame");
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
         OnGameLoaded();
     }

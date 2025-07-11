@@ -68,7 +68,7 @@ public partial class TreasureChest : Interactables
     private void UpdateTexture()
     {
         if (sprite != null)
-            sprite.Texture = Item.Texture2D;
+            sprite.Texture = Item?.Texture2D;
     }
 
     private void UpdateQuantity()

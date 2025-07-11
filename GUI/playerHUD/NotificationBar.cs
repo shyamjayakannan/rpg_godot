@@ -29,7 +29,7 @@ public partial class NotificationBar : Control
         animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.DisplayNotification));
     }
 
-    private void DisplayNotification(string animName = null)
+    private void DisplayNotification(string _ = null)
     {
         if (notifications == null || notifications.Count == 0)
             return;
@@ -42,7 +42,7 @@ public partial class NotificationBar : Control
 
     public void AddNotificationToQueue(string title, string message)
     {
-        notifications.Enqueue(new Notification
+        notifications.Enqueue(new()
         {
             Type = title,
             Message = message

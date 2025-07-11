@@ -14,7 +14,7 @@ public partial class PatrolBehavior : NPCBehavior
     private List<PatrolLocation> patrolLocations = new();
     private PatrolLocation target;
     private int currentIndex = 0;
-    private Color[] colors = new Color[] { new(0, 0, 1), new(0, 1, 0), new(1, 0, 0), new(0, 1, 1), new(1, 0, 1), new(1, 1, 0) };
+    private Color[] colors = new Color[6] { new(0, 0, 1), new(0, 1, 0), new(1, 0, 0), new(0, 1, 1), new(1, 0, 1), new(1, 1, 0) };
 
     // methods
     public override void _Ready()

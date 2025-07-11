@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 [Tool]
@@ -83,7 +82,7 @@ public partial class ItemPickup : CharacterBody2D
 	private void UpdateTexture()
 	{
 		if (sprite != null)
-			sprite.Texture = Item.Texture2D;
+			sprite.Texture = Item?.Texture2D;
 	}
 
 	private void ItemPickedUp()

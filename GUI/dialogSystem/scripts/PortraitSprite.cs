@@ -15,7 +15,11 @@ public partial class PortraitSprite : Sprite2D
     private bool Blink
     {
         get => blink;
-        set => SetBlink(value);
+        set
+        {
+            if (!Engine.IsEditorHint())
+                SetBlink(value);
+        }
     }
     private bool OpenMouth
     {

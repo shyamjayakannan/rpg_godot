@@ -25,7 +25,7 @@ public partial class ShopMenu : CanvasLayer
     private Label inInventory;
     private Label gems;
     private Label total;
-    private LineEdit lineEdit;
+    private SpinBox spinBox;
     private AnimationPlayer animationPlayer;
     private AudioStream openShopAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/open_shop.wav");
     private AudioStream purchaseAudio = GD.Load<AudioStream>("res://GUI/shopMenu/audio/purchase.wav");
@@ -45,7 +45,7 @@ public partial class ShopMenu : CanvasLayer
         inInventory = GetNode<Label>("Control/Items/Control/InInventory");
         gems = GetNode<Label>("Control/HBoxContainer/Label");
         total = GetNode<Label>("Control/Items/Control/Total2");
-        lineEdit = GetNode<LineEdit>("Control/Items/Control/Quantity/LineEdit");
+        spinBox = GetNode<SpinBox>("Control/Items/Control/Quantity/SpinBox");
         animationPlayer = GetNode<AnimationPlayer>("Control/HBoxContainer/AnimationPlayer");
         acceptDialog = GetNode<AcceptDialog>("AcceptDialog");
         colorRect = GetNode<ColorRect>("ColorRect2");
@@ -54,7 +54,7 @@ public partial class ShopMenu : CanvasLayer
 
         acceptDialog.Connect(AcceptDialog.SignalName.Canceled, Callable.From(() => colorRect.Hide()));
         buyButton.Connect(BaseButton.SignalName.Pressed, new(this, MethodName.OnBuyButtonPressed));
-        lineEdit.Connect(LineEdit.SignalName.TextChanged, new(this, MethodName.OnLineEditTextChanged));
+        spinBox.Connect(Range.SignalName.ValueChanged, new(this, MethodName.OnSpinBoxValueChanged));
         closeButton.Connect(BaseButton.SignalName.Pressed, Callable.From(() => SetMenu(false)));
     }
 
@@ -64,7 +64,7 @@ public partial class ShopMenu : CanvasLayer
         textureRect.Texture = null;
         title.Text = "";
         description.Text = "";
-        lineEdit.Text = "1";
+        spinBox.Value = 1;
         total.Text = "";
     }
 
@@ -77,7 +77,7 @@ public partial class ShopMenu : CanvasLayer
             return;
         }
 
-        int added = lineEdit.Text.ToInt();
+        int added = (int)spinBox.Value;
 
         if (!GlobalPlayerManager.Instance.PlayerInventory.AddItem(currentItem, added))
         {
@@ -105,19 +105,9 @@ public partial class ShopMenu : CanvasLayer
         inInventory.Text = (inInventory.Text.ToInt() + added).ToString();
     }
 
-    private void OnLineEditTextChanged(string newText)
+    private void OnSpinBoxValueChanged(float value)
     {
-        int cursorPos = lineEdit.CaretColumn;
-        string filtered = "";
-
-        foreach (char c in newText)
-            if (char.IsDigit(c))
-                filtered += c;
-
-        lineEdit.Text = filtered.Length == 0 ? "0" : filtered;
-        lineEdit.CaretColumn = Mathf.Min(cursorPos, lineEdit.Text.Length);
-
-        total.Text = (lineEdit.Text.ToInt() * currentItem.Cost).ToString();
+        total.Text = (value * currentItem.Cost).ToString();
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -176,7 +166,7 @@ public partial class ShopMenu : CanvasLayer
         textureRect.Texture = item.Texture2D;
         title.Text = item.Name;
         description.Text = item.Description;
-        lineEdit.Text = "1";
+        spinBox.Value = 1;
         total.Text = price.Text;
         int quantity = GlobalPlayerManager.Instance.PlayerInventory.GetQuantity(item);
 

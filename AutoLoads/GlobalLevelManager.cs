@@ -16,7 +16,7 @@ public partial class GlobalLevelManager : Node
 	public static GlobalLevelManager Instance { get; private set; }
 	public string TargetTransitionArea { get; private set; }
 	public Vector2 PositionOffset { get; private set; } = Vector2.Zero;
-	public Dictionary<string, List<(Items, Vector2)>> DroppedItems { get; set; } = new Dictionary<string, List<(Items, Vector2)>>();
+	public Dictionary<string, List<(Items, Vector2)>> DroppedItems { get; set; } = new();
 
 	// private
 	private string levelPath;
@@ -37,7 +37,7 @@ public partial class GlobalLevelManager : Node
 		if (DroppedItems.TryGetValue(fileName, out List<(Items, Vector2)> items))
 			items.Add((item, globalPosition));
 		else
-			DroppedItems.Add(fileName, new List<(Items, Vector2)>(1) { (item, globalPosition) });
+			DroppedItems.Add(fileName, new(1) { (item, globalPosition) });
 	}
 
 	public void RemoveItem(string fileName, Items item, Vector2 globalPosition)
@@ -62,7 +62,7 @@ public partial class GlobalLevelManager : Node
 			foreach ((Items, Vector2) tuple in keyValuePair.Value)
 			{
 				list.Add((
-					new GlobalSaveManager.ItemData()
+					new()
 					{
 						Quantity = 1,
 						Path3D = tuple.Item1.ResourcePath

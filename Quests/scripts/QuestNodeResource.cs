@@ -43,6 +43,6 @@ public partial class QuestNodeResource : Resource
 
     protected QuestStepResource GetStep()
     {
-        return QuestStep != 0 ? LinkedQuest.Steps[QuestStep - 1] : new QuestStepResource() { Step = "N/A" };
+        return QuestStep != 0 ? LinkedQuest.Steps[QuestStep - 1] : new() { Step = "N/A" };
     }
 }

@@ -24,7 +24,7 @@ public partial class Bomb : Throwable
         AnimationPlayer.SpeedScale = (float)AnimationPlayer.CurrentAnimationLength / fuseDuration;
     }
 
-    private void OnAnimationChanged(string oldName, string newName)
+    private void OnAnimationChanged(string _, string __)
     {
         AnimationPlayer.SpeedScale = 1;
         Shadow?.Hide();
@@ -45,10 +45,9 @@ public partial class Bomb : Throwable
             throwDistance /= bounciness;
             SpeedAtTouchDown /= bounciness;
             ThrowSpeedWallDetect = -1 * SpeedAtTouchDown;
-            Timer.WaitTime = 2 * SpeedAtTouchDown / Gravity;
+            Timer = 2 * SpeedAtTouchDown / Gravity;
             Vector2 landLocation = throwDistance * 32 * ThrowDirection;
-            ThrowVelocity = new Vector2(landLocation.X, landLocation.Y - 0.5f * Gravity * Mathf.Pow((float)Timer.WaitTime, 2)) / (float)Timer.WaitTime;
-            Timer.Start();
+            ThrowVelocity = new Vector2(landLocation.X, landLocation.Y - 0.5f * Gravity * Mathf.Pow(Timer, 2)) / Timer;
         }
         else
         {

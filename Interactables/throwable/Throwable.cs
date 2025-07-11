@@ -12,7 +12,7 @@ public partial class Throwable : Interactables
     protected Area2D WallDetect { get; private set; }
     protected float ThrowSpeedWallDetect { get; set; } = 0;
     protected float SpeedAtTouchDown { get; set; }
-    protected Timer Timer { get; private set; }
+    protected float Timer { get; set; }
     protected Node2D ThrowableParent { get; private set; }
     protected AnimationPlayer AnimationPlayer { get; private set; }
     protected Vector2 ThrowVelocity { get; set; }
@@ -20,19 +20,22 @@ public partial class Throwable : Interactables
     protected HurtBox HurtBox { get; private set; }
     protected Sprite2D Shadow { get; private set; }
 
+    // private
+    private Sprite2D sprite2D;
+    private float offset;
+
     // methods
     public override void _Ready()
     {
         HurtBox = GetNode<HurtBox>("HurtBox");
         WallDetect = GetNode<Area2D>("WallDetect");
-        Timer = GetNode<Timer>("Timer");
         ThrowableParent = (Node2D)GetParent();
         AnimationPlayer = ThrowableParent.GetNode<AnimationPlayer>("AnimationPlayer");
         Shadow = ThrowableParent.GetNodeOrNull<Sprite2D>("Shadow");
+        sprite2D = ThrowableParent.GetNodeOrNull<Sprite2D>("Sprite2D");
         SetupAreas();
         SetPhysicsProcess(false);
 
-        Timer.Connect(Timer.SignalName.Timeout, new(this, MethodName.OnTimeout));
         AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
         Connect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
         Connect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
@@ -52,6 +55,7 @@ public partial class Throwable : Interactables
         {
             ThrowableParent.RemoveChild(Shadow);
             WallDetect.AddChild(Shadow);
+            Shadow.Position -= Position;
             Shadow.Hide();
         }
 
@@ -67,10 +71,22 @@ public partial class Throwable : Interactables
 
     public override void _PhysicsProcess(double delta)
     {
-        ThrowVelocity = new Vector2(ThrowVelocity.X, ThrowVelocity.Y + Gravity * (float)delta);
-        ThrowableParent.Position += ThrowVelocity * (float)delta;
-        ThrowSpeedWallDetect += Gravity * (float)delta;
-        WallDetect.Position = new Vector2(WallDetect.Position.X, WallDetect.Position.Y - ThrowSpeedWallDetect * (float)delta);
+        float floatDelta = (float)delta;
+        Timer -= floatDelta;
+
+        if (Timer < 0)
+        {
+            OnTimeout();
+            return;
+        }
+
+        ThrowVelocity = new(ThrowVelocity.X, ThrowVelocity.Y + Gravity * floatDelta);
+        Vector2 toAdd = ThrowVelocity * floatDelta;
+        ThrowableParent.Position += toAdd;
+        ThrowSpeedWallDetect += Gravity * floatDelta;
+        sprite2D.Offset = new(sprite2D.Offset.X, sprite2D.Offset.Y + ThrowSpeedWallDetect * floatDelta);
+        WallDetect.Position = new(WallDetect.Position.X, WallDetect.Position.Y - ThrowSpeedWallDetect * floatDelta);
+        sprite2D.Position = new(WallDetect.Position.X, WallDetect.Position.Y - offset);
     }
 
     public async void SetState(string state, Vector2 throwDirection)
@@ -83,7 +99,7 @@ public partial class Throwable : Interactables
         // add child needs to be deferred but on doing that, the onready variables like Timer become null because the
         // add child is happening later. so better to wait for the idle frame and do everything after that so that the
         // add child happens first before accessing the node variables like Timer
-        await ToSignal(sceneTree, "idle_frame");
+        await ToSignal(sceneTree, SceneTree.SignalName.ProcessFrame);
 
         GlobalPlayerManager.Instance.Player.GetParent().AddChild(ThrowableParent);
 
@@ -95,18 +111,20 @@ public partial class Throwable : Interactables
 
         // let wall detect move on the ground
         WallDetect.GlobalPosition = GlobalPlayerManager.Instance.Player.GlobalPosition;
-        Shadow?.Show();
+        offset = sprite2D.Offset.Y;
+        sprite2D.GlobalPosition = new(GlobalPlayerManager.Instance.Player.GlobalPosition.X, GlobalPlayerManager.Instance.Player.GlobalPosition.Y - offset);
+        sprite2D.Offset = new(sprite2D.Offset.X, globalPosition.Y - sprite2D.GlobalPosition.Y);
 
         float playerToItemVectorMagnitude = GlobalPlayerManager.Instance.Player.GlobalPosition.DistanceTo(globalPosition);
-        Timer.WaitTime = Mathf.Sqrt(2 * playerToItemVectorMagnitude / Gravity);
-        SpeedAtTouchDown = Gravity * (float)Timer.WaitTime;
-        Timer.Start();
+        Timer = Mathf.Sqrt(2 * playerToItemVectorMagnitude / Gravity);
+        SpeedAtTouchDown = Gravity * Timer;
 
         SetPhysicsProcess(true);
         GlobalPlayerManager.Instance.Player.Throwable = null;
 
         if (state == "throw")
         {
+            Shadow?.Show();
             HurtBox.Monitorable = true;
             WallDetect.Monitoring = true;
 
@@ -117,7 +135,7 @@ public partial class Throwable : Interactables
             Vector2 playerToItemVector = playerToItemVectorMagnitude * GlobalPlayerManager.Instance.Player.GlobalPosition.DirectionTo(globalPosition);
             Vector2 landLocationFromPlayerFeet = ThrowDistance * 32 * ThrowDirection;
             Vector2 finalVector = landLocationFromPlayerFeet - playerToItemVector;
-            ThrowVelocity = new Vector2(finalVector.X, finalVector.Y - 0.5f * Gravity * Mathf.Pow((float)Timer.WaitTime, 2)) / (float)Timer.WaitTime;
+            ThrowVelocity = new Vector2(finalVector.X, finalVector.Y - 0.5f * Gravity * Mathf.Pow(Timer, 2)) / (float)Timer;
             return;
         }
 
@@ -170,7 +188,7 @@ public partial class Throwable : Interactables
         Destroy();
     }
 
-    private void OnAnimationPlayerAnimationFinished(string animName)
+    private void OnAnimationPlayerAnimationFinished(string _)
     {
         if (IsConnected(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered)))
             Disconnect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));

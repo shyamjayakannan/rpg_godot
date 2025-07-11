@@ -53,9 +53,9 @@ public partial class Boomerang : Node2D
                 break;
 
             case State.RETURN:
-                Player player = GlobalPlayerManager.Instance.Player;
+                Vector2 globalPosition = GlobalPlayerManager.Instance.Player.GlobalPosition;
 
-                if (player.GlobalPosition.DistanceTo(GlobalPosition) <= 1)
+                if (globalPosition.DistanceTo(GlobalPosition) <= 10)
                 {
                     Hide();
                     BoomerangState = State.INACTIVE;
@@ -66,7 +66,7 @@ public partial class Boomerang : Node2D
                 }
 
                 speed += acceleration * (float)delta;
-                direction = GlobalPosition.DirectionTo(player.GlobalPosition);
+                direction = GlobalPosition.DirectionTo(globalPosition);
                 break;
         }
 

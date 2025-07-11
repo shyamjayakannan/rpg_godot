@@ -49,7 +49,7 @@ public partial class ChargeState : State
 
         particles.Amount = 8;
         particles.Explosiveness = 0;
-        particlesMaterial.InitialVelocity = 50;
+        particlesMaterial.InitialVelocityMin = 50;
     }
 
     public override void Exit()
@@ -130,6 +130,6 @@ public partial class ChargeState : State
         PlayAudio(sfxCharged);
         particles.Amount = 100;
         particles.Explosiveness = 1;
-        particlesMaterial.ini = 100;
+        particlesMaterial.InitialVelocityMin = 100;
     }
 }

@@ -27,7 +27,7 @@ public partial class EnemyStateMachine : Node
 
 	public void Initialize(Enemy enemy)
 	{
-		states = new List<EnemyState>();
+		states = new();
 
 		foreach (Node child in GetChildren())
 		{

@@ -1,0 +1,21 @@
+[gd_resource type="TileSet" load_steps=4 format=3 uid="uid://bboml8015pr7u"]
+
+[ext_resource type="Texture2D" uid="uid://v1ww302juj1m" path="res://TileMaps/Ruins/Texture/TX Props.png" id="1_q6f6u"]
+
+[sub_resource type="TileMapPattern" id="TileMapPattern_q6f6u"]
+tile_data = PackedInt32Array(65536, 1310720, 16, 3, 1376256, 16, 196611, 1310720, 17, 65541, 1376256, 17)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3mamv"]
+texture = ExtResource("1_q6f6u")
+20:16/0 = 0
+20:16/0/texture_origin = Vector2i(3, -1)
+21:16/0 = 0
+21:16/0/texture_origin = Vector2i(3, 10)
+21:17/0 = 0
+21:17/0/texture_origin = Vector2i(-4, -10)
+20:17/0 = 0
+20:17/0/texture_origin = Vector2i(12, -5)
+
+[resource]
+sources/0 = SubResource("TileSetAtlasSource_3mamv")
+pattern_0 = SubResource("TileMapPattern_q6f6u")

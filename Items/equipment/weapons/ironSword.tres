@@ -1,30 +1,30 @@
-[gd_resource type="Resource" load_steps=7 format=2]
+[gd_resource type="Resource" script_class="EquipableItem" load_steps=7 format=3 uid="uid://c03diwm6ckm3f"]
 
-[ext_resource path="res://Items/scripts/EquipableItem.cs" type="Script" id=1]
-[ext_resource path="res://Items/sprites/player_equipment/gear.png" type="Texture2D" id=2]
-[ext_resource path="res://Items/scripts/EquipableItemModifier.cs" type="Script" id=3]
-[ext_resource path="res://Items/sprites/player_equipment/player_sprite_sword.png" type="Texture2D" id=4]
+[ext_resource type="Script" uid="uid://cwer2nmbu8rao" path="res://Items/scripts/EquipableItem.cs" id="1"]
+[ext_resource type="Texture2D" uid="uid://be838x13jd8f6" path="res://Items/sprites/player_equipment/gear.png" id="2"]
+[ext_resource type="Script" uid="uid://c7biulhw7cclg" path="res://Items/scripts/EquipableItemModifier.cs" id="3"]
+[ext_resource type="Texture2D" uid="uid://csat04jlnioqe" path="res://Items/sprites/player_equipment/player_sprite_sword.png" id="4"]
 
-[sub_resource type="Resource" id=1]
-script = ExtResource( 3 )
+[sub_resource type="Resource" id="1"]
+script = ExtResource("3")
 EquipmentType = 0
 Value = 1
 
-[sub_resource type="AtlasTexture" id=2]
-atlas = ExtResource( 2 )
-region = Rect2( 32, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="2"]
+atlas = ExtResource("2")
+region = Rect2(32, 0, 32, 32)
 
 [resource]
-script = ExtResource( 1 )
-Name = "Iron Sword"
-Description = "Basic Sword"
-Texture2D = SubResource( 2 )
-effects = [  ]
-Cost = 100
+script = ExtResource("1")
 StatsDescription = "Type: Weapon
 
 Attack: +1    Defence: +0
 Health: +0      Speed: +0"
 EquipmentType = 0
-Modifiers = [ SubResource( 1 ) ]
-SpriteTexture = ExtResource( 4 )
+Modifiers = [SubResource("1")]
+SpriteTexture = ExtResource("4")
+Name = "Iron Sword"
+Description = "Basic Sword"
+Texture2D = SubResource("2")
+effects = []
+Cost = 100

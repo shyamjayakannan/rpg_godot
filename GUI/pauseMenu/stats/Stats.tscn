@@ -1,125 +1,99 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=4 format=3 uid="uid://dhllhxva4sp7b"]
 
-[ext_resource path="res://Items/sprites/items.png" type="Texture2D" id=1]
-[ext_resource path="res://GUI/pauseMenu/stats/Stats.cs" type="Script" id=2]
+[ext_resource type="Texture2D" uid="uid://ix525oersolo" path="res://Items/sprites/items.png" id="1"]
+[ext_resource type="Script" uid="uid://cdwq2nx4yqicj" path="res://GUI/pauseMenu/stats/Stats.cs" id="2"]
 
-[sub_resource type="StyleBoxTexture" id=1]
+[sub_resource type="StyleBoxTexture" id="1"]
 content_margin_left = 15.0
-content_margin_right = 15.0
 content_margin_top = 10.0
+content_margin_right = 15.0
 content_margin_bottom = 10.0
-texture = ExtResource( 1 )
-region_rect = Rect2( 96, 0, 32, 32 )
-offset_left = 16.0
-offset_right = 16.0
-offset_top = 16.0
-offset_bottom = 16.0
+texture = ExtResource("1")
+texture_margin_left = 8.0
+texture_margin_top = 8.0
+texture_margin_right = 8.0
+texture_margin_bottom = 8.0
+region_rect = Rect2(96, 0, 32, 32)
 
 [node name="Stats" type="PanelContainer"]
 offset_right = 196.0
 offset_bottom = 84.0
-theme_override_styles/panel = SubResource( 1 )
-script = ExtResource( 2 )
+theme_override_styles/panel = SubResource("1")
+script = ExtResource("2")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_left = 15.0
-offset_top = 10.0
-offset_right = 181.0
-offset_bottom = 74.0
+layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-offset_right = 166.0
-offset_bottom = 13.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
-offset_right = 81.0
-offset_bottom = 13.0
+layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color( 0.988235, 0.952941, 0.266667, 1 )
+theme_override_colors/font_color = Color(0.988235, 0.952941, 0.266667, 1)
 text = "Level"
 
 [node name="Level" type="Label" parent="VBoxContainer/HBoxContainer"]
-offset_left = 85.0
-offset_right = 166.0
-offset_bottom = 13.0
+layout_mode = 2
 size_flags_horizontal = 3
 text = "1"
-align = 2
+horizontal_alignment = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-offset_top = 17.0
-offset_right = 166.0
-offset_bottom = 30.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer2"]
-offset_right = 81.0
-offset_bottom = 13.0
+layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color( 0.988235, 0.952941, 0.266667, 1 )
+theme_override_colors/font_color = Color(0.988235, 0.952941, 0.266667, 1)
 text = "Xp"
 
 [node name="Xp" type="Label" parent="VBoxContainer/HBoxContainer2"]
-offset_left = 85.0
-offset_right = 166.0
-offset_bottom = 13.0
+layout_mode = 2
 size_flags_horizontal = 3
 text = "1"
-align = 2
+horizontal_alignment = 2
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
-offset_top = 34.0
-offset_right = 166.0
-offset_bottom = 47.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer3"]
-offset_right = 60.0
-offset_bottom = 13.0
-custom_minimum_size = Vector2( 60, 0 )
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color( 0.988235, 0.952941, 0.266667, 1 )
+theme_override_colors/font_color = Color(0.988235, 0.952941, 0.266667, 1)
 text = "Attack"
 
 [node name="Attack" type="Label" parent="VBoxContainer/HBoxContainer3"]
-offset_left = 64.0
-offset_right = 113.0
-offset_bottom = 13.0
+layout_mode = 2
 size_flags_horizontal = 3
 text = "1"
-align = 2
+horizontal_alignment = 2
 
 [node name="Attack2" type="Label" parent="VBoxContainer/HBoxContainer3"]
-offset_left = 117.0
-offset_right = 166.0
-offset_bottom = 13.0
+layout_mode = 2
 size_flags_horizontal = 3
 text = "1"
-align = 2
+horizontal_alignment = 2
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer"]
-offset_top = 51.0
-offset_right = 166.0
-offset_bottom = 64.0
+layout_mode = 2
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer4"]
-offset_right = 60.0
-offset_bottom = 13.0
-custom_minimum_size = Vector2( 60, 0 )
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color( 0.988235, 0.952941, 0.266667, 1 )
+theme_override_colors/font_color = Color(0.988235, 0.952941, 0.266667, 1)
 text = "Defence"
 
 [node name="Defence" type="Label" parent="VBoxContainer/HBoxContainer4"]
-offset_left = 64.0
-offset_right = 113.0
-offset_bottom = 13.0
+layout_mode = 2
 size_flags_horizontal = 3
 text = "1"
-align = 2
+horizontal_alignment = 2
 
 [node name="Defence2" type="Label" parent="VBoxContainer/HBoxContainer4"]
-offset_left = 117.0
-offset_right = 166.0
-offset_bottom = 13.0
+layout_mode = 2
 size_flags_horizontal = 3
 text = "+18"
-align = 2
+horizontal_alignment = 2

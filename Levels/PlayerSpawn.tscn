@@ -1,13 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://bf1ycasylvu3e"]
 
-[ext_resource path="res://Player/sprites/player_sprite.png" type="Texture2D" id=1]
-[ext_resource path="res://Levels/scripts/PlayerSpawn.cs" type="Script" id=2]
+[ext_resource type="Texture2D" uid="uid://8plo57447la3" path="res://Player/sprites/player_sprite.png" id="1"]
+[ext_resource type="Script" uid="uid://6ax0fqpws0nd" path="res://Levels/scripts/PlayerSpawn.cs" id="2"]
 
 [node name="PlayerSpawn" type="Node2D"]
-script = ExtResource( 2 )
+script = ExtResource("2")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2( 0, -20 )
-texture = ExtResource( 1 )
+position = Vector2(0, -20)
+texture = ExtResource("1")
 hframes = 16
 vframes = 8

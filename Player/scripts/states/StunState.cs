@@ -62,7 +62,7 @@ public partial class StunState : State
 		StateMachine.ChangeState(this);
 	}
 
-	private void OnAnimationPlayerAnimationFinished(string animName)
+	private void OnAnimationPlayerAnimationFinished(string _)
 	{
 		if (Player.Hp > 0)
 			nextState = idleState;

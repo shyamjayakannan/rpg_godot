@@ -1,33 +1,26 @@
-[gd_resource type="Resource" load_steps=10 format=2]
+[gd_resource type="Resource" script_class="QuestResource" load_steps=7 format=3 uid="uid://327kksgpsj0t"]
 
-[ext_resource path="res://Items/items/potion.tres" type="Resource" id=1]
-[ext_resource path="res://Quests/scripts/QuestResource.cs" type="Script" id=2]
-[ext_resource path="res://GUI/pauseMenu/inventory/scripts/SlotData.cs" type="Script" id=3]
-[ext_resource path="res://Quests/scripts/ItemDeliverQuestStepResource.cs" type="Script" id=4]
-[ext_resource path="res://Items/items/stone.tres" type="Resource" id=5]
-[ext_resource path="res://Items/items/apple.tres" type="Resource" id=6]
+[ext_resource type="Script" uid="uid://cacxu5w0uguqp" path="res://Quests/scripts/QuestResource.cs" id="2"]
+[ext_resource type="Script" uid="uid://dter278e3urr6" path="res://Quests/scripts/ItemDeliverQuestStepResource.cs" id="4"]
+[ext_resource type="Resource" uid="uid://v872h5v5e0ec" path="res://Items/items/stone.tres" id="5"]
+[ext_resource type="Resource" uid="uid://brmty12ytrphv" path="res://Items/items/apple.tres" id="6"]
 
-[sub_resource type="Resource" id=1]
-script = ExtResource( 3 )
-Quantity = 1
-Item = ExtResource( 1 )
-
-[sub_resource type="Resource" id=2]
-script = ExtResource( 4 )
+[sub_resource type="Resource" id="2"]
+script = ExtResource("4")
+Item = ExtResource("6")
+Quantity = 3
 Step = "deliver 3 Apples"
-Item = ExtResource( 6 )
-Quantity = 3
 
-[sub_resource type="Resource" id=3]
-script = ExtResource( 4 )
-Step = "deliver 3 Stones"
-Item = ExtResource( 5 )
+[sub_resource type="Resource" id="3"]
+script = ExtResource("4")
+Item = ExtResource("5")
 Quantity = 3
+Step = "deliver 3 Stones"
 
 [resource]
-script = ExtResource( 2 )
+script = ExtResource("2")
 Title = "Retrieve flute"
 Description = "Retrieve flute"
-Steps = [ SubResource( 2 ), SubResource( 3 ) ]
+Steps = [SubResource("2"), SubResource("3")]
 RewardXp = 30
-RewardItems = [ SubResource( 1 ) ]
+RewardItems = []
