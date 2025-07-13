@@ -8,6 +8,9 @@ public partial class PlayerSpawn : Node2D
 		Hide();
 
 		if (!GlobalPlayerManager.Instance.PlayerSpawned)
+		{
 			GlobalPlayerManager.Instance.SetPlayerPosition(GlobalPosition);
+			GlobalPlayerManager.Instance.Player.SetYSort(((YSortHandler)GetParent()).YSortOrigin);
+		}
 	}
 }

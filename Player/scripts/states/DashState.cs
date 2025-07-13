@@ -73,6 +73,6 @@ public partial class DashState : State
         Tween sceneTreeTween = CreateTween();
         sceneTreeTween.SetEase(Tween.EaseType.Out);
         sceneTreeTween.TweenProperty(effect, "modulate", new Color(1, 1, 1, 0), 0.2f);
-        sceneTreeTween.Chain().TweenCallback(Callable.From(() => effect.QueueFree()));
+        sceneTreeTween.Chain().TweenCallback(Callable.From(effect.QueueFree));
     }
 }

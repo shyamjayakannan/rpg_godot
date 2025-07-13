@@ -18,6 +18,7 @@ public partial class GlobalPlayerManager : Node
     {
         Instance = this;
         Player = (Player)GD.Load<PackedScene>("res://Player/Player.tscn").Instantiate();
+        YSortHandler.YSortHandlerScene.Instantiate().AddChild(Player);
 
         // we dont have a way to know if playerspawn nodes exist and we want PlayerSpawned to be true
         // so we wait a bit so that a PlayerSpawn node, if it exists, can set it to true.
@@ -28,18 +29,20 @@ public partial class GlobalPlayerManager : Node
     public void SetPlayerPosition(Vector2 position)
     {
         PlayerSpawned = true;
-        Player.GlobalPosition = position;
+        ((YSortHandler)Player.GetParent()).GlobalPosition = position;
     }
 
     public void SetParent(Node parent)
     {
-        RemovePlayerParent();
-        parent.AddChild(Player);
+        Node p = RemovePlayerParent();
+        parent.AddChild(p);
     }
 
-    public void RemovePlayerParent()
+    public Node RemovePlayerParent()
     {
-        Player.GetParent()?.RemoveChild(Player);
+        Node parent = Player.GetParent();
+        parent.GetParent()?.RemoveChild(parent);
+        return parent;
     }
 
     public bool IsEquipmentPresent(EquipableItem equipableItem)

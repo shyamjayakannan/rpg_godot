@@ -105,7 +105,7 @@ public partial class PlayerHUD : CanvasLayer
 	private void LoadGame()
 	{
 		ButtonMenu.PlayPress(audioStreamPlayer);
-		GetTree().CreateTimer(FadeToBlack(), false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => GlobalSaveManager.Instance.LoadGame()));
+		GetTree().CreateTimer(FadeToBlack(), false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(GlobalSaveManager.Instance.LoadGame));
 	}
 
 	private void BackToMenu()

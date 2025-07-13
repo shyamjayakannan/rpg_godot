@@ -33,7 +33,7 @@
 [ext_resource type="Script" uid="uid://c81luowvkohlh" path="res://Player/scripts/states/DashState.cs" id="31"]
 [ext_resource type="AudioStream" uid="uid://cccpr6i0gk6be" path="res://Player/audio/hyah.wav" id="32"]
 [ext_resource type="Script" uid="uid://vhj3n7h6efru" path="res://Player/scripts/states/BowState.cs" id="33"]
-[ext_resource type="PackedScene" uid="uid://dstluwgtig08j" path="res://GeneralNodes/ySortHandler/YSortHandler.tscn" id="34_78fhc"]
+[ext_resource type="PackedScene" uid="uid://cirwu85ktk8rs" path="res://GeneralNodes/ySortHandler/YSortAnchor.tscn" id="34_78fhc"]
 
 [sub_resource type="Animation" id="15"]
 resource_name = "attackDown"
@@ -430,7 +430,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, -56)]
+"values": [Vector2(0, -45)]
 }
 
 [sub_resource type="Animation" id="47"]
@@ -470,7 +470,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, -56)]
+"values": [Vector2(0, -45)]
 }
 
 [sub_resource type="Animation" id="48"]
@@ -510,7 +510,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, -56)]
+"values": [Vector2(0, -45)]
 }
 
 [sub_resource type="Animation" id="49"]
@@ -542,25 +542,13 @@ tracks/1/keys = {
 "update": 1,
 "values": [false]
 }
-tracks/2/type = "value"
+tracks/2/type = "method"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D/HeldItems:position")
+tracks/2/path = NodePath("FootstepAudioPlayer")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [Vector2(0, -54), Vector2(0, -56), Vector2(0, -56), Vector2(0, -54), Vector2(0, -56), Vector2(0, -56)]
-}
-tracks/3/type = "method"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("FootstepAudioPlayer")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.3),
 "transitions": PackedFloat32Array(1, 1),
 "values": [{
@@ -570,6 +558,18 @@ tracks/3/keys = {
 "args": [],
 "method": &"PlayFootsteps"
 }]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D/HeldItems:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(0, -43), Vector2(0, -45), Vector2(0, -45), Vector2(0, -43), Vector2(0, -45), Vector2(0, -45)]
 }
 
 [sub_resource type="Animation" id="50"]
@@ -627,7 +627,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [Vector2(0, -54), Vector2(0, -56), Vector2(0, -56), Vector2(0, -54), Vector2(0, -56), Vector2(0, -56)]
+"values": [Vector2(0, -43), Vector2(0, -45), Vector2(0, -45), Vector2(0, -43), Vector2(0, -45), Vector2(0, -45)]
 }
 
 [sub_resource type="Animation" id="51"]
@@ -685,7 +685,7 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [Vector2(0, -54), Vector2(0, -56), Vector2(0, -56), Vector2(0, -54), Vector2(0, -56), Vector2(0, -56)]
+"values": [Vector2(0, -43), Vector2(0, -45), Vector2(0, -45), Vector2(0, -43), Vector2(0, -45), Vector2(0, -45)]
 }
 
 [sub_resource type="Animation" id="38"]
@@ -1102,7 +1102,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [Vector2(0, -23), Vector2(0, -30), Vector2(0, -56)]
+"values": [Vector2(0, -11), Vector2(0, -17), Vector2(0, -45)]
 }
 
 [sub_resource type="Animation" id="44"]
@@ -1142,7 +1142,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [Vector2(16, -23), Vector2(10, -30), Vector2(0, -56)]
+"values": [Vector2(16, -11), Vector2(10, -17), Vector2(0, -45)]
 }
 
 [sub_resource type="Animation" id="45"]
@@ -1182,7 +1182,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
-"values": [Vector2(0, -23), Vector2(0, -30), Vector2(0, -56)]
+"values": [Vector2(0, -11), Vector2(0, -17), Vector2(0, -45)]
 }
 
 [sub_resource type="Animation" id="23"]
@@ -1585,14 +1585,12 @@ color = Color(0, 1, 0.203922, 1)
 color_ramp = SubResource("54")
 
 [node name="Player" type="CharacterBody2D"]
-y_sort_enabled = true
 collision_mask = 16
 script = ExtResource("6")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, 12)
 texture = ExtResource("2")
-offset = Vector2(0, -32)
+offset = Vector2(0, -20)
 hframes = 16
 vframes = 8
 script = ExtResource("29")
@@ -1600,13 +1598,13 @@ script = ExtResource("29")
 [node name="Shadow" type="Sprite2D" parent="Sprite2D"]
 modulate = Color(0, 0, 0, 1)
 show_behind_parent = true
-position = Vector2(0, -12)
 texture = ExtResource("9")
 
 [node name="AttackEffects" type="Sprite2D" parent="Sprite2D"]
-position = Vector2(0, -32)
+position = Vector2(0, -20)
 texture = ExtResource("7")
 hframes = 12
+frame = 3
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D/AttackEffects"]
 libraries = {
@@ -1615,7 +1613,7 @@ libraries = {
 autoplay = "noAnimation"
 
 [node name="HurtBox" parent="Sprite2D" instance=ExtResource("10")]
-position = Vector2(0, -20)
+position = Vector2(0, 12)
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D/HurtBox"]
@@ -1623,7 +1621,7 @@ shape = SubResource("21")
 debug_color = Color(0, 0.6, 0.701961, 0)
 
 [node name="ChargeHurtBox" parent="Sprite2D" instance=ExtResource("10")]
-position = Vector2(0, -32)
+position = Vector2(0, -20)
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D/ChargeHurtBox"]
@@ -1640,7 +1638,7 @@ process_material = SubResource("42")
 
 [node name="SpinSprite" type="Sprite2D" parent="Sprite2D"]
 show_behind_parent = true
-position = Vector2(0, -32)
+position = Vector2(0, -20)
 texture = ExtResource("21")
 hframes = 8
 frame = 7
@@ -1654,13 +1652,13 @@ libraries = {
 
 [node name="WeaponBelowSprite" type="Sprite2D" parent="Sprite2D"]
 show_behind_parent = true
-position = Vector2(0, -32)
+position = Vector2(0, -20)
 texture = ExtResource("28")
 hframes = 16
 vframes = 16
 
 [node name="WeaponAboveSprite" type="Sprite2D" parent="Sprite2D"]
-position = Vector2(0, -32)
+position = Vector2(0, -20)
 texture = ExtResource("28")
 hframes = 16
 vframes = 16
@@ -1759,6 +1757,7 @@ script = ExtResource("15")
 position = Vector2(0, -20)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ItemMagnet"]
+position = Vector2(0, -4)
 shape = SubResource("30")
 debug_color = Color(0, 0.6, 0.701961, 0)
 
@@ -1780,4 +1779,5 @@ process_material = SubResource("55")
 
 [node name="FootstepAudioPlayer" parent="." instance=ExtResource("30")]
 
-[node name="YSortHandler" parent="." instance=ExtResource("34_78fhc")]
+[node name="YSortAnchor" parent="." instance=ExtResource("34_78fhc")]
+defaultDifference = 8.0

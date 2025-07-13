@@ -72,7 +72,7 @@ public partial class Abilities : Node
         liftState.SetStartLate(true);
         PlayerHUD.Instance.UpdateBombs(--player.Bombs);
         Node2D bomb = (Node2D)bombScene.Instantiate();
-        player.GetParent().AddChild(bomb);
+        YSortHandler.AddToScene(bomb, player);
         bomb.GetNode<Bomb>("Throwable").OnInteractPressed();
     }
 
@@ -99,7 +99,7 @@ public partial class Abilities : Node
         if (boomerang == null)
         {
             boomerang = (Boomerang)boomerangScene.Instantiate();
-            player.GetParent().AddChild(boomerang);
+            YSortHandler.AddToScene(boomerang, player);
         }
 
         if (boomerang.BoomerangState != Boomerang.State.INACTIVE)

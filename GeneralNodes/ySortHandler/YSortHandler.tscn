@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dstluwgtig08j"]
+[gd_scene load_steps=2 format=3 uid="uid://btwai2a8860lu"]
 
-[ext_resource type="Script" uid="uid://bx6p4te6favgd" path="res://GeneralNodes/ySortHandler/YSortHandler.cs" id="1_w1b0l"]
+[ext_resource type="Script" uid="uid://bx6p4te6favgd" path="res://GeneralNodes/ySortHandler/YSortHandler.cs" id="1_vkn87"]
 
-[node name="YSortHandler" type="Node"]
-script = ExtResource("1_w1b0l")
+[node name="YSortHandler" type="Node2D"]
+script = ExtResource("1_vkn87")

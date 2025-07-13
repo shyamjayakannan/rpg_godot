@@ -55,13 +55,13 @@ public partial class PressurePlate : Node2D
         sprite.RegionRect = sprite.RegionRect with { Position = sprite.RegionRect.Position with { X = offRect.Position.X - 32 } };
     }
 
-    private void OnArea2DBodyEntered(Node body)
+    private void OnArea2DBodyEntered(Node _)
     {
         bodies += 1;
         CheckIsActivated();
     }
 
-    private void OnArea2DBodyExited(Node body)
+    private void OnArea2DBodyExited(Node _)
     {
         bodies -= 1;
         CheckIsActivated();

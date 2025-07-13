@@ -51,10 +51,16 @@ public partial class DestroyEnemyState : EnemyState
 		StateMachine.ChangeState(this);
 	}
 
-	private void OnAnimationPlayerAnimationFinished(string anim_name)
+	private void OnAnimationPlayerAnimationFinished(string _)
 	{
 		if (StateMachine.CurrentState == this)
-			Enemy.QueueFree();
+			Enemy.GetParent().QueueFree();
+	}
+
+	private static void AddToScene(Node2D child, Node2D sibling)
+	{
+		YSortHandler.AddToScene(child, sibling);
+		child.GlobalPosition = sibling.GlobalPosition;
 	}
 
 	private void DropItems()
@@ -65,10 +71,9 @@ public partial class DestroyEnemyState : EnemyState
 			{
 				ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
 				itemPickup.Item = drop.item;
-				itemPickup.GlobalPosition = Enemy.GlobalPosition;
 				itemPickup.IsDroppedItem = true;
 				itemPickup.Velocity = new Vector2(2, 2).Rotated((float)GD.RandRange(-1.5, 1.5)) * (float)GD.RandRange(0.9, 1.5);
-				Enemy.GetParent().CallDeferred(Node.MethodName.AddChild, itemPickup);
+				CallDeferred(MethodName.AddToScene, itemPickup, Enemy);
 			}
 		}
 	}

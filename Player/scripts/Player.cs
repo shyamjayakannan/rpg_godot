@@ -23,7 +23,7 @@ public partial class Player : CharacterBody2D
 	private LiftState liftState;
 	private IdleState idleState;
 	private int attack = 1;
-	private CollisionShape2D collisionShape2D;
+
 
 	// properties
 	public Sprite2D Sprite2D { get; private set; }
@@ -70,7 +70,6 @@ public partial class Player : CharacterBody2D
 		idleState = GetNode<IdleState>("PlayerStateMachine/IdleState");
 		hitBox = GetNode<HitBox>("HitBox");
 		heldItems = GetNode<Node2D>("Sprite2D/HeldItems");
-		collisionShape2D = GetNode<CollisionShape2D>("CollisionShape2D");
 
 		hitBox.Connect(HitBox.SignalName.Damaged, new(this, MethodName.OnHitBoxDamaged));
 		AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
@@ -209,9 +208,9 @@ public partial class Player : CharacterBody2D
 	public void PickupItem(Throwable throwable, Node2D throwableParent)
 	{
 		// reset position
-		throwableParent.Position = Vector2.Zero;
 		Throwable = throwable;
-		heldItems.AddChild(throwableParent);
+		heldItems.AddChild(throwableParent.GetParent());
+		throwableParent.GlobalPosition = heldItems.GlobalPosition;
 		stateMachine.ChangeState(liftState);
 	}
 
@@ -236,8 +235,8 @@ public partial class Player : CharacterBody2D
 		stateMachine.ChangeState(state);
 	}
 
-	public new Vector2 GetGlobalPosition()
+	public void SetYSort(float ySortOrigin)
 	{
-		return collisionShape2D.GlobalPosition;
+		((YSortHandler)GetParent()).YSortOrigin = ySortOrigin;
 	}
 }

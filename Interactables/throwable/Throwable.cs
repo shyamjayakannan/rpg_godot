@@ -21,8 +21,7 @@ public partial class Throwable : Interactables
     protected Sprite2D Shadow { get; private set; }
 
     // private
-    private Sprite2D sprite2D;
-    private float offset;
+    private YSortHandler ySortHandler;
 
     // methods
     public override void _Ready()
@@ -30,13 +29,13 @@ public partial class Throwable : Interactables
         HurtBox = GetNode<HurtBox>("HurtBox");
         WallDetect = GetNode<Area2D>("WallDetect");
         ThrowableParent = (Node2D)GetParent();
+        ySortHandler = (YSortHandler)ThrowableParent.GetParent();
         AnimationPlayer = ThrowableParent.GetNode<AnimationPlayer>("AnimationPlayer");
         Shadow = ThrowableParent.GetNodeOrNull<Sprite2D>("Shadow");
-        sprite2D = ThrowableParent.GetNodeOrNull<Sprite2D>("Sprite2D");
         SetupAreas();
         SetPhysicsProcess(false);
 
-        AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
+        AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, Callable.From((StringName _) => ThrowableParent.GetParent().QueueFree()));
         Connect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
         Connect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
     }
@@ -47,15 +46,23 @@ public partial class Throwable : Interactables
             return;
 
         SetCollisionBodies(ThrowableParent, true);
-        ThrowableParent.GetParent()?.RemoveChild(ThrowableParent);
+        Node2D p = (YSortHandler)ThrowableParent.GetParent();
+        p.GetParent()?.RemoveChild(p);
         GlobalPlayerManager.Instance.Player.PickupItem(this, ThrowableParent);
+
+        if (this is Bomb bomb)
+            bomb.GetParent().GetNode<Sprite2D>("Sprite2D").Offset = Vector2.Zero;
 
         // let shadow move on ground
         if (Shadow != null)
         {
-            ThrowableParent.RemoveChild(Shadow);
-            WallDetect.AddChild(Shadow);
-            Shadow.Position -= Position;
+            if (WallDetect.GetNodeOrNull<Sprite2D>("Shadow") == null)
+            {
+                ThrowableParent.RemoveChild(Shadow);
+                WallDetect.AddChild(Shadow);
+                Shadow.Position -= Position;
+            }
+
             Shadow.Hide();
         }
 
@@ -81,12 +88,12 @@ public partial class Throwable : Interactables
         }
 
         ThrowVelocity = new(ThrowVelocity.X, ThrowVelocity.Y + Gravity * floatDelta);
-        Vector2 toAdd = ThrowVelocity * floatDelta;
-        ThrowableParent.Position += toAdd;
+        ThrowableParent.Position += ThrowVelocity * floatDelta;
+        Vector2 globalPosition = ThrowableParent.GlobalPosition;
         ThrowSpeedWallDetect += Gravity * floatDelta;
-        sprite2D.Offset = new(sprite2D.Offset.X, sprite2D.Offset.Y + ThrowSpeedWallDetect * floatDelta);
         WallDetect.Position = new(WallDetect.Position.X, WallDetect.Position.Y - ThrowSpeedWallDetect * floatDelta);
-        sprite2D.Position = new(WallDetect.Position.X, WallDetect.Position.Y - offset);
+        ySortHandler.GlobalPosition = WallDetect.GlobalPosition;
+        ThrowableParent.GlobalPosition = globalPosition;
     }
 
     public async void SetState(string state, Vector2 throwDirection)
@@ -94,14 +101,14 @@ public partial class Throwable : Interactables
         ThrowDirection = throwDirection;
         Vector2 globalPosition = ThrowableParent.GlobalPosition;
         SceneTree sceneTree = GetTree();
-        ThrowableParent.GetParent().RemoveChild(ThrowableParent);
+        ySortHandler.GetParent().RemoveChild(ySortHandler);
 
         // add child needs to be deferred but on doing that, the onready variables like Timer become null because the
         // add child is happening later. so better to wait for the idle frame and do everything after that so that the
         // add child happens first before accessing the node variables like Timer
         await ToSignal(sceneTree, SceneTree.SignalName.ProcessFrame);
 
-        GlobalPlayerManager.Instance.Player.GetParent().AddChild(ThrowableParent);
+        GlobalPlayerManager.Instance.Player.GetParent().GetParent().AddChild(ySortHandler);
 
         // VERY IMPORTANT
         // set only throwable's shapes to active not the static body of throwable parent otherwise the walldetect will
@@ -111,9 +118,11 @@ public partial class Throwable : Interactables
 
         // let wall detect move on the ground
         WallDetect.GlobalPosition = GlobalPlayerManager.Instance.Player.GlobalPosition;
-        offset = sprite2D.Offset.Y;
-        sprite2D.GlobalPosition = new(GlobalPlayerManager.Instance.Player.GlobalPosition.X, GlobalPlayerManager.Instance.Player.GlobalPosition.Y - offset);
-        sprite2D.Offset = new(sprite2D.Offset.X, globalPosition.Y - sprite2D.GlobalPosition.Y);
+        ySortHandler.SetChild(WallDetect.Position.Y);
+        ySortHandler.SetPhysicsProcess(false);
+
+        if (this is Bomb bomb)
+            bomb.GetParent().GetNode<Sprite2D>("Sprite2D").Offset = new Vector2(0, -10);
 
         float playerToItemVectorMagnitude = GlobalPlayerManager.Instance.Player.GlobalPosition.DistanceTo(globalPosition);
         Timer = Mathf.Sqrt(2 * playerToItemVectorMagnitude / Gravity);
@@ -173,6 +182,12 @@ public partial class Throwable : Interactables
 
     private void Destroy()
     {
+        if (IsConnected(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered)))
+            Disconnect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
+
+        if (IsConnected(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited)))
+            Disconnect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
+
         SetPhysicsProcess(false);
         AnimationPlayer.Play("destroy");
         Shadow.Hide();
@@ -188,18 +203,7 @@ public partial class Throwable : Interactables
         Destroy();
     }
 
-    private void OnAnimationPlayerAnimationFinished(string _)
-    {
-        if (IsConnected(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered)))
-            Disconnect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
-
-        if (IsConnected(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited)))
-            Disconnect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
-
-        ThrowableParent.QueueFree();
-    }
-
-    private void OnWallDetected(Node body)
+    private void OnWallDetected(Node _)
     {
         OnCollision();
     }

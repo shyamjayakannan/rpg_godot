@@ -19,7 +19,7 @@ public partial class BowState : State
         GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => nextState = idleState));
 
         Arrow arrow = (Arrow)arrowScene.Instantiate();
-        Player.GetParent().AddChild(arrow);
+        YSortHandler.AddToScene(arrow, Player);
         arrow.GlobalPosition = Player.GlobalPosition + Player.CardinalDirection * 32;
         arrow.Fire(Player.CardinalDirection);
     }

@@ -12,6 +12,7 @@ public abstract partial class Interactables : Node2D
 
     protected virtual void OnArea2DAreaExited(Area2D area = null)
     {
-        GlobalPlayerManager.Instance.Disconnect(GlobalPlayerManager.SignalName.InteractPressed, new(this, MethodName.OnInteractPressed));
+        if (GlobalPlayerManager.Instance.IsConnected(GlobalPlayerManager.SignalName.InteractPressed, new(this, MethodName.OnInteractPressed)))
+            GlobalPlayerManager.Instance.Disconnect(GlobalPlayerManager.SignalName.InteractPressed, new(this, MethodName.OnInteractPressed));
     }
 }

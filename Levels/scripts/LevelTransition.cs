@@ -101,7 +101,7 @@ public partial class LevelTransition : Area2D
 		}
 	}
 
-	protected void OnLevelTransitionBodyEntered(Node body = null)
+	protected void OnLevelTransitionBodyEntered(Node _ = null)
 	{
 		GlobalLevelManager.Instance.LoadNewLevel(
 			level,

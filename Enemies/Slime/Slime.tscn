@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://coshfdgaxm1rn"]
+[gd_scene load_steps=38 format=3 uid="uid://coshfdgaxm1rn"]
 
 [ext_resource type="Texture2D" uid="uid://bomxd0yg8rd52" path="res://Player/sprites/Shadow.png" id="1"]
 [ext_resource type="Texture2D" uid="uid://di80hteuilsik" path="res://Enemies/Slime/Slime.png" id="2"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" path="res://GeneralNodes/HitBox/HitBox.tscn" id="13"]
 [ext_resource type="Resource" uid="uid://8jy0holptrhc" path="res://Items/items/gem.tres" id="14"]
 [ext_resource type="Script" uid="uid://duem3fdyyqxqr" path="res://Enemies/scripts/DropData.cs" id="15"]
+[ext_resource type="PackedScene" uid="uid://cirwu85ktk8rs" path="res://GeneralNodes/ySortHandler/YSortAnchor.tscn" id="16_ke740"]
 
 [sub_resource type="CapsuleShape2D" id="1"]
 radius = 6.0
@@ -44,7 +45,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 8)]
+"values": [Vector2(0, -20)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -57,6 +58,18 @@ tracks/2/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Shadow:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
 }
 
 [sub_resource type="Animation" id="18"]
@@ -85,7 +98,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 8), Vector2(0, 4), Vector2(0, 8)]
+"values": [Vector2(0, -20), Vector2(0, -24), Vector2(0, -20)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -218,7 +231,7 @@ tracks/5/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 8), Vector2(0, 4), Vector2(0, 8)]
+"values": [Vector2(0, -20), Vector2(0, -24), Vector2(0, -20)]
 }
 
 [sub_resource type="Animation" id="19"]
@@ -299,7 +312,7 @@ tracks/5/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 8), Vector2(0, 4), Vector2(0, 8)]
+"values": [Vector2(0, -20), Vector2(0, -24), Vector2(0, -20)]
 }
 
 [sub_resource type="Animation" id="3"]
@@ -543,26 +556,26 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/path = NodePath("Shadow:scale")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.4),
-"transitions": PackedFloat32Array(1, -2, -2, -2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 8), Vector2(0, 8), Vector2(0, 8), Vector2(0, -4)]
+"values": [Vector2(1, 1), Vector2(1.2, 1.2), Vector2(1, 1), Vector2(0.85, 0.85)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Shadow:scale")
+tracks/2/path = NodePath("Sprite2D:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.4),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"transitions": PackedFloat32Array(1, -2, -2, -2),
 "update": 0,
-"values": [Vector2(1, 1), Vector2(1.2, 1.2), Vector2(1, 1), Vector2(0.85, 0.85)]
+"values": [Vector2(0, -20), Vector2(0, -20), Vector2(0, -20), Vector2(0, -24)]
 }
 
 [sub_resource type="Animation" id="8"]
@@ -603,7 +616,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.4),
 "transitions": PackedFloat32Array(1, -2, -2, -2),
 "update": 0,
-"values": [Vector2(0, 8), Vector2(0, 8), Vector2(0, 8), Vector2(0, -4)]
+"values": [Vector2(0, -20), Vector2(0, -20), Vector2(0, -20), Vector2(0, -24)]
 }
 
 [sub_resource type="Animation" id="9"]
@@ -644,7 +657,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.4),
 "transitions": PackedFloat32Array(1, -2, -2, -2),
 "update": 0,
-"values": [Vector2(0, 8), Vector2(0, 8), Vector2(0, 8), Vector2(0, -4)]
+"values": [Vector2(0, -20), Vector2(0, -20), Vector2(0, -20), Vector2(0, -24)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mp7rs"]
@@ -753,7 +766,6 @@ _data = {
 radius = 12.0
 
 [node name="Slime" type="CharacterBody2D"]
-y_sort_enabled = true
 collision_layer = 256
 collision_mask = 16
 script = ExtResource("3")
@@ -761,15 +773,12 @@ hp = 1
 
 [node name="Shadow" type="Sprite2D" parent="."]
 modulate = Color(0, 0, 0, 1)
-position = Vector2(0, 8)
-scale = Vector2(1.14308, 1.14308)
+show_behind_parent = true
 texture = ExtResource("1")
-offset = Vector2(0, -8)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, 8)
+position = Vector2(0, -20)
 texture = ExtResource("2")
-offset = Vector2(0, -28)
 hframes = 16
 vframes = 2
 
@@ -832,3 +841,6 @@ collision_layer = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
 position = Vector2(0, -6)
 shape = SubResource("12")
+
+[node name="YSortAnchor" parent="." instance=ExtResource("16_ke740")]
+defaultDifference = 8.0

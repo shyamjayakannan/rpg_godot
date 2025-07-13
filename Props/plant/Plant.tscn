@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://co5gi3mbm7iti"]
+[gd_scene load_steps=12 format=3 uid="uid://co5gi3mbm7iti"]
 
 [ext_resource type="Script" uid="uid://dy6sgi0vcnqbw" path="res://Props/plant/Plant.cs" id="1"]
 [ext_resource type="Texture2D" uid="uid://c6i6drlvloo0f" path="res://Props/sprites/Props.png" id="2"]
 [ext_resource type="PackedScene" path="res://GeneralNodes/HitBox/HitBox.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://Interactables/throwable/Throwable.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://c2gfwjcxomkpi" path="res://Interactables/throwable/Throwable.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://cirwu85ktk8rs" path="res://GeneralNodes/ySortHandler/YSortAnchor.tscn" id="5_egfmr"]
 
 [sub_resource type="RectangleShape2D" id="2"]
 size = Vector2(20, 26)
@@ -52,7 +53,6 @@ _data = {
 }
 
 [node name="Plant" type="Node2D"]
-position = Vector2(0, -8)
 script = ExtResource("1")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -83,3 +83,6 @@ shape = SubResource("3")
 libraries = {
 &"": SubResource("AnimationLibrary_irvny")
 }
+
+[node name="YSortAnchor" parent="." instance=ExtResource("5_egfmr")]
+defaultDifference = 17.0

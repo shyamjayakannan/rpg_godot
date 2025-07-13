@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cirwu85ktk8rs"]
+
+[ext_resource type="Script" uid="uid://h7ojbwi3ylqu" path="res://GeneralNodes/ySortHandler/YSortAnchor.cs" id="1_l08cn"]
+
+[node name="YSortAnchor" type="Area2D"]
+script = ExtResource("1_l08cn")

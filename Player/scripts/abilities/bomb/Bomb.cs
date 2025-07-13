@@ -19,6 +19,11 @@ public partial class Bomb : Throwable
     {
         base._Ready();
         throwDistance = ThrowDistance;
+
+        // VERY IMPORTANT
+        // keep throwable below animation player so that the animation player can start te default animation before
+        // queue is called. otherwise queue will be called before and then the animationplayer will play the default animation
+        // later (in its _Ready) and the queue wll be overridden, causing no explosion! 
         AnimationPlayer.Queue("explode");
         AnimationPlayer.Connect(AnimationPlayer.SignalName.AnimationChanged, new(this, MethodName.OnAnimationChanged));
         AnimationPlayer.SpeedScale = (float)AnimationPlayer.CurrentAnimationLength / fuseDuration;

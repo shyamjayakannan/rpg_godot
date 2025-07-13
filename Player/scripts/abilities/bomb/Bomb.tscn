@@ -1,25 +1,13 @@
-[gd_scene load_steps=15 format=3 uid="uid://mi4qor32k5on"]
+[gd_scene load_steps=16 format=3 uid="uid://mi4qor32k5on"]
 
 [ext_resource type="Script" uid="uid://c3axpvu6ksqh3" path="res://Player/scripts/abilities/bomb/Bomb.cs" id="1"]
 [ext_resource type="PackedScene" path="res://GeneralNodes/HurtBox/HurtBox.tscn" id="2"]
 [ext_resource type="Texture2D" uid="uid://deh8e5arjmt2x" path="res://Player/scripts/abilities/bomb/bomb.png" id="3"]
 [ext_resource type="AudioStream" uid="uid://bulj0v1t8nycs" path="res://Player/scripts/abilities/bomb/bomb_explosion.wav" id="4"]
+[ext_resource type="PackedScene" uid="uid://cirwu85ktk8rs" path="res://GeneralNodes/ySortHandler/YSortAnchor.tscn" id="5_77knw"]
 
-[sub_resource type="Gradient" id="1"]
-offsets = PackedFloat32Array(0.535714, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="2"]
-gradient = SubResource("1")
-width = 32
-height = 20
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(0.5, 0)
-
-[sub_resource type="AtlasTexture" id="3"]
-atlas = ExtResource("3")
-region = Rect2(0, 0, 128, 128)
+[sub_resource type="RectangleShape2D" id="9"]
+size = Vector2(20, 8)
 
 [sub_resource type="Animation" id="4"]
 length = 0.001
@@ -273,6 +261,20 @@ tracks/6/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/7/type = "method"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("YSortAnchor")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [56.0],
+"method": &"SetChild"
+}]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bu4x1"]
 _data = {
@@ -281,39 +283,33 @@ _data = {
 &"explode": SubResource("6")
 }
 
-[sub_resource type="CircleShape2D" id="7"]
+[sub_resource type="Gradient" id="1"]
+offsets = PackedFloat32Array(0.535714, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="2"]
+gradient = SubResource("1")
+width = 32
+height = 20
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
 
 [sub_resource type="RectangleShape2D" id="8"]
 size = Vector2(32, 16)
 
-[sub_resource type="RectangleShape2D" id="9"]
-size = Vector2(20, 8)
+[sub_resource type="AtlasTexture" id="3"]
+atlas = ExtResource("3")
+region = Rect2(0, 0, 128, 128)
 
-[node name="Bomb" type="Node2D"]
-y_sort_enabled = true
+[sub_resource type="CircleShape2D" id="7"]
 
-[node name="Explosion" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(0, 64)
-texture = ExtResource("3")
-offset = Vector2(0, -64)
-hframes = 3
-vframes = 3
-frame = 1
+[node name="Bomb" type="StaticBody2D"]
 
-[node name="Shadow" type="Sprite2D" parent="."]
-show_behind_parent = true
-position = Vector2(0, 16)
-scale = Vector2(0.8125, 0.8)
-texture = SubResource("2")
-offset = Vector2(0, -10)
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, 16)
-texture = SubResource("3")
-offset = Vector2(0, -16)
-hframes = 4
-vframes = 4
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 8)
+shape = SubResource("9")
+debug_color = Color(0, 0.6, 0.701961, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -321,16 +317,11 @@ libraries = {
 }
 autoplay = "default"
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-position = Vector2(0, -15)
-
-[node name="HurtBox" parent="." instance=ExtResource("2")]
-collision_layer = 258
-monitorable = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
-shape = SubResource("7")
-debug_color = Color(0, 0.6, 0.701961, 0)
+[node name="Shadow" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(0, 8)
+scale = Vector2(0.8125, 0.8)
+texture = SubResource("2")
 
 [node name="Throwable" type="Area2D" parent="."]
 y_sort_enabled = true
@@ -355,11 +346,28 @@ collision_layer = 0
 collision_mask = 16
 monitorable = false
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-position = Vector2(0, 8)
-collision_layer = 16
-collision_mask = 0
+[node name="Explosion" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("3")
+hframes = 3
+vframes = 3
+frame = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-shape = SubResource("9")
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("3")
+hframes = 4
+vframes = 4
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(0, -15)
+
+[node name="HurtBox" parent="." instance=ExtResource("2")]
+collision_layer = 258
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox"]
+shape = SubResource("7")
 debug_color = Color(0, 0.6, 0.701961, 0)
+
+[node name="YSortAnchor" parent="." instance=ExtResource("5_77knw")]
+defaultDifference = 16.0

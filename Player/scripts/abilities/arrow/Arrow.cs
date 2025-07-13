@@ -24,8 +24,8 @@ public partial class Arrow : Node2D
         audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
         audioStreamPlayer2D.Play();
 
-        hurtBox.Connect(HurtBox.SignalName.DidDamage, new(this, Node.MethodName.QueueFree));
-        GetTree().CreateTimer(10).Connect(SceneTreeTimer.SignalName.Timeout, new(this, Node.MethodName.QueueFree));
+        hurtBox.Connect(HurtBox.SignalName.DidDamage, Callable.From(() => GetParent().QueueFree()));
+        GetTree().CreateTimer(10).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => GetParent().QueueFree()));
     }
 
     public override void _Process(double delta)

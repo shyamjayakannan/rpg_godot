@@ -97,7 +97,7 @@ public partial class ItemPickup : CharacterBody2D
 	private void ItemPickedUp2()
 	{
 		persistentDataHandler.SetValue();
-		QueueFree();
+		GetParent().QueueFree();
 
 		if (IsDroppedItem)
 			GlobalLevelManager.Instance.RemoveItem(GetTree().CurrentScene.SceneFilePath, Item, SavedPosition);
