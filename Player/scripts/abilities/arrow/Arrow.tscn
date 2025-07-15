@@ -29,4 +29,4 @@ texture = ExtResource("2")
 stream = ExtResource("4")
 
 [node name="YSortAnchor" parent="." instance=ExtResource("5_8ceah")]
-defaultDifference = 4.0
+DefaultDifference = 3.0

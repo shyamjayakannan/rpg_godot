@@ -70,13 +70,12 @@ public partial class ItemPickup : CharacterBody2D
 			Velocity = Velocity.Bounce(collisionInfo.GetNormal());
 
 		Velocity *= 1 - (float)delta * 4;
-
 	}
 
 	public override void _ExitTree()
 	{
 		if (IsDroppedItem && !pickedUp)
-			GlobalLevelManager.Instance.AddItem(GetTree().CurrentScene.SceneFilePath, Item, GlobalPosition);
+			GlobalLevelManager.Instance.AddItem(GetTree().CurrentScene.SceneFilePath, Item, GlobalPosition, ((YSortHandler)GetParent()).YSortOrigin);
 	}
 
 	private void UpdateTexture()
@@ -100,7 +99,7 @@ public partial class ItemPickup : CharacterBody2D
 		GetParent().QueueFree();
 
 		if (IsDroppedItem)
-			GlobalLevelManager.Instance.RemoveItem(GetTree().CurrentScene.SceneFilePath, Item, SavedPosition);
+			GlobalLevelManager.Instance.RemoveItem(GetTree().CurrentScene.SceneFilePath, Item, SavedPosition, ((YSortHandler)GetParent()).YSortOrigin);
 	}
 
 	private void OnArea2DBodyEntered(Node body)

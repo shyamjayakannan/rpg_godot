@@ -49,4 +49,4 @@ stream = ExtResource("2")
 [node name="PersistentDataHandler" parent="." instance=ExtResource("4")]
 
 [node name="YSortAnchor" parent="." instance=ExtResource("7_1n6dc")]
-defaultDifference = 7.0
+DefaultDifference = 7.0

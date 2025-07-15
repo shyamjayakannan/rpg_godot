@@ -305,6 +305,8 @@ region = Rect2(0, 0, 128, 128)
 [sub_resource type="CircleShape2D" id="7"]
 
 [node name="Bomb" type="StaticBody2D"]
+collision_layer = 16
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 8)
@@ -370,4 +372,4 @@ shape = SubResource("7")
 debug_color = Color(0, 0.6, 0.701961, 0)
 
 [node name="YSortAnchor" parent="." instance=ExtResource("5_77knw")]
-defaultDifference = 16.0
+DefaultDifference = 16.0

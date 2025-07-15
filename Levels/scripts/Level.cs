@@ -35,27 +35,19 @@ public partial class Level : Node2D
 		return System.Array.Empty<Vector2>();
 	}
 
-	private void AddItemPickupsToScene(List<(Items, Vector2)> items)
+	private void AddItemPickupsToScene(List<(Items, Vector2, int)> items)
 	{
 		if (items == null || items.Count == 0)
 			return;
 
-		foreach (Node child in GetChildren())
+		foreach ((Items, Vector2, int) tuple in items)
 		{
-			if (child is not TileMapLayer)
-				continue;
-
-			foreach ((Items, Vector2) tuple in items)
-			{
-				ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
-				itemPickup.Item = tuple.Item1;
-				itemPickup.GlobalPosition = tuple.Item2;
-				itemPickup.IsDroppedItem = true;
-				itemPickup.SavedPosition = tuple.Item2;
-				child.AddChild(itemPickup);
-			}
-
-			return;
+			ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
+			YSortHandler.AddToScene(itemPickup, GlobalPlayerManager.Instance.Player);
+			itemPickup.Item = tuple.Item1;
+			itemPickup.GlobalPosition = tuple.Item2;
+			itemPickup.IsDroppedItem = true;
+			itemPickup.SavedPosition = tuple.Item2;
 		}
 	}
 }

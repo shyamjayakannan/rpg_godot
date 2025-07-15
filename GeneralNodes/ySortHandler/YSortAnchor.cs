@@ -4,16 +4,16 @@ public partial class YSortAnchor : Area2D
 {
     // Exports
     [Export]
-    private float defaultDifference;
+    public float DefaultDifference { get; private set; }
 
     // methods
     public override void _Ready()
     {
-        CallDeferred(MethodName.SetChild, defaultDifference);
+        CallDeferred(MethodName.SetDifference, DefaultDifference);
     }
 
-    private void SetChild(float difference)
+    private void SetDifference(float difference)
     {
-        ((YSortHandler)GetParent().GetParent()).SetChild(difference);
+        ((YSortHandler)GetParent().GetParent()).SetDifference(difference);
     }
 }

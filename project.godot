@@ -157,6 +157,7 @@ switchAbility={
 2d_physics/layer_4="Npc"
 2d_physics/layer_5="Walls"
 2d_physics/layer_9="Enemies"
+2d_physics/layer_10="YSortAnchor"
 
 [mono]
 

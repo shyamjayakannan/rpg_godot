@@ -15,7 +15,7 @@ public partial class GlobalSaveManager : Node
 	public struct ItemData
 	{
 		public int Quantity { get; set; }
-		public string Path3D { get; set; }
+		public string Path { get; set; }
 	}
 	public struct QuestData
 	{
@@ -37,6 +37,7 @@ public partial class GlobalSaveManager : Node
 		public int Defence { get; set; }
 		public float PosX { get; set; }
 		public float PosY { get; set; }
+		public int YSortOrigin { get; set; }
 	}
 	private struct SaveData
 	{
@@ -46,7 +47,7 @@ public partial class GlobalSaveManager : Node
 		public List<ItemData> Equipment { get; set; }
 		public List<string> Persistence { get; set; }
 		public List<QuestData> Quests { get; set; }
-		public Dictionary<string, List<(ItemData, Vector2)>> DroppedItems { get; set; }
+		public Dictionary<string, List<(ItemData, Vector2, int)>> DroppedItems { get; set; }
 	}
 	private SaveData currentSaveData = new()
 	{
@@ -59,7 +60,8 @@ public partial class GlobalSaveManager : Node
 			Level = 1,
 			Xp = 0,
 			Attack = 1,
-			Defence = 1
+			Defence = 1,
+			YSortOrigin = 0
 		},
 		ScenePath = "",
 		Items = new(),
@@ -124,7 +126,8 @@ public partial class GlobalSaveManager : Node
 			Level = GlobalPlayerManager.Instance.Player.Level,
 			Xp = GlobalPlayerManager.Instance.Player.Xp,
 			Attack = GlobalPlayerManager.Instance.Player.Attack,
-			Defence = GlobalPlayerManager.Instance.Player.Defence
+			Defence = GlobalPlayerManager.Instance.Player.Defence,
+			YSortOrigin = GlobalPlayerManager.Instance.PlayerYSortHandler.YSortOrigin
 		};
 	}
 
@@ -147,10 +150,13 @@ public partial class GlobalSaveManager : Node
 
 	private void SetPlayer()
 	{
-		GlobalPlayerManager.Instance.SetPlayerPosition(new(
-			currentSaveData.Player.PosX,
-			currentSaveData.Player.PosY
-		));
+		GlobalPlayerManager.Instance.SetPlayerPosition(
+			new(
+				currentSaveData.Player.PosX,
+				currentSaveData.Player.PosY
+			),
+			currentSaveData.Player.YSortOrigin
+		);
 		GlobalPlayerManager.Instance.Player.SetHP(
 			currentSaveData.Player.Hp,
 			currentSaveData.Player.MaxHp

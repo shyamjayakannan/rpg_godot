@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Godot.Collections;
 
@@ -78,29 +79,21 @@ public partial class InventoryData : Resource
 
 	public List<GlobalSaveManager.ItemData> GetSaveData()
 	{
-		List<GlobalSaveManager.ItemData> list = new();
-
-		foreach (SlotData slot in Slots)
+		return Slots.Select(slot =>
 		{
 			if (slot == null)
-			{
-				list.Add(new()
+				return new GlobalSaveManager.ItemData
 				{
-					Path3D = "",
+					Path = "",
 					Quantity = 0
-				});
-
-				continue;
-			}
-
-			list.Add(new()
-			{
-				Path3D = slot.Item.ResourcePath,
-				Quantity = slot.Quantity
-			});
-		}
-
-		return list;
+				};
+			else
+				return new GlobalSaveManager.ItemData
+				{
+					Path = slot.Item.ResourcePath,
+					Quantity = slot.Quantity
+				};
+		}).ToList();
 	}
 
 	public void SetSaveData(List<GlobalSaveManager.ItemData> items)
@@ -109,7 +102,7 @@ public partial class InventoryData : Resource
 
 		foreach (GlobalSaveManager.ItemData item in items)
 		{
-			if (item.Path3D == "")
+			if (item.Path == "")
 			{
 				slots.Add(null);
 				continue;
@@ -117,7 +110,7 @@ public partial class InventoryData : Resource
 
 			slots.Add(new(
 				item.Quantity,
-				GD.Load<Items>(item.Path3D)
+				GD.Load<Items>(item.Path)
 			));
 		}
 

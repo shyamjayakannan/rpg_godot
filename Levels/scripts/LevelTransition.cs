@@ -32,6 +32,8 @@ public partial class LevelTransition : Area2D
 				UpdateArea();
 		}
 	}
+	[Export]
+	private int ySortOrigin;
 
 	// private
 	private SIDE side = SIDE.LEFT;
@@ -93,10 +95,7 @@ public partial class LevelTransition : Area2D
 
 		if (collisionShape != null)
 		{
-			collisionShape.Shape = new RectangleShape2D
-			{
-				Size = newRect / 2
-			};
+			collisionShape.Shape = new RectangleShape2D { Size = newRect };
 			collisionShape.Position = newPosition;
 		}
 	}
@@ -115,7 +114,7 @@ public partial class LevelTransition : Area2D
 		if (Name != GlobalLevelManager.Instance.TargetTransitionArea)
 			return;
 
-		GlobalPlayerManager.Instance.SetPlayerPosition(GlobalPosition + GlobalLevelManager.Instance.PositionOffset);
+		GlobalPlayerManager.Instance.SetPlayerPosition(GlobalPosition + GlobalLevelManager.Instance.PositionOffset, ySortOrigin);
 	}
 
 	private Vector2 GetOffset()

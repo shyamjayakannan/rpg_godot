@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://cirwu85ktk8rs"]
+[gd_scene load_steps=3 format=3 uid="uid://cirwu85ktk8rs"]
 
 [ext_resource type="Script" uid="uid://h7ojbwi3ylqu" path="res://GeneralNodes/ySortHandler/YSortAnchor.cs" id="1_l08cn"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_l08cn"]
+radius = 4.0
+
 [node name="YSortAnchor" type="Area2D"]
+collision_layer = 512
+collision_mask = 0
 script = ExtResource("1_l08cn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_l08cn")

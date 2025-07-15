@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public partial class GlobalLevelManager : Node
@@ -16,7 +17,7 @@ public partial class GlobalLevelManager : Node
 	public static GlobalLevelManager Instance { get; private set; }
 	public string TargetTransitionArea { get; private set; }
 	public Vector2 PositionOffset { get; private set; } = Vector2.Zero;
-	public Dictionary<string, List<(Items, Vector2)>> DroppedItems { get; set; } = new();
+	public Dictionary<string, List<(Items, Vector2, int)>> DroppedItems { get; set; } = new();
 
 	// private
 	private string levelPath;
@@ -32,69 +33,53 @@ public partial class GlobalLevelManager : Node
 		CallDeferred(GodotObject.MethodName.EmitSignal, SignalName.LevelLoaded);
 	}
 
-	public void AddItem(string fileName, Items item, Vector2 globalPosition)
+	public void AddItem(string fileName, Items item, Vector2 globalPosition, int ySortOrigin)
 	{
-		if (DroppedItems.TryGetValue(fileName, out List<(Items, Vector2)> items))
-			items.Add((item, globalPosition));
+		if (DroppedItems.TryGetValue(fileName, out List<(Items, Vector2, int)> items))
+			items.Add((item, globalPosition, ySortOrigin));
 		else
-			DroppedItems.Add(fileName, new(1) { (item, globalPosition) });
+			DroppedItems.Add(fileName, new(1) { (item, globalPosition, ySortOrigin) });
 	}
 
-	public void RemoveItem(string fileName, Items item, Vector2 globalPosition)
+	public void RemoveItem(string fileName, Items item, Vector2 globalPosition, int ySortOrigin)
 	{
-		if (DroppedItems.TryGetValue(fileName, out List<(Items, Vector2)> items))
-			items.Remove((item, globalPosition));
+		if (DroppedItems.TryGetValue(fileName, out List<(Items, Vector2, int)> items))
+			items.Remove((item, globalPosition, ySortOrigin));
 	}
 
-	public List<(Items, Vector2)> GetDroppedItems(string fileName)
+	public List<(Items, Vector2, int)> GetDroppedItems(string fileName)
 	{
-		return DroppedItems.TryGetValue(fileName, out List<(Items, Vector2)> items) ? items : null;
+		return DroppedItems.TryGetValue(fileName, out List<(Items, Vector2, int)> items) ? items : null;
 	}
 
-	public Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>> GetSaveData()
+	public Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2, int)>> GetSaveData()
 	{
-		Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>> keyValuePairs = new();
-
-		foreach (KeyValuePair<string, List<(Items, Vector2)>> keyValuePair in DroppedItems)
-		{
-			List<(GlobalSaveManager.ItemData, Vector2)> list = new();
-
-			foreach ((Items, Vector2) tuple in keyValuePair.Value)
-			{
-				list.Add((
-					new()
-					{
-						Quantity = 1,
-						Path3D = tuple.Item1.ResourcePath
-					},
-					tuple.Item2
-				));
-			}
-
-			keyValuePairs.Add(keyValuePair.Key, list);
-		}
-
-		return keyValuePairs;
+		return DroppedItems.ToDictionary(
+			entry => entry.Key,
+			entry => entry.Value.Select(tuple => (
+				new GlobalSaveManager.ItemData
+				{
+					Quantity = 1,
+					Path = tuple.Item1.ResourcePath
+				},
+				tuple.Item2,
+				tuple.Item3
+			)).ToList()
+		);
 	}
 
-	public void SetSaveData(Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2)>> dictionary)
+	public void SetSaveData(Dictionary<string, List<(GlobalSaveManager.ItemData, Vector2, int)>> dictionary)
 	{
 		DroppedItems.Clear();
 
-		foreach (KeyValuePair<string, List<(GlobalSaveManager.ItemData, Vector2)>> keyValuePair in dictionary)
-		{
-			List<(Items, Vector2)> list = new();
-
-			foreach ((GlobalSaveManager.ItemData, Vector2) tuple in keyValuePair.Value)
-			{
-				list.Add((
-					GD.Load<Items>(tuple.Item1.Path3D),
-					tuple.Item2
-				));
-			}
-
-			DroppedItems.Add(keyValuePair.Key, list);
-		}
+		DroppedItems = dictionary.ToDictionary(
+			entry => entry.Key,
+			entry => entry.Value.Select(tuple => (
+				GD.Load<Items>(tuple.Item1.Path),
+				tuple.Item2,
+				tuple.Item3
+			)).ToList()
+		);
 	}
 
 	public void ChangeTileMapBounds(Vector2[] newBounds)

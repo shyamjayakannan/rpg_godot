@@ -97,6 +97,7 @@ shape = SubResource("1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ItemMagnet"]
 shape = SubResource("4")
+disabled = true
 
 [node name="YSortAnchor" parent="." instance=ExtResource("6_vpqrg")]
-defaultDifference = 14.0
+DefaultDifference = 13.0

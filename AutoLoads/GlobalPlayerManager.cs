@@ -8,7 +8,8 @@ public partial class GlobalPlayerManager : Node
 
     // properties
     public static GlobalPlayerManager Instance { get; private set; }
-    public Player Player { get; set; }
+    public Player Player { get; private set; }
+    public YSortHandler PlayerYSortHandler { get; private set; }
     public bool PlayerSpawned { get; set; } = false;
     public InventoryData PlayerInventory { get; set; }
     public InventoryData PlayerEquipmentInventory { get; set; }
@@ -18,7 +19,8 @@ public partial class GlobalPlayerManager : Node
     {
         Instance = this;
         Player = (Player)GD.Load<PackedScene>("res://Player/Player.tscn").Instantiate();
-        YSortHandler.YSortHandlerScene.Instantiate().AddChild(Player);
+        PlayerYSortHandler = (YSortHandler)YSortHandler.YSortHandlerScene.Instantiate();
+        PlayerYSortHandler.AddChild(Player);
 
         // we dont have a way to know if playerspawn nodes exist and we want PlayerSpawned to be true
         // so we wait a bit so that a PlayerSpawn node, if it exists, can set it to true.
@@ -26,23 +28,21 @@ public partial class GlobalPlayerManager : Node
         GetTree().CreateTimer(0.2f, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => PlayerSpawned = true));
     }
 
-    public void SetPlayerPosition(Vector2 position)
+    public void SetPlayerPosition(Vector2 position, int ySortOrigin)
     {
         PlayerSpawned = true;
-        ((YSortHandler)Player.GetParent()).GlobalPosition = position;
+        PlayerYSortHandler.GlobalPosition = new(position.X, position.Y + PlayerYSortHandler.YSortOrigin);
+        PlayerYSortHandler.YSortOrigin = ySortOrigin;
     }
 
     public void SetParent(Node parent)
     {
-        Node p = RemovePlayerParent();
-        parent.AddChild(p);
+        parent.AddChild(PlayerYSortHandler);
     }
 
-    public Node RemovePlayerParent()
+    public void RemovePlayerParent()
     {
-        Node parent = Player.GetParent();
-        parent.GetParent()?.RemoveChild(parent);
-        return parent;
+        PlayerYSortHandler.GetParent()?.RemoveChild(PlayerYSortHandler);
     }
 
     public bool IsEquipmentPresent(EquipableItem equipableItem)

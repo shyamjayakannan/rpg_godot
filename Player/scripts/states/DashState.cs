@@ -66,13 +66,13 @@ public partial class DashState : State
     private void SpawnEffect()
     {
         Node2D effect = new();
-        Player.GetParent().AddChild(effect);
+        YSortHandler.AddToScene(effect, Player);
         effect.GlobalPosition = Player.GlobalPosition - new Vector2(0, 0.1f);
         Sprite2D spriteCopy = (Sprite2D)Player.Sprite2D.Duplicate();
         effect.AddChild(spriteCopy);
         Tween sceneTreeTween = CreateTween();
         sceneTreeTween.SetEase(Tween.EaseType.Out);
         sceneTreeTween.TweenProperty(effect, "modulate", new Color(1, 1, 1, 0), 0.2f);
-        sceneTreeTween.Chain().TweenCallback(Callable.From(effect.QueueFree));
+        sceneTreeTween.Chain().TweenCallback(Callable.From(effect.GetParent().QueueFree));
     }
 }

@@ -234,9 +234,4 @@ public partial class Player : CharacterBody2D
 	{
 		stateMachine.ChangeState(state);
 	}
-
-	public void SetYSort(float ySortOrigin)
-	{
-		((YSortHandler)GetParent()).YSortOrigin = ySortOrigin;
-	}
 }

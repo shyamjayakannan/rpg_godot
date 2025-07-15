@@ -5,20 +5,20 @@ public partial class YSortHandler : Node2D
 {
     // Exports
     [Export]
-    public float YSortOrigin
+    public int YSortOrigin
     {
         get => ySortOrigin;
         set
         {
             if (child != null)
-                SetChild(value - ySortOrigin);
+                SetDifference(value - ySortOrigin);
 
             ySortOrigin = value;
         }
     }
 
     // private
-    private float ySortOrigin;
+    private int ySortOrigin;
     private Node2D child;
     private float difference;
     public static PackedScene YSortHandlerScene { get; private set; } = GD.Load<PackedScene>("res://GeneralNodes/ySortHandler/YSortHandler.tscn");
@@ -28,41 +28,49 @@ public partial class YSortHandler : Node2D
     {
         child = (Node2D)GetChild(0);
         child.Position = Vector2.Zero;
-        GlobalPosition = new(GlobalPosition.X, GlobalPosition.Y - ySortOrigin);
-        SetChild(YSortOrigin);
+        GlobalPosition = new(GlobalPosition.X, GlobalPosition.Y - YSortOrigin);
+        SetDifference(YSortOrigin);
 
         if (Engine.IsEditorHint())
             return;
 
-        CollisionShape2D collisionShape2D = child.GetNodeOrNull<CollisionShape2D>("CollisionShape2D");
-
-        if (collisionShape2D != null)
-            child.GetNode<YSortAnchor>("YSortAnchor").AddChild(collisionShape2D.Duplicate());
+        // 16 (collision layer 5) is the base
+        if (child is PhysicsBody2D physicsBody2D)
+            physicsBody2D.CollisionMask = (uint)(16 << (YSortOrigin / 64));
     }
 
-    public override void _Process(double delta)
+    public override void _PhysicsProcess(double delta)
     {
-        if (Engine.IsEditorHint())
-            return;
+        if (!Engine.IsEditorHint())
+            SetChild();
+    }
 
+    private void SetChild()
+    {
         GlobalPosition = new(child.GlobalPosition.X, child.GlobalPosition.Y + difference);
         child.Position = new(0, -difference);
     }
 
-    public void SetChild(float _difference)
+    public void SetDifference(float _difference)
     {
-        GlobalPosition = new(GlobalPosition.X, GlobalPosition.Y + _difference);
-        child.Position = new(child.Position.X, child.Position.Y - _difference);
-        difference = -child.Position.Y;
+        difference += _difference;
+
+        if (Engine.IsEditorHint())
+            SetChild();
+    }
+
+    public void SetYSortOriginWithoutChild(int value)
+    {
+        difference += value - ySortOrigin;
+        ySortOrigin = value;
     }
 
     public static void AddToScene(Node2D child, Node sibling)
     {
         YSortHandler ySortHandler = (YSortHandler)YSortHandlerScene.Instantiate();
-        ySortHandler.AddChild(child);
-        ySortHandler.child = child;
         YSortHandler siblingYSortHandler = (YSortHandler)sibling.GetParent();
-        ySortHandler.SetChild(siblingYSortHandler.ySortOrigin);
+        ySortHandler.AddChild(child);
+        ySortHandler.YSortOrigin = siblingYSortHandler.YSortOrigin;
         siblingYSortHandler.GetParent().AddChild(ySortHandler);
     }
 }

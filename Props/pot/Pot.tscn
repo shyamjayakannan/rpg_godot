@@ -76,6 +76,8 @@ _data = {
 size = Vector2(22, 16)
 
 [node name="Pot" type="StaticBody2D"]
+collision_layer = 16
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("3")
@@ -105,4 +107,4 @@ position = Vector2(0, 8)
 shape = SubResource("6")
 
 [node name="YSortAnchor" parent="." instance=ExtResource("4_17yyt")]
-defaultDifference = 14.0
+DefaultDifference = 14.0

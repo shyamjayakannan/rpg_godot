@@ -22,6 +22,7 @@ public partial class Throwable : Interactables
 
     // private
     private YSortHandler ySortHandler;
+    private YSortAnchor ySortAnchor;
 
     // methods
     public override void _Ready()
@@ -30,6 +31,7 @@ public partial class Throwable : Interactables
         WallDetect = GetNode<Area2D>("WallDetect");
         ThrowableParent = (Node2D)GetParent();
         ySortHandler = (YSortHandler)ThrowableParent.GetParent();
+        ySortAnchor = ThrowableParent.GetNode<YSortAnchor>("YSortAnchor");
         AnimationPlayer = ThrowableParent.GetNode<AnimationPlayer>("AnimationPlayer");
         Shadow = ThrowableParent.GetNodeOrNull<Sprite2D>("Shadow");
         SetupAreas();
@@ -92,7 +94,7 @@ public partial class Throwable : Interactables
         Vector2 globalPosition = ThrowableParent.GlobalPosition;
         ThrowSpeedWallDetect += Gravity * floatDelta;
         WallDetect.Position = new(WallDetect.Position.X, WallDetect.Position.Y - ThrowSpeedWallDetect * floatDelta);
-        ySortHandler.GlobalPosition = WallDetect.GlobalPosition;
+        ySortHandler.GlobalPosition = new(WallDetect.GlobalPosition.X, WallDetect.GlobalPosition.Y + ySortHandler.YSortOrigin + ySortAnchor.DefaultDifference);
         ThrowableParent.GlobalPosition = globalPosition;
     }
 
@@ -108,7 +110,7 @@ public partial class Throwable : Interactables
         // add child happens first before accessing the node variables like Timer
         await ToSignal(sceneTree, SceneTree.SignalName.ProcessFrame);
 
-        GlobalPlayerManager.Instance.Player.GetParent().GetParent().AddChild(ySortHandler);
+        GlobalPlayerManager.Instance.PlayerYSortHandler.GetParent().AddChild(ySortHandler);
 
         // VERY IMPORTANT
         // set only throwable's shapes to active not the static body of throwable parent otherwise the walldetect will
@@ -118,7 +120,7 @@ public partial class Throwable : Interactables
 
         // let wall detect move on the ground
         WallDetect.GlobalPosition = GlobalPlayerManager.Instance.Player.GlobalPosition;
-        ySortHandler.SetChild(WallDetect.Position.Y);
+        ySortHandler.SetDifference(WallDetect.Position.Y);
         ySortHandler.SetPhysicsProcess(false);
 
         if (this is Bomb bomb)
@@ -190,7 +192,7 @@ public partial class Throwable : Interactables
 
         SetPhysicsProcess(false);
         AnimationPlayer.Play("destroy");
-        Shadow.Hide();
+        Shadow?.Hide();
     }
 
     protected virtual void OnCollision()

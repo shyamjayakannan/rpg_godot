@@ -843,4 +843,4 @@ position = Vector2(0, -6)
 shape = SubResource("12")
 
 [node name="YSortAnchor" parent="." instance=ExtResource("16_ke740")]
-defaultDifference = 8.0
+DefaultDifference = 8.0

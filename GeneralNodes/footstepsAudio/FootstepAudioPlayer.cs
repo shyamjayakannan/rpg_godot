@@ -8,7 +8,7 @@ public partial class FootstepAudioPlayer : AudioStreamPlayer2D
 
     // private
     // private LevelTileMap tileMap;
-    private AudioStreamPlayer2D audioStreamRandomPitch;
+    private AudioStreamPlayer2D audioStreamPlayer2D;
 
     // methods
     public override void _Ready()

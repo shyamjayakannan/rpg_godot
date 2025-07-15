@@ -1379,8 +1379,8 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape2D" id="10"]
-radius = 6.0
-height = 16.0
+radius = 7.0
+height = 22.0
 
 [sub_resource type="CircleShape2D" id="28"]
 radius = 16.0
@@ -1670,6 +1670,7 @@ libraries = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
 rotation = 1.5708
 shape = SubResource("10")
 debug_color = Color(0, 0.6, 0.701961, 0)
@@ -1780,4 +1781,4 @@ process_material = SubResource("55")
 [node name="FootstepAudioPlayer" parent="." instance=ExtResource("30")]
 
 [node name="YSortAnchor" parent="." instance=ExtResource("34_78fhc")]
-defaultDifference = 8.0
+DefaultDifference = 8.0
