@@ -7,5 +7,6 @@
 
 [node name="FootstepAudioPlayer" type="AudioStreamPlayer2D"]
 volume_db = -16.0
+bus = &"Music"
 script = ExtResource("1")
 footstepVariations = [ExtResource("3"), ExtResource("4"), ExtResource("2")]

@@ -9,12 +9,16 @@ tile_data = PackedInt32Array(65536, 1310720, 16, 3, 1376256, 16, 196611, 1310720
 texture = ExtResource("1_q6f6u")
 20:16/0 = 0
 20:16/0/texture_origin = Vector2i(3, -1)
+20:16/0/modulate = Color(1.1, 1.1, 1.1, 1)
 21:16/0 = 0
 21:16/0/texture_origin = Vector2i(3, 10)
+21:16/0/modulate = Color(1.1, 1.1, 1.1, 1)
 21:17/0 = 0
 21:17/0/texture_origin = Vector2i(-4, -10)
+21:17/0/modulate = Color(1.1, 1.1, 1.1, 1)
 20:17/0 = 0
 20:17/0/texture_origin = Vector2i(12, -5)
+20:17/0/modulate = Color(1.1, 1.1, 1.1, 1)
 
 [resource]
 sources/0 = SubResource("TileSetAtlasSource_3mamv")

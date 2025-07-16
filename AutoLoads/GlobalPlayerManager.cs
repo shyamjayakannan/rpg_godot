@@ -35,6 +35,7 @@ namespace Rpg
             PlayerSpawned = true;
             PlayerYSortHandler.GlobalPosition = new(position.X, position.Y + PlayerYSortHandler.YSortOrigin);
             PlayerYSortHandler.YSortOrigin = ySortOrigin;
+            Player.CollisionMask = (uint)(16 << (ySortOrigin / 64));
         }
 
         public void SetParent(Node parent)

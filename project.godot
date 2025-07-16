@@ -53,6 +53,10 @@ enabled=PackedStringArray()
 
 texture=false
 
+[global_group]
+
+GroundTileMapLayers=""
+
 [gui]
 
 theme/custom_font="uid://dm7oum2f78xed"
