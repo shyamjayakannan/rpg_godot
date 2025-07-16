@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Godot;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 public partial class GlobalSaveManager : Node
 {
@@ -85,7 +85,7 @@ public partial class GlobalSaveManager : Node
 		UpdateQuests();
 
 		FileAccess file = FileAccess.Open(SAVEPATH + "savegame.sav", FileAccess.ModeFlags.Write);
-		file.StoreLine(JsonConvert.SerializeObject(currentSaveData));
+		file.StoreLine(JsonSerializer.Serialize(currentSaveData));
 		file.Close();
 		EmitSignal(SignalName.GameSaved);
 	}
@@ -98,7 +98,7 @@ public partial class GlobalSaveManager : Node
 	public void LoadGame()
 	{
 		FileAccess file = FileAccess.Open(SAVEPATH + "savegame.sav", FileAccess.ModeFlags.Read);
-		currentSaveData = JsonConvert.DeserializeObject<SaveData>(file.GetLine());
+		currentSaveData = JsonSerializer.Deserialize<SaveData>(file.GetLine());
 		file.Close();
 
 		GlobalLevelManager.Instance.LoadNewLevel(

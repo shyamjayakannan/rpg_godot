@@ -65,12 +65,13 @@ public partial class YSortHandler : Node2D
         ySortOrigin = value;
     }
 
-    public static void AddToScene(Node2D child, Node sibling)
+    public static YSortHandler AddToScene(Node2D child, Node sibling)
     {
         YSortHandler ySortHandler = (YSortHandler)YSortHandlerScene.Instantiate();
         YSortHandler siblingYSortHandler = (YSortHandler)sibling.GetParent();
         ySortHandler.AddChild(child);
         ySortHandler.YSortOrigin = siblingYSortHandler.YSortOrigin;
         siblingYSortHandler.GetParent().AddChild(ySortHandler);
+        return ySortHandler;
     }
 }

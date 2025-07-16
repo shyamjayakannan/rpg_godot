@@ -19,6 +19,7 @@ atlas = ExtResource("4_1n6dc")
 region = Rect2(192, 0, 32, 32)
 
 [node name="ItemPickup" type="CharacterBody2D"]
+collision_layer = 16
 collision_mask = 16
 script = ExtResource("1")
 Item = ExtResource("2_bnxsp")

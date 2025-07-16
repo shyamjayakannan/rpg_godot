@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 [Tool]
 [GlobalClass, Icon("res://GUI/dialogSystem/icons/chat_bubbles.png")]
@@ -92,7 +92,7 @@ public partial class DialogInteraction : Interactables
         FileAccess file = FileAccess.Open($"{npcDialogFolder}questMap.json", FileAccess.ModeFlags.Read);
         string json = file.GetAsText();
         file.Close();
-        questTitleToFile = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+        questTitleToFile = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
     }
 
     public void ChangeDialog(string title, bool isStarted)

@@ -43,8 +43,11 @@ public partial class Level : Node2D
 		foreach ((Items, Vector2, int) tuple in items)
 		{
 			ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
-			YSortHandler.AddToScene(itemPickup, GlobalPlayerManager.Instance.Player);
+
+			// set item before adding to scene so that texture can update (in itempickup's ready)
 			itemPickup.Item = tuple.Item1;
+			YSortHandler ySortHandler = YSortHandler.AddToScene(itemPickup, GlobalPlayerManager.Instance.Player);
+			ySortHandler.YSortOrigin = tuple.Item3;
 			itemPickup.GlobalPosition = tuple.Item2;
 			itemPickup.IsDroppedItem = true;
 			itemPickup.SavedPosition = tuple.Item2;
