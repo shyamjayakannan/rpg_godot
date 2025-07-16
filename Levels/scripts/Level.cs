@@ -1,56 +1,59 @@
 using System.Collections.Generic;
 using Godot;
 
-public partial class Level : Node2D
+namespace Rpg
 {
-	// Exports
-	[Export]
-	private AudioStream music;
-
-	// private
-	private PackedScene itemPickupScene = GD.Load<PackedScene>("res://Items/itemPickup/ItemPickup.tscn");
-
-	// methods
-	public override void _Ready()
+	public partial class Level : Node2D
 	{
-		GlobalAudioManager.Instance.PlayAudio(music);
-		GlobalPlayerManager.Instance.SetParent(this);
-		GlobalLevelManager.Instance.ChangeTileMapBounds(GetTileMapBounds());
-		AddItemPickupsToScene(GlobalLevelManager.Instance.GetDroppedItems(GetTree().CurrentScene.SceneFilePath));
-	}
+		// Exports
+		[Export]
+		private AudioStream music;
 
-	private Vector2[] GetTileMapBounds()
-	{
-		foreach (Node child in GetChildren())
+		// private
+		private PackedScene itemPickupScene = GD.Load<PackedScene>("res://Items/itemPickup/ItemPickup.tscn");
+
+		// methods
+		public override void _Ready()
 		{
-			if (child is TileMapLayer tileMapLayer)
+			GlobalAudioManager.Instance.PlayAudio(music);
+			GlobalPlayerManager.Instance.SetParent(this);
+			GlobalLevelManager.Instance.ChangeTileMapBounds(GetTileMapBounds());
+			AddItemPickupsToScene(GlobalLevelManager.Instance.GetDroppedItems(GetTree().CurrentScene.SceneFilePath));
+		}
+
+		private Vector2[] GetTileMapBounds()
+		{
+			foreach (Node child in GetChildren())
 			{
-				return new Vector2[2] {
+				if (child is TileMapLayer tileMapLayer)
+				{
+					return new Vector2[2] {
 					tileMapLayer.GetUsedRect().Position * tileMapLayer.TileSet.TileSize + GlobalPosition,
 					tileMapLayer.GetUsedRect().End * tileMapLayer.TileSet.TileSize + GlobalPosition,
 				};
+				}
 			}
+
+			return System.Array.Empty<Vector2>();
 		}
 
-		return System.Array.Empty<Vector2>();
-	}
-
-	private void AddItemPickupsToScene(List<(Items, Vector2, int)> items)
-	{
-		if (items == null || items.Count == 0)
-			return;
-
-		foreach ((Items, Vector2, int) tuple in items)
+		private void AddItemPickupsToScene(List<(Items, Vector2, int)> items)
 		{
-			ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
+			if (items == null || items.Count == 0)
+				return;
 
-			// set item before adding to scene so that texture can update (in itempickup's ready)
-			itemPickup.Item = tuple.Item1;
-			YSortHandler ySortHandler = YSortHandler.AddToScene(itemPickup, GlobalPlayerManager.Instance.Player);
-			ySortHandler.YSortOrigin = tuple.Item3;
-			itemPickup.GlobalPosition = tuple.Item2;
-			itemPickup.IsDroppedItem = true;
-			itemPickup.SavedPosition = tuple.Item2;
+			foreach ((Items, Vector2, int) tuple in items)
+			{
+				ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
+
+				// set item before adding to scene so that texture can update (in itempickup's ready)
+				itemPickup.Item = tuple.Item1;
+				YSortHandler ySortHandler = YSortHandler.AddToScene(itemPickup, GlobalPlayerManager.Instance.Player);
+				ySortHandler.YSortOrigin = tuple.Item3;
+				itemPickup.GlobalPosition = tuple.Item2;
+				itemPickup.IsDroppedItem = true;
+				itemPickup.SavedPosition = tuple.Item2;
+			}
 		}
 	}
 }

@@ -1,17 +1,20 @@
 using Godot;
 
-public partial class HealEffect : ItemEffects
+namespace Rpg
 {
-    // Exports
-    [Export]
-    private int healAmmount = 1;
-    [Export]
-    private AudioStream audioStream;
-
-    // methods
-    public override void Use()
+    public partial class HealEffect : ItemEffects
     {
-        GlobalPlayerManager.Instance.Player.UpdateHP(healAmmount);
-        PauseMenu.Instance.PlayAudio(audioStream);
+        // Exports
+        [Export]
+        private int healAmmount = 1;
+        [Export]
+        private AudioStream audioStream;
+
+        // methods
+        public override void Use()
+        {
+            GlobalPlayerManager.Instance.Player.UpdateHP(healAmmount);
+            PauseMenu.Instance.PlayAudio(audioStream);
+        }
     }
 }

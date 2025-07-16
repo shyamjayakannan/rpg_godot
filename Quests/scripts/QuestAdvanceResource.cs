@@ -1,34 +1,37 @@
 using Godot;
 
-[Tool]
-[GlobalClass, Icon("res://Quests/utilityNodes/icons/quest_advance.png")]
-public partial class QuestAdvanceResource : QuestNodeResource
+namespace Rpg
 {
-    // methods
-    public void AdvanceQuest()
+    [Tool]
+    [GlobalClass, Icon("res://Quests/utilityNodes/icons/quest_advance.png")]
+    public partial class QuestAdvanceResource : QuestNodeResource
     {
-        if (LinkedQuest == null)
-            return;
-
-        QuestStepResource step = GetStep();
-
-        // this step can be any of the itemdeliver steps in the quest. we will check and update all
-        if (step is not ItemDeliverQuestStepResource)
+        // methods
+        public void AdvanceQuest()
         {
-            GlobalQuestManager.Instance.UpdateQuest(LinkedQuest.Title, LinkedQuest, step.Step == "N/A" ? "" : step.Step);
-            return;
-        }
+            if (LinkedQuest == null)
+                return;
 
-        foreach (QuestStepResource questStepResource in LinkedQuest.Steps)
-        {
-            if (questStepResource is ItemDeliverQuestStepResource itemDeliverQuestStepResource)
+            QuestStepResource step = GetStep();
+
+            // this step can be any of the itemdeliver steps in the quest. we will check and update all
+            if (step is not ItemDeliverQuestStepResource)
             {
-                int inInventory = GlobalPlayerManager.Instance.PlayerInventory.GetQuantity(itemDeliverQuestStepResource.Item);
+                GlobalQuestManager.Instance.UpdateQuest(LinkedQuest.Title, LinkedQuest, step.Step == "N/A" ? "" : step.Step);
+                return;
+            }
 
-                if (inInventory == 0)
-                    continue;
+            foreach (QuestStepResource questStepResource in LinkedQuest.Steps)
+            {
+                if (questStepResource is ItemDeliverQuestStepResource itemDeliverQuestStepResource)
+                {
+                    int inInventory = GlobalPlayerManager.Instance.PlayerInventory.GetQuantity(itemDeliverQuestStepResource.Item);
 
-                GlobalQuestManager.Instance.UpdateItemDeliverSteps(LinkedQuest.Title, LinkedQuest, inInventory, itemDeliverQuestStepResource);
+                    if (inInventory == 0)
+                        continue;
+
+                    GlobalQuestManager.Instance.UpdateItemDeliverSteps(LinkedQuest.Title, LinkedQuest, inInventory, itemDeliverQuestStepResource);
+                }
             }
         }
     }

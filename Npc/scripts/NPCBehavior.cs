@@ -1,17 +1,20 @@
 using Godot;
 
-[GlobalClass, Icon("res://Npc/icons/npc_behavior.png")]
-public abstract partial class NPCBehavior : Node2D
+namespace Rpg
 {
-    // properties
-    protected Npc Npc { get; private set; }
-
-    // methods
-    public override void _Ready()
+    [GlobalClass, Icon("res://Npc/icons/npc_behavior.png")]
+    public abstract partial class NPCBehavior : Node2D
     {
-        if (GetParent() is Npc parent)
-            Npc = parent;
-    }
+        // properties
+        protected Npc Npc { get; private set; }
 
-    protected abstract void Start();
+        // methods
+        public override void _Ready()
+        {
+            if (GetParent() is Npc parent)
+                Npc = parent;
+        }
+
+        protected abstract void Start();
+    }
 }

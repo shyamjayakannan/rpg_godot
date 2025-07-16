@@ -1,37 +1,40 @@
 using Godot;
 
-public partial class BowState : State
+namespace Rpg
 {
-    // private
-    private State idleState;
-    private State nextState = null;
-    private PackedScene arrowScene = GD.Load<PackedScene>("res://Player/scripts/abilities/arrow/Arrow.tscn");
-
-    // methods
-    public override void _Ready()
+    public partial class BowState : State
     {
-        idleState = GetNode<IdleState>("../IdleState");
-    }
+        // private
+        private State idleState;
+        private State nextState = null;
+        private PackedScene arrowScene = GD.Load<PackedScene>("res://Player/scripts/abilities/arrow/Arrow.tscn");
 
-    public override void Enter()
-    {
-        Player.UpdateAnimation("bow");
-        GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => nextState = idleState));
+        // methods
+        public override void _Ready()
+        {
+            idleState = GetNode<IdleState>("../IdleState");
+        }
 
-        Arrow arrow = (Arrow)arrowScene.Instantiate();
-        YSortHandler.AddToScene(arrow, Player);
-        arrow.GlobalPosition = Player.GlobalPosition + Player.CardinalDirection * 32;
-        arrow.Fire(Player.CardinalDirection);
-    }
+        public override void Enter()
+        {
+            Player.UpdateAnimation("bow");
+            GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => nextState = idleState));
 
-    public override State Process(float delta)
-    {
-        Player.Velocity = Vector2.Zero;
-        return nextState;
-    }
+            Arrow arrow = (Arrow)arrowScene.Instantiate();
+            YSortHandler.AddToScene(arrow, Player);
+            arrow.GlobalPosition = Player.GlobalPosition + Player.CardinalDirection * 32;
+            arrow.Fire(Player.CardinalDirection);
+        }
 
-    public override void Exit()
-    {
-        nextState = null;
+        public override State Process(float delta)
+        {
+            Player.Velocity = Vector2.Zero;
+            return nextState;
+        }
+
+        public override void Exit()
+        {
+            nextState = null;
+        }
     }
 }

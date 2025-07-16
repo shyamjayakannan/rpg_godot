@@ -1,79 +1,82 @@
 using Godot;
 
-public partial class DestroyEnemyState : EnemyState
+namespace Rpg
 {
-	// Exports
-	[Export]
-	private float knockbackSpeed = 200f;
-	[Export]
-	private float deceleration = 10f;
-	[Export]
-	private DropData[] drops = System.Array.Empty<DropData>();
-
-	// private
-	private Vector2 direction;
-	private Vector2 damagePosition;
-	private PackedScene itemPickupScene = GD.Load<PackedScene>("res://Items/itemPickup/ItemPickup.tscn");
-
-	// methods
-	public override void Init()
+	public partial class DestroyEnemyState : EnemyState
 	{
-		Enemy.Connect(Enemy.SignalName.EnemyDestroyed, new(this, MethodName.OnEnemyDestroyed));
-	}
+		// Exports
+		[Export]
+		private float knockbackSpeed = 200f;
+		[Export]
+		private float deceleration = 10f;
+		[Export]
+		private DropData[] drops = System.Array.Empty<DropData>();
 
-	public override void Enter()
-	{
-		direction = Enemy.GlobalPosition.DirectionTo(damagePosition);
-		Enemy.SetDirection(direction);
-		Enemy.Velocity = direction * (-knockbackSpeed);
-		Enemy.UpdateAnimation("destroy");
-		Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
-		Enemy.Invulnerable = true;
-		DropItems();
-		GlobalPlayerManager.Instance.Player.UpdateXP(Enemy.RewardXp);
-	}
+		// private
+		private Vector2 direction;
+		private Vector2 damagePosition;
+		private PackedScene itemPickupScene = GD.Load<PackedScene>("res://Items/itemPickup/ItemPickup.tscn");
 
-	public override void Exit()
-	{
-		Enemy.Invulnerable = false;
-	}
-
-	public override EnemyState Process(double delta)
-	{
-		Enemy.Velocity *= 1 - deceleration * (float)delta;
-
-		return null;
-	}
-
-	private void OnEnemyDestroyed(HurtBox hurtBox)
-	{
-		damagePosition = hurtBox.GlobalPosition;
-		StateMachine.ChangeState(this);
-	}
-
-	private void OnAnimationPlayerAnimationFinished(string _)
-	{
-		if (StateMachine.CurrentState == this)
-			Enemy.GetParent().QueueFree();
-	}
-
-	private static void AddToScene(Node2D child, Node2D sibling)
-	{
-		YSortHandler.AddToScene(child, sibling);
-		child.GlobalPosition = sibling.GlobalPosition;
-	}
-
-	private void DropItems()
-	{
-		foreach (DropData drop in drops)
+		// methods
+		public override void Init()
 		{
-			for (int j = 0; j < drop.GetDropCount(); j++)
+			Enemy.Connect(Enemy.SignalName.EnemyDestroyed, new(this, MethodName.OnEnemyDestroyed));
+		}
+
+		public override void Enter()
+		{
+			direction = Enemy.GlobalPosition.DirectionTo(damagePosition);
+			Enemy.SetDirection(direction);
+			Enemy.Velocity = direction * (-knockbackSpeed);
+			Enemy.UpdateAnimation("destroy");
+			Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
+			Enemy.Invulnerable = true;
+			DropItems();
+			GlobalPlayerManager.Instance.Player.UpdateXP(Enemy.RewardXp);
+		}
+
+		public override void Exit()
+		{
+			Enemy.Invulnerable = false;
+		}
+
+		public override EnemyState Process(double delta)
+		{
+			Enemy.Velocity *= 1 - deceleration * (float)delta;
+
+			return null;
+		}
+
+		private void OnEnemyDestroyed(HurtBox hurtBox)
+		{
+			damagePosition = hurtBox.GlobalPosition;
+			StateMachine.ChangeState(this);
+		}
+
+		private void OnAnimationPlayerAnimationFinished(string _)
+		{
+			if (StateMachine.CurrentState == this)
+				Enemy.GetParent().QueueFree();
+		}
+
+		private static void AddToScene(Node2D child, Node2D sibling)
+		{
+			YSortHandler.AddToScene(child, sibling);
+			child.GlobalPosition = sibling.GlobalPosition;
+		}
+
+		private void DropItems()
+		{
+			foreach (DropData drop in drops)
 			{
-				ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
-				itemPickup.Item = drop.item;
-				itemPickup.IsDroppedItem = true;
-				itemPickup.Velocity = new Vector2(2, 2).Rotated((float)GD.RandRange(-1.5, 1.5)) * (float)GD.RandRange(0.9, 1.5);
-				CallDeferred(MethodName.AddToScene, itemPickup, Enemy);
+				for (int j = 0; j < drop.GetDropCount(); j++)
+				{
+					ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
+					itemPickup.Item = drop.item;
+					itemPickup.IsDroppedItem = true;
+					itemPickup.Velocity = new Vector2(2, 2).Rotated((float)GD.RandRange(-1.5, 1.5)) * (float)GD.RandRange(0.9, 1.5);
+					CallDeferred(MethodName.AddToScene, itemPickup, Enemy);
+				}
 			}
 		}
 	}

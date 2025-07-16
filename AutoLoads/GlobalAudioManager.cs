@@ -1,70 +1,73 @@
 using Godot;
 
-public partial class GlobalAudioManager : Node
+namespace Rpg
 {
-    // private
-    private AudioStreamPlayer musicPlayer;
-    private string musicBus = "Music";
-    private float musicFadeDuration = 0.5f;
-    private AudioStream stream;
-    private Timer timer;
-
-    // properties
-    public static GlobalAudioManager Instance { get; private set; }
-
-    // methods
-    public override void _Ready()
+    public partial class GlobalAudioManager : Node
     {
-        Instance = this;
+        // private
+        private AudioStreamPlayer musicPlayer;
+        private string musicBus = "Music";
+        private float musicFadeDuration = 0.5f;
+        private AudioStream stream;
+        private Timer timer;
 
-        // dont pause this if game pauses
-        ProcessMode = ProcessModeEnum.Always;
+        // properties
+        public static GlobalAudioManager Instance { get; private set; }
 
-        AudioStreamPlayer audioStreamPlayer = new()
+        // methods
+        public override void _Ready()
         {
-            Bus = musicBus,
-            VolumeDb = -40
-        };
-        musicPlayer = audioStreamPlayer;
-        AddChild(audioStreamPlayer);
-        timer = new Timer
-        {
-            WaitTime = musicFadeDuration,
-            OneShot = true
-        };
-        timer.Connect(Timer.SignalName.Timeout, new(this, MethodName.OnTimerTimeout));
-        AddChild(timer);
-    }
+            Instance = this;
 
-    private void OnTimerTimeout()
-    {
-        musicPlayer.Stop();
-        FadeIn();
-    }
+            // dont pause this if game pauses
+            ProcessMode = ProcessModeEnum.Always;
 
-    public void PlayAudio(AudioStream audioStream = null)
-    {
-        if (audioStream != stream)
-        {
-            FadeOut();
-            timer.Start();
-            stream = audioStream;
+            AudioStreamPlayer audioStreamPlayer = new()
+            {
+                Bus = musicBus,
+                VolumeDb = -40
+            };
+            musicPlayer = audioStreamPlayer;
+            AddChild(audioStreamPlayer);
+            timer = new Timer
+            {
+                WaitTime = musicFadeDuration,
+                OneShot = true
+            };
+            timer.Connect(Timer.SignalName.Timeout, new(this, MethodName.OnTimerTimeout));
+            AddChild(timer);
         }
-    }
 
-    private void FadeOut()
-    {
-        Tween tween = CreateTween();
-        tween.TweenProperty(musicPlayer, "volume_db", -40, musicFadeDuration);
-    }
+        private void OnTimerTimeout()
+        {
+            musicPlayer.Stop();
+            FadeIn();
+        }
 
-    private void FadeIn()
-    {
-        if (stream == null)
-            return;
+        public void PlayAudio(AudioStream audioStream = null)
+        {
+            if (audioStream != stream)
+            {
+                FadeOut();
+                timer.Start();
+                stream = audioStream;
+            }
+        }
 
-        musicPlayer.Stream = stream;
-        musicPlayer.Play();
-        CreateTween().TweenProperty(musicPlayer, "volume_db", 0, musicFadeDuration);
+        private void FadeOut()
+        {
+            Tween tween = CreateTween();
+            tween.TweenProperty(musicPlayer, "volume_db", -40, musicFadeDuration);
+        }
+
+        private void FadeIn()
+        {
+            if (stream == null)
+                return;
+
+            musicPlayer.Stream = stream;
+            musicPlayer.Play();
+            CreateTween().TweenProperty(musicPlayer, "volume_db", 0, musicFadeDuration);
+        }
     }
 }

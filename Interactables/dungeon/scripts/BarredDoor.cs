@@ -1,43 +1,46 @@
 using Godot;
 
-public partial class BarredDoor : Node2D
+namespace Rpg
 {
-    // private
-    private AnimationPlayer animationPlayer;
-    private PersistentDataHandler persistentDataHandler;
-
-    // methods
-    public override void _Ready()
+    public partial class BarredDoor : Node2D
     {
-        animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-        persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
+        // private
+        private AnimationPlayer animationPlayer;
+        private PersistentDataHandler persistentDataHandler;
 
-        persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetState));
-        persistentDataHandler.GetValue();
+        // methods
+        public override void _Ready()
+        {
+            animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+            persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
-        GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.PressurePlateActivated, new(this, MethodName.OpenDoor));
-        GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.PressurePlateDeactivated, new(this, MethodName.CloseDoor));
-    }
+            persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetState));
+            persistentDataHandler.GetValue();
 
-    private void SetState(bool value)
-    {
-        if (!value)
-            return;
+            GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.PressurePlateActivated, new(this, MethodName.OpenDoor));
+            GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.PressurePlateDeactivated, new(this, MethodName.CloseDoor));
+        }
 
-        animationPlayer.Play("opened");
-    }
+        private void SetState(bool value)
+        {
+            if (!value)
+                return;
 
-    private void OpenDoor()
-    {
-        animationPlayer.Play("openDoor");
-        persistentDataHandler.SetValue();
-        GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.BarredDoorStateChanged, true);
-    }
+            animationPlayer.Play("opened");
+        }
 
-    private void CloseDoor()
-    {
-        animationPlayer.Play("closeDoor");
-        persistentDataHandler.UnsetValue();
-        GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.BarredDoorStateChanged, false);
+        private void OpenDoor()
+        {
+            animationPlayer.Play("openDoor");
+            persistentDataHandler.SetValue();
+            GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.BarredDoorStateChanged, true);
+        }
+
+        private void CloseDoor()
+        {
+            animationPlayer.Play("closeDoor");
+            persistentDataHandler.UnsetValue();
+            GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.BarredDoorStateChanged, false);
+        }
     }
 }

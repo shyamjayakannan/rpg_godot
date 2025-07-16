@@ -1,28 +1,31 @@
 using Godot;
 
-[Tool]
-[GlobalClass]
-public partial class Items : Resource
+namespace Rpg
 {
-	// Exports
-	[Export]
-	public string Name { get; private set; } = "";
-	[Export(PropertyHint.MultilineText)]
-	public string Description { get; protected set; } = "";
-	[Export]
-	public Texture2D Texture2D { get; private set; }
-	[Export]
-	private ItemEffects[] effects;
-	[Export]
-	public int Cost = 1;
-
-	// methods
-	public virtual void Use()
+	[Tool]
+	[GlobalClass]
+	public partial class Items : Resource
 	{
-		if (effects.Length == 0)
-			return;
+		// Exports
+		[Export]
+		public string Name { get; private set; } = "";
+		[Export(PropertyHint.MultilineText)]
+		public string Description { get; protected set; } = "";
+		[Export]
+		public Texture2D Texture2D { get; private set; }
+		[Export]
+		private ItemEffects[] effects;
+		[Export]
+		public int Cost = 1;
 
-		foreach (ItemEffects effect in effects)
-			effect.Use();
+		// methods
+		public virtual void Use()
+		{
+			if (effects.Length == 0)
+				return;
+
+			foreach (ItemEffects effect in effects)
+				effect.Use();
+		}
 	}
 }

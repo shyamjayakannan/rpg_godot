@@ -1,48 +1,51 @@
 using Godot;
 
-[Tool]
-public partial class QuestNode : Node2D
+namespace Rpg
 {
-    // Exports
-    [Export]
-    protected QuestResource LinkedQuest
+    [Tool]
+    public partial class QuestNode : Node2D
     {
-        get => linkedQuest;
-        set
+        // Exports
+        [Export]
+        protected QuestResource LinkedQuest
         {
-            linkedQuest = value;
-            QuestStep = 0;
-            UpdateSummary();
+            get => linkedQuest;
+            set
+            {
+                linkedQuest = value;
+                QuestStep = 0;
+                UpdateSummary();
+            }
         }
-    }
-    [Export]
-    protected int QuestStep
-    {
-        get => questStep;
-        set
+        [Export]
+        protected int QuestStep
         {
-            questStep = Mathf.Clamp(value, 0, LinkedQuest == null ? 0 : LinkedQuest.Steps.Length);
-            UpdateSummary();
+            get => questStep;
+            set
+            {
+                questStep = Mathf.Clamp(value, 0, LinkedQuest == null ? 0 : LinkedQuest.Steps.Length);
+                UpdateSummary();
+            }
         }
-    }
-    [Export(PropertyHint.MultilineText)]
-    protected string SettingsSummary { get; set; }
+        [Export(PropertyHint.MultilineText)]
+        protected string SettingsSummary { get; set; }
 
-    // private
-    private QuestResource linkedQuest = null;
-    private int questStep = 0;
+        // private
+        private QuestResource linkedQuest = null;
+        private int questStep = 0;
 
-    // methods
-    protected virtual void UpdateSummary()
-    {
-        SettingsSummary = $"UPDATE QUEST\nQuest: {LinkedQuest.Title}\nStep: {QuestStep} - {GetStep()}\nComplete: {questStep == linkedQuest.Steps.Length}";
+        // methods
+        protected virtual void UpdateSummary()
+        {
+            SettingsSummary = $"UPDATE QUEST\nQuest: {LinkedQuest.Title}\nStep: {QuestStep} - {GetStep()}\nComplete: {questStep == linkedQuest.Steps.Length}";
 
-        // needed
-        NotifyPropertyListChanged();
-    }
+            // needed
+            NotifyPropertyListChanged();
+        }
 
-    protected string GetStep()
-    {
-        return QuestStep != 0 ? LinkedQuest.Steps[QuestStep - 1].Step : "N/A";
+        protected string GetStep()
+        {
+            return QuestStep != 0 ? LinkedQuest.Steps[QuestStep - 1].Step : "N/A";
+        }
     }
 }

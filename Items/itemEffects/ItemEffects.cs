@@ -1,11 +1,14 @@
 using Godot;
 
-[GlobalClass]
-public partial class ItemEffects : Resource
+namespace Rpg
 {
-    // methods
-    public virtual void Use()
+    [GlobalClass]
+    public partial class ItemEffects : Resource
     {
+        // methods
+        public virtual void Use()
+        {
 
+        }
     }
 }

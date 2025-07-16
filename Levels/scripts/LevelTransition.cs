@@ -1,140 +1,143 @@
 using Godot;
 
-[Tool]
-public partial class LevelTransition : Area2D
+namespace Rpg
 {
-	// Exports
-	[Export(PropertyHint.File, "*.tscn")]
-	private string level;
-	[Export]
-	private SIDE Side
+	[Tool]
+	public partial class LevelTransition : Area2D
 	{
-		get => side;
-		set
+		// Exports
+		[Export(PropertyHint.File, "*.tscn")]
+		private string level;
+		[Export]
+		private SIDE Side
 		{
-			side = value;
+			get => side;
+			set
+			{
+				side = value;
+
+				if (Engine.IsEditorHint())
+					UpdateArea();
+			}
+		}
+		[Export]
+		private string targetTransitionArea = "LevelTransition";
+		[Export(PropertyHint.Range, "1,12,1")]
+		private int Size
+		{
+			get => size;
+			set
+			{
+				size = value;
+
+				if (Engine.IsEditorHint())
+					UpdateArea();
+			}
+		}
+		[Export]
+		private int ySortOrigin;
+
+		// private
+		private SIDE side = SIDE.LEFT;
+		private int size = 1;
+		private CollisionShape2D collisionShape;
+
+		// public
+		public enum SIDE
+		{
+			LEFT,
+			RIGHT,
+			TOP,
+			BOTTOM
+		}
+
+		// methods
+		public override void _Ready()
+		{
+			collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
+			Connect(Area2D.SignalName.BodyEntered, new(this, MethodName.OnLevelTransitionBodyEntered));
+
+			UpdateArea();
 
 			if (Engine.IsEditorHint())
-				UpdateArea();
+				return;
+
+			// do this so that the transition doesnt trigger when the level is loaded and the player is standing on the transition area.
+			Monitoring = false;
+			PlacePlayer();
+
+			// the area2d is still trigerring even after changing player position. only option is to wait till it registers
+			GetTree().CreateTimer(0.4f, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => Monitoring = true));
 		}
-	}
-	[Export]
-	private string targetTransitionArea = "LevelTransition";
-	[Export(PropertyHint.Range, "1,12,1")]
-	private int Size
-	{
-		get => size;
-		set
+
+		protected void UpdateArea()
 		{
-			size = value;
+			Vector2 newRect = new(32, 32);
+			Vector2 newPosition = Vector2.Zero;
 
-			if (Engine.IsEditorHint())
-				UpdateArea();
+			switch (side)
+			{
+				case SIDE.LEFT:
+					newRect.Y *= Size;
+					newPosition.X -= 16;
+					break;
+				case SIDE.RIGHT:
+					newRect.Y *= Size;
+					newPosition.X += 16;
+					break;
+				case SIDE.TOP:
+					newRect.X *= Size;
+					newPosition.Y -= 16;
+					break;
+				case SIDE.BOTTOM:
+					newRect.X *= Size;
+					newPosition.Y += 16;
+					break;
+			}
+
+			if (collisionShape != null)
+			{
+				collisionShape.Shape = new RectangleShape2D { Size = newRect };
+				collisionShape.Position = newPosition;
+			}
 		}
-	}
-	[Export]
-	private int ySortOrigin;
 
-	// private
-	private SIDE side = SIDE.LEFT;
-	private int size = 1;
-	private CollisionShape2D collisionShape;
-
-	// public
-	public enum SIDE
-	{
-		LEFT,
-		RIGHT,
-		TOP,
-		BOTTOM
-	}
-
-	// methods
-	public override void _Ready()
-	{
-		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
-		Connect(Area2D.SignalName.BodyEntered, new(this, MethodName.OnLevelTransitionBodyEntered));
-
-		UpdateArea();
-
-		if (Engine.IsEditorHint())
-			return;
-
-		// do this so that the transition doesnt trigger when the level is loaded and the player is standing on the transition area.
-		Monitoring = false;
-		PlacePlayer();
-
-		// the area2d is still trigerring even after changing player position. only option is to wait till it registers
-		GetTree().CreateTimer(0.4f, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => Monitoring = true));
-	}
-
-	protected void UpdateArea()
-	{
-		Vector2 newRect = new(32, 32);
-		Vector2 newPosition = Vector2.Zero;
-
-		switch (side)
+		protected void OnLevelTransitionBodyEntered(Node2D body = null)
 		{
-			case SIDE.LEFT:
-				newRect.Y *= Size;
-				newPosition.X -= 16;
-				break;
-			case SIDE.RIGHT:
-				newRect.Y *= Size;
-				newPosition.X += 16;
-				break;
-			case SIDE.TOP:
-				newRect.X *= Size;
-				newPosition.Y -= 16;
-				break;
-			case SIDE.BOTTOM:
-				newRect.X *= Size;
-				newPosition.Y += 16;
-				break;
+			if (body != null && body is not Player)
+				return;
+
+			GlobalLevelManager.Instance.LoadNewLevel(
+				level,
+				targetTransitionArea,
+				GetOffset()
+			);
 		}
 
-		if (collisionShape != null)
+		private void PlacePlayer()
 		{
-			collisionShape.Shape = new RectangleShape2D { Size = newRect };
-			collisionShape.Position = newPosition;
+			if (Name != GlobalLevelManager.Instance.TargetTransitionArea)
+				return;
+
+			GlobalPlayerManager.Instance.SetPlayerPosition(GlobalPosition + GlobalLevelManager.Instance.PositionOffset, ySortOrigin);
 		}
-	}
 
-	protected void OnLevelTransitionBodyEntered(Node2D body = null)
-	{
-		if (body != null && body is not Player)
-			return;
-
-		GlobalLevelManager.Instance.LoadNewLevel(
-			level,
-			targetTransitionArea,
-			GetOffset()
-		);
-	}
-
-	private void PlacePlayer()
-	{
-		if (Name != GlobalLevelManager.Instance.TargetTransitionArea)
-			return;
-
-		GlobalPlayerManager.Instance.SetPlayerPosition(GlobalPosition + GlobalLevelManager.Instance.PositionOffset, ySortOrigin);
-	}
-
-	private Vector2 GetOffset()
-	{
-		Vector2 offset = Vector2.Zero;
-
-		if (Side == SIDE.LEFT || Side == SIDE.RIGHT)
+		private Vector2 GetOffset()
 		{
-			offset.X = (Side == SIDE.LEFT) ? -16 : 16;
-			offset.Y = 0;
-		}
-		else if (Side == SIDE.TOP || Side == SIDE.BOTTOM)
-		{
-			offset.Y = (Side == SIDE.TOP) ? -16 : 16;
-			offset.X = 0;
-		}
+			Vector2 offset = Vector2.Zero;
 
-		return offset;
+			if (Side == SIDE.LEFT || Side == SIDE.RIGHT)
+			{
+				offset.X = (Side == SIDE.LEFT) ? -16 : 16;
+				offset.Y = 0;
+			}
+			else if (Side == SIDE.TOP || Side == SIDE.BOTTOM)
+			{
+				offset.Y = (Side == SIDE.TOP) ? -16 : 16;
+				offset.X = 0;
+			}
+
+			return offset;
+		}
 	}
 }

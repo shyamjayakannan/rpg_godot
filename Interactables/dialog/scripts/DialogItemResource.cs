@@ -1,25 +1,28 @@
 using Godot;
 
-[Tool]
-[GlobalClass, Icon("res://GUI/dialogSystem/icons/chat_bubble.png")]
-public abstract partial class DialogItemResource : Resource
+namespace Rpg
 {
-    //Exports
-    [Export]
-    public NpcResource NpcResource
+    [Tool]
+    [GlobalClass, Icon("res://GUI/dialogSystem/icons/chat_bubble.png")]
+    public abstract partial class DialogItemResource : Resource
     {
-        get => npcResource;
-        set
+        //Exports
+        [Export]
+        public NpcResource NpcResource
         {
-            npcResource = value;
-            EmitSignal(Resource.SignalName.Changed);
+            get => npcResource;
+            set
+            {
+                npcResource = value;
+                EmitSignal(Resource.SignalName.Changed);
+            }
         }
-    }
-    [Export]
-    public QuestConditionResource QuestConditionResource { get; set; }
-    [Export]
-    public QuestAdvanceResource QuestAdvanceResource { get; private set; }
+        [Export]
+        public QuestConditionResource QuestConditionResource { get; set; }
+        [Export]
+        public QuestAdvanceResource QuestAdvanceResource { get; private set; }
 
-    // private
-    private NpcResource npcResource;
+        // private
+        private NpcResource npcResource;
+    }
 }

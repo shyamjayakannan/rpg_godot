@@ -1,33 +1,36 @@
 using Godot;
 
-public partial class IdleEnemyState : EnemyState
+namespace Rpg
 {
-	// Exports
-	[Export]
-	private float minStateDuration = 0.5f;
-	[Export]
-	private float maxStateDuration = 1.5f;
-
-	// private
-	private float timer;
-
-	// methods
-	public override void Enter()
+	public partial class IdleEnemyState : EnemyState
 	{
-		Enemy.Velocity = Vector2.Zero;
-		Enemy.UpdateAnimation("idle");
-		timer = (float)GD.RandRange(minStateDuration, maxStateDuration);
-	}
+		// Exports
+		[Export]
+		private float minStateDuration = 0.5f;
+		[Export]
+		private float maxStateDuration = 1.5f;
 
-	public override EnemyState Process(double delta)
-	{
-		timer -= (float)delta;
+		// private
+		private float timer;
 
-		if (timer <= 0)
+		// methods
+		public override void Enter()
 		{
-			return NextState;
+			Enemy.Velocity = Vector2.Zero;
+			Enemy.UpdateAnimation("idle");
+			timer = (float)GD.RandRange(minStateDuration, maxStateDuration);
 		}
 
-		return null;
+		public override EnemyState Process(double delta)
+		{
+			timer -= (float)delta;
+
+			if (timer <= 0)
+			{
+				return NextState;
+			}
+
+			return null;
+		}
 	}
 }

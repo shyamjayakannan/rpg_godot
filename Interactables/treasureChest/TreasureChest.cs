@@ -1,100 +1,103 @@
 using Godot;
 
-[Tool]
-public partial class TreasureChest : Interactables
+namespace Rpg
 {
-    // Exports
-    [Export]
-    private Items Item
+    [Tool]
+    public partial class TreasureChest : Interactables
     {
-        get => item;
-        set
+        // Exports
+        [Export]
+        private Items Item
         {
-            item = value;
+            get => item;
+            set
+            {
+                item = value;
+
+                if (Engine.IsEditorHint())
+                    UpdateTexture();
+            }
+        }
+        [Export]
+        private int Quantity
+        {
+            get => quantity;
+            set
+            {
+                quantity = value;
+
+                if (Engine.IsEditorHint())
+                    UpdateQuantity();
+            }
+        }
+
+        // private
+        private Items item;
+        private int quantity = 1;
+        private Sprite2D sprite;
+        private Label label;
+        private AnimationPlayer animationPlayer;
+        private bool isOpened = false;
+        private Area2D area2D;
+        private PersistentDataHandler persistentDataHandler;
+
+        // methods
+        public override void _Ready()
+        {
+            sprite = GetNode<Sprite2D>("ItemSprite");
+            label = GetNode<Label>("ItemSprite/Label");
+            animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+            area2D = GetNode<Area2D>("Area2D");
+
+            UpdateTexture();
+            UpdateQuantity();
 
             if (Engine.IsEditorHint())
-                UpdateTexture();
+                return;
+
+            // VERY IMPORTANT
+            // since persistentdata handler isnt a tool script, it wont be recognized in the editor and we anyway dont need it
+            // when code runs in editor so thats why declaring it here. otherwise, we have to make it a tool script too.
+            persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
+
+            area2D.Connect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
+            area2D.Connect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
+
+            persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetChestState));
+            persistentDataHandler.GetValue();
         }
-    }
-    [Export]
-    private int Quantity
-    {
-        get => quantity;
-        set
+
+        private void UpdateTexture()
         {
-            quantity = value;
-
-            if (Engine.IsEditorHint())
-                UpdateQuantity();
+            if (sprite != null)
+                sprite.Texture = Item?.Texture2D;
         }
-    }
 
-    // private
-    private Items item;
-    private int quantity = 1;
-    private Sprite2D sprite;
-    private Label label;
-    private AnimationPlayer animationPlayer;
-    private bool isOpened = false;
-    private Area2D area2D;
-    private PersistentDataHandler persistentDataHandler;
+        private void UpdateQuantity()
+        {
+            if (label != null)
+                label.Text = $"x{Quantity}";
+        }
 
-    // methods
-    public override void _Ready()
-    {
-        sprite = GetNode<Sprite2D>("ItemSprite");
-        label = GetNode<Label>("ItemSprite/Label");
-        animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-        area2D = GetNode<Area2D>("Area2D");
+        public override void OnInteractPressed()
+        {
+            if (isOpened)
+                return;
 
-        UpdateTexture();
-        UpdateQuantity();
+            isOpened = true;
+            animationPlayer.Play("openChest");
+            GlobalPlayerManager.Instance.PlayerInventory.AddItem(Item, Quantity);
+            persistentDataHandler.SetValue();
+        }
 
-        if (Engine.IsEditorHint())
-            return;
+        private void SetChestState(bool value)
+        {
+            isOpened = value;
 
-        // VERY IMPORTANT
-        // since persistentdata handler isnt a tool script, it wont be recognized in the editor and we anyway dont need it
-        // when code runs in editor so thats why declaring it here. otherwise, we have to make it a tool script too.
-        persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
-
-        area2D.Connect(Area2D.SignalName.AreaEntered, new(this, Interactables.MethodName.OnArea2DAreaEntered));
-        area2D.Connect(Area2D.SignalName.AreaExited, new(this, Interactables.MethodName.OnArea2DAreaExited));
-
-        persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetChestState));
-        persistentDataHandler.GetValue();
-    }
-
-    private void UpdateTexture()
-    {
-        if (sprite != null)
-            sprite.Texture = Item?.Texture2D;
-    }
-
-    private void UpdateQuantity()
-    {
-        if (label != null)
-            label.Text = $"x{Quantity}";
-    }
-
-    public override void OnInteractPressed()
-    {
-        if (isOpened)
-            return;
-
-        isOpened = true;
-        animationPlayer.Play("openChest");
-        GlobalPlayerManager.Instance.PlayerInventory.AddItem(Item, Quantity);
-        persistentDataHandler.SetValue();
-    }
-
-    private void SetChestState(bool value)
-    {
-        isOpened = value;
-
-        if (isOpened)
-            animationPlayer.Play("opened");
-        else
-            animationPlayer.Play("closed");
+            if (isOpened)
+                animationPlayer.Play("opened");
+            else
+                animationPlayer.Play("closed");
+        }
     }
 }

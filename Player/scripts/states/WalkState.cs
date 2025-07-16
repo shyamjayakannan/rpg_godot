@@ -1,52 +1,55 @@
 using Godot;
 
-public partial class WalkState : State
+namespace Rpg
 {
-	// Exports
-	[Export]
-	private int speed = 100;
-
-	// private
-	private IdleState idleState;
-	private AttackState attackState;
-	private DashState dashState;
-
-	// methods
-	public override void _Ready()
+	public partial class WalkState : State
 	{
-		idleState = GetNode<IdleState>("../IdleState");
-		attackState = GetNode<AttackState>("../AttackState");
-		dashState = GetNode<DashState>("../DashState");
-	}
+		// Exports
+		[Export]
+		private int speed = 100;
 
-	public override void Enter()
-	{
-		Player.UpdateAnimation("walk");
-	}
+		// private
+		private IdleState idleState;
+		private AttackState attackState;
+		private DashState dashState;
 
-	public override State Process(float delta)
-	{
-		if (Player.SetDirection())
+		// methods
+		public override void _Ready()
 		{
-			Player.Velocity = Player.Direction * speed;
-			Player.UpdateAnimation("walk");
-			return null;
+			idleState = GetNode<IdleState>("../IdleState");
+			attackState = GetNode<AttackState>("../AttackState");
+			dashState = GetNode<DashState>("../DashState");
 		}
 
-		return idleState;
-	}
+		public override void Enter()
+		{
+			Player.UpdateAnimation("walk");
+		}
 
-	public override State HandleInput(InputEvent _event)
-	{
-		if (_event.IsActionPressed("attack"))
-			return attackState;
+		public override State Process(float delta)
+		{
+			if (Player.SetDirection())
+			{
+				Player.Velocity = Player.Direction * speed;
+				Player.UpdateAnimation("walk");
+				return null;
+			}
 
-		if (_event.IsActionPressed("dash"))
-			return dashState;
+			return idleState;
+		}
 
-		if (_event.IsActionPressed("interact"))
-			GlobalPlayerManager.Instance.EmitSignal(GlobalPlayerManager.SignalName.InteractPressed);
+		public override State HandleInput(InputEvent _event)
+		{
+			if (_event.IsActionPressed("attack"))
+				return attackState;
 
-		return null;
+			if (_event.IsActionPressed("dash"))
+				return dashState;
+
+			if (_event.IsActionPressed("interact"))
+				GlobalPlayerManager.Instance.EmitSignal(GlobalPlayerManager.SignalName.InteractPressed);
+
+			return null;
+		}
 	}
 }

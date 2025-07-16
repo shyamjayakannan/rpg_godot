@@ -1,13 +1,16 @@
 using Godot;
 
-[Tool]
-[GlobalClass, Icon("res://GUI/dialogSystem/icons/text_bubble.png")]
-public partial class DialogText : DialogItem
+namespace Rpg
 {
-	// methods
-	public override void SetEditorDisplay()
+	[Tool]
+	[GlobalClass, Icon("res://GUI/dialogSystem/icons/text_bubble.png")]
+	public partial class DialogText : DialogItem
 	{
-		base.SetEditorDisplay();
-		ExampleSystem?.SetTextDisplay(((DialogTextResource)DialogItemResource).Text);
+		// methods
+		public override void SetEditorDisplay()
+		{
+			base.SetEditorDisplay();
+			ExampleSystem?.SetTextDisplay(((DialogTextResource)DialogItemResource).Text);
+		}
 	}
 }

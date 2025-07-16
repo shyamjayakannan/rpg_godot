@@ -1,31 +1,34 @@
 using Godot;
 
-public partial class HeartGUI : Control
+namespace Rpg
 {
-    // private
-    private Sprite2D heartSprite;
-    private int frameNumber;
-
-    // properties
-    public int FrameNumber
+    public partial class HeartGUI : Control
     {
-        get => frameNumber;
-        set
+        // private
+        private Sprite2D heartSprite;
+        private int frameNumber;
+
+        // properties
+        public int FrameNumber
         {
-            frameNumber = value;
-            UpdateSprite();
+            get => frameNumber;
+            set
+            {
+                frameNumber = value;
+                UpdateSprite();
+            }
         }
-    }
 
-    // methods
-    public override void _Ready()
-    {
-        heartSprite = GetNode<Sprite2D>("Sprite2D");
-    }
+        // methods
+        public override void _Ready()
+        {
+            heartSprite = GetNode<Sprite2D>("Sprite2D");
+        }
 
-    private void UpdateSprite()
-    {
-        if (heartSprite != null)
-            heartSprite.Frame = FrameNumber;
+        private void UpdateSprite()
+        {
+            if (heartSprite != null)
+                heartSprite.Frame = FrameNumber;
+        }
     }
 }

@@ -1,10 +1,13 @@
 using Godot;
 
-public partial class Plant : StaticBody2D
+namespace Rpg
 {
-	// methods
-	public override void _Ready()
+	public partial class Plant : StaticBody2D
 	{
-		GetNode<HitBox>("HitBox").Connect(HitBox.SignalName.Damaged, Callable.From((HurtBox _) => GetParent().QueueFree()));
+		// methods
+		public override void _Ready()
+		{
+			GetNode<HitBox>("HitBox").Connect(HitBox.SignalName.Damaged, Callable.From((HurtBox _) => GetParent().QueueFree()));
+		}
 	}
 }

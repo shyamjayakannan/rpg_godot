@@ -1,25 +1,28 @@
 using Godot;
 
-public partial class Torch : PointLight2D
+namespace Rpg
 {
-    // private
-    private float time = 0.0f;
-
-    // methods
-    public override void _Process(double delta)
+    public partial class Torch : PointLight2D
     {
-        time += (float)delta;
+        // private
+        private float time = 0.0f;
 
-        if (time > 0.2f)
+        // methods
+        public override void _Process(double delta)
         {
-            Flicker();
-            time = 0.0f;
-        }
-    }
+            time += (float)delta;
 
-    private void Flicker()
-    {
-        Energy = 0.9f + GD.Randf() * 0.1f;
-        Scale = Vector2.One * Energy;
+            if (time > 0.2f)
+            {
+                Flicker();
+                time = 0.0f;
+            }
+        }
+
+        private void Flicker()
+        {
+            Energy = 0.9f + GD.Randf() * 0.1f;
+            Scale = Vector2.One * Energy;
+        }
     }
 }

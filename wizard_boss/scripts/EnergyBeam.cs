@@ -1,23 +1,26 @@
 using Godot;
 
-public partial class EnergyBeam : Node2D
+namespace Rpg
 {
-    // private
-    private AnimationPlayer animationPlayer;
-
-    // methods
-    public override void _Ready()
+    public partial class EnergyBeam : Node2D
     {
-        animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-    }
+        // private
+        private AnimationPlayer animationPlayer;
 
-    public void Attack()
-    {
-        animationPlayer.Play("attack");
-    }
+        // methods
+        public override void _Ready()
+        {
+            animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+        }
 
-    public void Stop()
-    {
-        animationPlayer.Stop();
+        public void Attack()
+        {
+            animationPlayer.Play("attack");
+        }
+
+        public void Stop()
+        {
+            animationPlayer.Stop();
+        }
     }
 }

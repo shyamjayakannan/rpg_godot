@@ -1,23 +1,26 @@
 using Godot;
 
-public partial class HitBox : Area2D
+namespace Rpg
 {
-	// Signals
-	[Signal]
-	public delegate void DamagedEventHandler(HurtBox hurtBox);
-
-	// methods
-	public override void _Ready()
+	public partial class HitBox : Area2D
 	{
-		Connect(Area2D.SignalName.AreaEntered, new(this, MethodName.OnHitBoxAreaEntered));
-	}
+		// Signals
+		[Signal]
+		public delegate void DamagedEventHandler(HurtBox hurtBox);
 
-	private void OnHitBoxAreaEntered(Area2D area)
-	{
-		if (area is HurtBox hurtBox)
+		// methods
+		public override void _Ready()
 		{
-			hurtBox.EmitSignal(HurtBox.SignalName.DidDamage);
-			EmitSignal(SignalName.Damaged, hurtBox);
+			Connect(Area2D.SignalName.AreaEntered, new(this, MethodName.OnHitBoxAreaEntered));
+		}
+
+		private void OnHitBoxAreaEntered(Area2D area)
+		{
+			if (area is HurtBox hurtBox)
+			{
+				hurtBox.EmitSignal(HurtBox.SignalName.DidDamage);
+				EmitSignal(SignalName.Damaged, hurtBox);
+			}
 		}
 	}
 }

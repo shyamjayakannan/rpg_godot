@@ -1,13 +1,16 @@
 using Godot;
 
-public partial class PlayerSpawn : Node2D
+namespace Rpg
 {
-	// methods
-	public override void _Ready()
+	public partial class PlayerSpawn : Node2D
 	{
-		Hide();
+		// methods
+		public override void _Ready()
+		{
+			Hide();
 
-		if (!GlobalPlayerManager.Instance.PlayerSpawned)
-			GlobalPlayerManager.Instance.SetPlayerPosition(GlobalPosition, ((YSortHandler)GetParent()).YSortOrigin);
+			if (!GlobalPlayerManager.Instance.PlayerSpawned)
+				GlobalPlayerManager.Instance.SetPlayerPosition(GlobalPosition, ((YSortHandler)GetParent()).YSortOrigin);
+		}
 	}
 }

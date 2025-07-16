@@ -2,258 +2,261 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class WizardBoss : Node2D
+namespace Rpg
 {
-    // Signals
-    [Signal]
-    private delegate void DarkWizardDefeatedEventHandler();
-
-    // Exports
-    [Export]
-    private int maxHp = 10;
-    [Export]
-    private AudioStream hurtSound;
-    [Export]
-    private float teleportDelay = 1.5f;
-
-    // private
-    private int hp = 10;
-    private int currentPosition;
-    private List<Vector2> positions = new();
-    private List<EnergyBeam> beams = new();
-    private Node2D positionTargets;
-    private Node2D beamAttacks;
-    private Node2D bossNode;
-    private AnimationPlayer animationPlayer;
-    private AnimationPlayer cloakAnimationPlayer;
-    private AudioStreamPlayer2D audioStreamPlayer2D;
-    private HitBox hitBox;
-    private HurtBox hurtBox;
-    private PackedScene explosionScene = GD.Load<PackedScene>("res://wizard_boss/EnergyExplosion.tscn");
-    private PackedScene energyOrbScene = GD.Load<PackedScene>("res://wizard_boss/EnergyOrb.tscn");
-    private Sprite2D Hand1;
-    private Sprite2D Hand2;
-    private int damageCounter = 0;
-    private PersistentDataHandler persistentDataHandler;
-
-    // methods
-    public override void _Ready()
+    public partial class WizardBoss : Node2D
     {
-        positionTargets = GetNode<Node2D>("PositionTargets");
-        beamAttacks = GetNode<Node2D>("BeamAttacks");
-        bossNode = GetNode<Node2D>("BossNode");
-        animationPlayer = bossNode.GetNode<AnimationPlayer>("AnimationPlayer");
-        cloakAnimationPlayer = bossNode.GetNode<AnimationPlayer>("Cloak/AnimationPlayer");
-        audioStreamPlayer2D = bossNode.GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
-        hitBox = bossNode.GetNode<HitBox>("HitBox");
-        hurtBox = bossNode.GetNode<HurtBox>("HurtBox");
-        Hand1 = bossNode.GetNode<Sprite2D>("Cloak/Hand1_Down");
-        Hand2 = bossNode.GetNode<Sprite2D>("Cloak/Hand2_Down");
-        persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
+        // Signals
+        [Signal]
+        private delegate void DarkWizardDefeatedEventHandler();
 
-        persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetState));
-        persistentDataHandler.GetValue();
+        // Exports
+        [Export]
+        private int maxHp = 10;
+        [Export]
+        private AudioStream hurtSound;
+        [Export]
+        private float teleportDelay = 1.5f;
 
-        hitBox.Connect(HitBox.SignalName.Damaged, new(this, MethodName.OnHitBoxDamaged));
+        // private
+        private int hp = 10;
+        private int currentPosition;
+        private readonly List<Vector2> positions = new();
+        private readonly List<EnergyBeam> beams = new();
+        private Node2D positionTargets;
+        private Node2D beamAttacks;
+        private Node2D bossNode;
+        private AnimationPlayer animationPlayer;
+        private AnimationPlayer cloakAnimationPlayer;
+        private AudioStreamPlayer2D audioStreamPlayer2D;
+        private HitBox hitBox;
+        private HurtBox hurtBox;
+        private PackedScene explosionScene = GD.Load<PackedScene>("res://wizard_boss/EnergyExplosion.tscn");
+        private PackedScene energyOrbScene = GD.Load<PackedScene>("res://wizard_boss/EnergyOrb.tscn");
+        private Sprite2D Hand1;
+        private Sprite2D Hand2;
+        private int damageCounter = 0;
+        private PersistentDataHandler persistentDataHandler;
 
-        hp = maxHp;
-
-        foreach (Sprite2D sprite in positionTargets.GetChildren().Cast<Sprite2D>())
-            positions.Add(sprite.GlobalPosition);
-
-        foreach (EnergyBeam child in beamAttacks.GetChildren().Cast<EnergyBeam>())
-            beams.Add(child);
-
-        positionTargets.Hide();
-        PlayerHUD.Instance.ShowBossHealthBar("DarkWizard");
-        PlayerHUD.Instance.UpdateBossHealthBar(hp, maxHp);
-        Teleport((int)(GD.Randi() % positions.Count));
-    }
-
-    private void SetState(bool alreadyDestroyed)
-    {
-        if (alreadyDestroyed)
+        // methods
+        public override void _Ready()
         {
+            positionTargets = GetNode<Node2D>("PositionTargets");
+            beamAttacks = GetNode<Node2D>("BeamAttacks");
+            bossNode = GetNode<Node2D>("BossNode");
+            animationPlayer = bossNode.GetNode<AnimationPlayer>("AnimationPlayer");
+            cloakAnimationPlayer = bossNode.GetNode<AnimationPlayer>("Cloak/AnimationPlayer");
+            audioStreamPlayer2D = bossNode.GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
+            hitBox = bossNode.GetNode<HitBox>("HitBox");
+            hurtBox = bossNode.GetNode<HurtBox>("HurtBox");
+            Hand1 = bossNode.GetNode<Sprite2D>("Cloak/Hand1_Down");
+            Hand2 = bossNode.GetNode<Sprite2D>("Cloak/Hand2_Down");
+            persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
+
+            persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetState));
+            persistentDataHandler.GetValue();
+
+            hitBox.Connect(HitBox.SignalName.Damaged, new(this, MethodName.OnHitBoxDamaged));
+
+            hp = maxHp;
+
+            foreach (Sprite2D sprite in positionTargets.GetChildren().Cast<Sprite2D>())
+                positions.Add(sprite.GlobalPosition);
+
+            foreach (EnergyBeam child in beamAttacks.GetChildren().Cast<EnergyBeam>())
+                beams.Add(child);
+
+            positionTargets.Hide();
+            PlayerHUD.Instance.ShowBossHealthBar("DarkWizard");
+            PlayerHUD.Instance.UpdateBossHealthBar(hp, maxHp);
+            Teleport((int)(GD.Randi() % positions.Count));
+        }
+
+        private void SetState(bool alreadyDestroyed)
+        {
+            if (alreadyDestroyed)
+            {
+                QueueFree();
+                GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.EnemiesDestroyed, true);
+                return;
+            }
+        }
+
+        private void BeamAttack()
+        {
+            EnergyBeam[] activeBeams;
+            int halfCount = beams.Count / 2;
+            int randomIndex = (int)(GD.Randi() % halfCount);
+
+            if (currentPosition == 0 || currentPosition == 2)
+                activeBeams = hp < 3 ? new EnergyBeam[3] { beams[0], beams[1], beams[2] } : new EnergyBeam[2] { beams[randomIndex], beams[(randomIndex + 1) % halfCount] };
+            else
+                activeBeams = hp < 3 ? new EnergyBeam[3] { beams[3], beams[4], beams[5] } : new EnergyBeam[2] { beams[randomIndex + halfCount], beams[(randomIndex + 1) % halfCount + halfCount] };
+
+            foreach (EnergyBeam beam in activeBeams)
+                beam.Attack();
+        }
+
+        private void OrbAttack()
+        {
+            EnergyOrb orb = (EnergyOrb)energyOrbScene.Instantiate();
+            orb.GlobalPosition = bossNode.GlobalPosition + new Vector2(0, -34);
+            GetParent().CallDeferred(Node.MethodName.AddChild, orb);
+        }
+
+        private void Teleport(int location)
+        {
+            if (hp < 1)
+                return;
+
+            animationPlayer.Play("disappear");
+            SetBoxes(false);
+            damageCounter = 0;
+
+            if (hp < 7)
+                OrbAttack();
+
+            GetTree().CreateTimer(teleportDelay, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => Teleport2(location)));
+        }
+
+        private void Teleport2(int location)
+        {
+            if (hp < 1)
+                return;
+
+            currentPosition = location;
+            bossNode.GlobalPosition = positions[location];
+            UpdateAnimation();
+            animationPlayer.Play("appear");
+            GetTree().CreateTimer(animationPlayer.CurrentAnimationLength, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Idle));
+        }
+
+        private void Idle()
+        {
+            if (hp < 1)
+                return;
+
+            SetBoxes(true);
+            animationPlayer.Play("idle");
+            GetTree().CreateTimer(teleportDelay, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Idle2));
+        }
+
+        private void Idle2()
+        {
+            if (hp < 1)
+                return;
+
+            if (damageCounter < 1)
+            {
+                animationPlayer.Play("castSpell");
+                BeamAttack();
+                GetTree().CreateTimer(animationPlayer.CurrentAnimationLength, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => Teleport((int)(GD.Randi() % positions.Count))));
+                return;
+            }
+
+            Teleport((int)(GD.Randi() % positions.Count));
+        }
+
+        private void UpdateAnimation()
+        {
+            bossNode.Scale = new(1, 1);
+            Hand2.FlipH = true;
+
+            switch (currentPosition)
+            {
+                case 1:
+                    cloakAnimationPlayer.Play("down");
+                    SetHandRegion("down");
+                    break;
+
+                case 3:
+                    cloakAnimationPlayer.Play("up");
+                    SetHandRegion("up");
+                    break;
+
+                default:
+                    if (currentPosition == 2)
+                        bossNode.Scale = new(-1, 1);
+
+                    Hand2.FlipH = false;
+                    SetHandRegion("side");
+                    cloakAnimationPlayer.Play("side");
+                    break;
+            }
+        }
+
+        private void SetHandRegion(string direction)
+        {
+            float x1 = 0;
+            float x2 = 0;
+
+            switch (direction)
+            {
+                case "up":
+                    x1 = 128;
+                    x2 = 128;
+                    break;
+
+                case "side":
+                    x1 = 256;
+                    x2 = 384;
+                    break;
+            }
+
+            Hand1.RegionRect = new(x1, 0, Hand1.RegionRect.Size.X, Hand1.RegionRect.Size.Y);
+            Hand2.RegionRect = new(x2, 0, Hand2.RegionRect.Size.X, Hand2.RegionRect.Size.Y);
+        }
+
+        private void OnHitBoxDamaged(HurtBox @hurtBox)
+        {
+            if (animationPlayer.CurrentAnimation == "damaged")
+                return;
+
+            damageCounter++;
+            hp = Mathf.Clamp(hp - hurtBox.Damage, 0, maxHp);
+            PlayerHUD.Instance.UpdateBossHealthBar(hp, maxHp);
+            animationPlayer.Play("damaged");
+            PlayAudio(hurtSound);
+
+            if (hp < 1)
+                Defeat();
+        }
+
+        private void Defeat()
+        {
+            beams.ForEach(beam => beam.Stop());
+            animationPlayer.Play("destroy");
+            SetBoxes(false);
+            persistentDataHandler.SetValue();
+            PlayerHUD.Instance.HideBossHealthBar();
+            animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.Finish));
+        }
+
+        private void Finish(string _)
+        {
+            EmitSignal(SignalName.DarkWizardDefeated);
+            GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.EnemiesDestroyed, false);
             QueueFree();
-            GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.EnemiesDestroyed, true);
-            return;
         }
-    }
 
-    private void BeamAttack()
-    {
-        EnergyBeam[] activeBeams;
-        int halfCount = beams.Count / 2;
-        int randomIndex = (int)(GD.Randi() % halfCount);
-
-        if (currentPosition == 0 || currentPosition == 2)
-            activeBeams = hp < 3 ? new EnergyBeam[3] { beams[0], beams[1], beams[2] } : new EnergyBeam[2] { beams[randomIndex], beams[(randomIndex + 1) % halfCount] };
-        else
-            activeBeams = hp < 3 ? new EnergyBeam[3] { beams[3], beams[4], beams[5] } : new EnergyBeam[2] { beams[randomIndex + halfCount], beams[(randomIndex + 1) % halfCount + halfCount] };
-
-        foreach (EnergyBeam beam in activeBeams)
-            beam.Attack();
-    }
-
-    private void OrbAttack()
-    {
-        EnergyOrb orb = (EnergyOrb)energyOrbScene.Instantiate();
-        orb.GlobalPosition = bossNode.GlobalPosition + new Vector2(0, -34);
-        GetParent().CallDeferred(Node.MethodName.AddChild, orb);
-    }
-
-    private void Teleport(int location)
-    {
-        if (hp < 1)
-            return;
-
-        animationPlayer.Play("disappear");
-        SetBoxes(false);
-        damageCounter = 0;
-
-        if (hp < 7)
-            OrbAttack();
-
-        GetTree().CreateTimer(teleportDelay, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => Teleport2(location)));
-    }
-
-    private void Teleport2(int location)
-    {
-        if (hp < 1)
-            return;
-
-        currentPosition = location;
-        bossNode.GlobalPosition = positions[location];
-        UpdateAnimation();
-        animationPlayer.Play("appear");
-        GetTree().CreateTimer(animationPlayer.CurrentAnimationLength, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Idle));
-    }
-
-    private void Idle()
-    {
-        if (hp < 1)
-            return;
-
-        SetBoxes(true);
-        animationPlayer.Play("idle");
-        GetTree().CreateTimer(teleportDelay, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Idle2));
-    }
-
-    private void Idle2()
-    {
-        if (hp < 1)
-            return;
-
-        if (damageCounter < 1)
+        private void PlayAudio(AudioStream stream)
         {
-            animationPlayer.Play("castSpell");
-            BeamAttack();
-            GetTree().CreateTimer(animationPlayer.CurrentAnimationLength, false).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => Teleport((int)(GD.Randi() % positions.Count))));
-            return;
+            audioStreamPlayer2D.Stream = stream;
+            audioStreamPlayer2D.Play();
         }
 
-        Teleport((int)(GD.Randi() % positions.Count));
-    }
-
-    private void UpdateAnimation()
-    {
-        bossNode.Scale = new(1, 1);
-        Hand2.FlipH = true;
-
-        switch (currentPosition)
+        private void SetBoxes(bool value)
         {
-            case 1:
-                cloakAnimationPlayer.Play("down");
-                SetHandRegion("down");
-                break;
-
-            case 3:
-                cloakAnimationPlayer.Play("up");
-                SetHandRegion("up");
-                break;
-
-            default:
-                if (currentPosition == 2)
-                    bossNode.Scale = new(-1, 1);
-
-                Hand2.FlipH = false;
-                SetHandRegion("side");
-                cloakAnimationPlayer.Play("side");
-                break;
+            hitBox.SetDeferred(Area2D.PropertyName.Monitoring, value);
+            hurtBox.SetDeferred(Area2D.PropertyName.Monitorable, value);
         }
-    }
 
-    private void SetHandRegion(string direction)
-    {
-        float x1 = 0;
-        float x2 = 0;
-
-        switch (direction)
+        // called in destroy animation track
+        private void Explosion(Vector2 position)
         {
-            case "up":
-                x1 = 128;
-                x2 = 128;
-                break;
-
-            case "side":
-                x1 = 256;
-                x2 = 384;
-                break;
+            Node2D explosion = (Node2D)explosionScene.Instantiate();
+            explosion.GlobalPosition = bossNode.GlobalPosition + position;
+            GetParent().AddChild(explosion);
         }
-
-        Hand1.RegionRect = new(x1, 0, Hand1.RegionRect.Size.X, Hand1.RegionRect.Size.Y);
-        Hand2.RegionRect = new(x2, 0, Hand2.RegionRect.Size.X, Hand2.RegionRect.Size.Y);
-    }
-
-    private void OnHitBoxDamaged(HurtBox @hurtBox)
-    {
-        if (animationPlayer.CurrentAnimation == "damaged")
-            return;
-
-        damageCounter++;
-        hp = Mathf.Clamp(hp - hurtBox.Damage, 0, maxHp);
-        PlayerHUD.Instance.UpdateBossHealthBar(hp, maxHp);
-        animationPlayer.Play("damaged");
-        PlayAudio(hurtSound);
-
-        if (hp < 1)
-            Defeat();
-    }
-
-    private void Defeat()
-    {
-        beams.ForEach(beam => beam.Stop());
-        animationPlayer.Play("destroy");
-        SetBoxes(false);
-        persistentDataHandler.SetValue();
-        PlayerHUD.Instance.HideBossHealthBar();
-        animationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.Finish));
-    }
-
-    private void Finish(string _)
-    {
-        EmitSignal(SignalName.DarkWizardDefeated);
-        GlobalSignalManager.Instance.EmitSignal(GlobalSignalManager.SignalName.EnemiesDestroyed, false);
-        QueueFree();
-    }
-
-    private void PlayAudio(AudioStream stream)
-    {
-        audioStreamPlayer2D.Stream = stream;
-        audioStreamPlayer2D.Play();
-    }
-
-    private void SetBoxes(bool value)
-    {
-        hitBox.SetDeferred(Area2D.PropertyName.Monitoring, value);
-        hurtBox.SetDeferred(Area2D.PropertyName.Monitorable, value);
-    }
-
-    // called in destroy animation track
-    private void Explosion(Vector2 position)
-    {
-        Node2D explosion = (Node2D)explosionScene.Instantiate();
-        explosion.GlobalPosition = bossNode.GlobalPosition + position;
-        GetParent().AddChild(explosion);
     }
 }

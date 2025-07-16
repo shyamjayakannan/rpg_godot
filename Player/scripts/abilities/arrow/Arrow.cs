@@ -1,44 +1,47 @@
 using Godot;
 
-public partial class Arrow : Node2D
+namespace Rpg
 {
-    // Exports
-    [Export]
-    private float moveSpeed = 300;
-    [Export]
-    private AudioStream audioStream;
-
-    // private
-    private Vector2 moveDirection = Vector2.Right;
-    private HurtBox hurtBox;
-    private Sprite2D sprite;
-    private Sprite2D shadow;
-    private AudioStreamPlayer2D audioStreamPlayer2D;
-
-    // methods
-    public override void _Ready()
+    public partial class Arrow : Node2D
     {
-        sprite = GetNode<Sprite2D>("Sprite2D");
-        shadow = GetNode<Sprite2D>("Shadow");
-        hurtBox = GetNode<HurtBox>("HurtBox");
-        audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
-        audioStreamPlayer2D.Play();
+        // Exports
+        [Export]
+        private float moveSpeed = 300;
+        [Export]
+        private AudioStream audioStream;
 
-        hurtBox.Connect(HurtBox.SignalName.DidDamage, Callable.From(() => GetParent().QueueFree()));
-        GetTree().CreateTimer(10).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => GetParent().QueueFree()));
-    }
+        // private
+        private Vector2 moveDirection = Vector2.Right;
+        private HurtBox hurtBox;
+        private Sprite2D sprite;
+        private Sprite2D shadow;
+        private AudioStreamPlayer2D audioStreamPlayer2D;
 
-    public override void _Process(double delta)
-    {
-        Position += moveSpeed * moveDirection * (float)delta;
-    }
+        // methods
+        public override void _Ready()
+        {
+            sprite = GetNode<Sprite2D>("Sprite2D");
+            shadow = GetNode<Sprite2D>("Shadow");
+            hurtBox = GetNode<HurtBox>("HurtBox");
+            audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
+            audioStreamPlayer2D.Play();
 
-    public void Fire(Vector2 direction)
-    {
-        moveDirection = direction;
-        float angle = moveDirection.Angle();
-        sprite.Rotation = angle;
-        shadow.Rotation = angle;
-        hurtBox.Rotation = angle;
+            hurtBox.Connect(HurtBox.SignalName.DidDamage, Callable.From(() => GetParent().QueueFree()));
+            GetTree().CreateTimer(10).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => GetParent().QueueFree()));
+        }
+
+        public override void _Process(double delta)
+        {
+            Position += moveSpeed * moveDirection * (float)delta;
+        }
+
+        public void Fire(Vector2 direction)
+        {
+            moveDirection = direction;
+            float angle = moveDirection.Angle();
+            sprite.Rotation = angle;
+            shadow.Rotation = angle;
+            hurtBox.Rotation = angle;
+        }
     }
 }

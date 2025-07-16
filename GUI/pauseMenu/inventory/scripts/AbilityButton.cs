@@ -1,50 +1,53 @@
 using Godot;
 
-[Tool]
-public partial class AbilityButton : Button
+namespace Rpg
 {
-    // Exports
-    [Export(PropertyHint.MultilineText)]
-    public string description;
-    [Export]
-    public Texture2D Texture2D
+    [Tool]
+    public partial class AbilityButton : Button
     {
-        get => texture;
-        set
+        // Exports
+        [Export(PropertyHint.MultilineText)]
+        public string description;
+        [Export]
+        public Texture2D Texture2D
         {
-            texture = value;
+            get => texture;
+            set
+            {
+                texture = value;
+
+                if (Engine.IsEditorHint())
+                    UpdateTexture();
+            }
+        }
+
+        // private
+        private Texture2D texture;
+        private TextureRect textureRect;
+        private Label label;
+
+        // methods
+        public override void _Ready()
+        {
+            textureRect = GetNode<TextureRect>("TextureRect");
+            label = GetNode<Label>("Label");
+
+            UpdateTexture();
 
             if (Engine.IsEditorHint())
-                UpdateTexture();
+                return;
         }
-    }
 
-    // private
-    private Texture2D texture;
-    private TextureRect textureRect;
-    private Label label;
+        private void UpdateTexture()
+        {
+            if (textureRect != null)
+                textureRect.Texture = Texture2D;
+        }
 
-    // methods
-    public override void _Ready()
-    {
-        textureRect = GetNode<TextureRect>("TextureRect");
-        label = GetNode<Label>("Label");
-
-        UpdateTexture();
-
-        if (Engine.IsEditorHint())
-            return;
-    }
-
-    private void UpdateTexture()
-    {
-        if (textureRect != null)
-            textureRect.Texture = Texture2D;
-    }
-
-    public void UpdateLabel(int number)
-    {
-        if (label != null)
-            label.Text = number.ToString();
+        public void UpdateLabel(int number)
+        {
+            if (label != null)
+                label.Text = number.ToString();
+        }
     }
 }

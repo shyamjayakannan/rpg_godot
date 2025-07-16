@@ -1,53 +1,56 @@
 using Godot;
 
-public partial class StunEnemyState : EnemyState
+namespace Rpg
 {
-	// Exports
-	[Export]
-	private float knockbackSpeed = 200f;
-	[Export]
-	private float deceleration = 5;
-
-	// private
-	private Vector2 direction;
-	private bool animationFinished = false;
-	private Vector2 damagePosition;
-
-	// methods
-	public override void Init()
+	public partial class StunEnemyState : EnemyState
 	{
-		Enemy.Connect(Enemy.SignalName.EnemyDamaged, new(this, MethodName.OnEnemyDamaged));
-	}
+		// Exports
+		[Export]
+		private float knockbackSpeed = 200f;
+		[Export]
+		private float deceleration = 5;
 
-	public override void Enter()
-	{
-		animationFinished = false;
-		direction = Enemy.GlobalPosition.DirectionTo(damagePosition);
-		Enemy.SetDirection(direction);
-		Enemy.Velocity = direction * (-knockbackSpeed);
-		Enemy.UpdateAnimation("stun");
-		Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, Callable.From((StringName _) => animationFinished = true), (uint)ConnectFlags.OneShot);
-		Enemy.Invulnerable = true;
-	}
+		// private
+		private Vector2 direction;
+		private bool animationFinished = false;
+		private Vector2 damagePosition;
 
-	public override void Exit()
-	{
-		Enemy.Invulnerable = false;
-	}
+		// methods
+		public override void Init()
+		{
+			Enemy.Connect(Enemy.SignalName.EnemyDamaged, new(this, MethodName.OnEnemyDamaged));
+		}
 
-	public override EnemyState Process(double delta)
-	{
-		if (animationFinished)
-			return NextState;
+		public override void Enter()
+		{
+			animationFinished = false;
+			direction = Enemy.GlobalPosition.DirectionTo(damagePosition);
+			Enemy.SetDirection(direction);
+			Enemy.Velocity = direction * (-knockbackSpeed);
+			Enemy.UpdateAnimation("stun");
+			Enemy.AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, Callable.From((StringName _) => animationFinished = true), (uint)ConnectFlags.OneShot);
+			Enemy.Invulnerable = true;
+		}
 
-		Enemy.Velocity *= 1 - deceleration * (float)delta;
+		public override void Exit()
+		{
+			Enemy.Invulnerable = false;
+		}
 
-		return null;
-	}
+		public override EnemyState Process(double delta)
+		{
+			if (animationFinished)
+				return NextState;
 
-	private void OnEnemyDamaged(HurtBox hurtBox)
-	{
-		damagePosition = hurtBox.GlobalPosition;
-		StateMachine.ChangeState(this);
+			Enemy.Velocity *= 1 - deceleration * (float)delta;
+
+			return null;
+		}
+
+		private void OnEnemyDamaged(HurtBox hurtBox)
+		{
+			damagePosition = hurtBox.GlobalPosition;
+			StateMachine.ChangeState(this);
+		}
 	}
 }

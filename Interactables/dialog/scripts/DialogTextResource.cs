@@ -1,21 +1,24 @@
 using Godot;
 
-[Tool]
-[GlobalClass, Icon("res://GUI/dialogSystem/icons/text_bubble.png")]
-public partial class DialogTextResource : DialogItemResource
+namespace Rpg
 {
-	// Exports
-	[Export(PropertyHint.MultilineText)]
-	public string Text
+	[Tool]
+	[GlobalClass, Icon("res://GUI/dialogSystem/icons/text_bubble.png")]
+	public partial class DialogTextResource : DialogItemResource
 	{
-		get => text;
-		set
+		// Exports
+		[Export(PropertyHint.MultilineText)]
+		public string Text
 		{
-			text = value;
-			EmitSignal(Resource.SignalName.Changed);
+			get => text;
+			set
+			{
+				text = value;
+				EmitSignal(Resource.SignalName.Changed);
+			}
 		}
-	}
 
-	// private
-	private string text;
+		// private
+		private string text;
+	}
 }

@@ -1,237 +1,240 @@
 using System.Linq;
 using Godot;
 
-public partial class Player : CharacterBody2D
+namespace Rpg
 {
-	// Signals
-	[Signal]
-	public delegate void AttackAnimationOverEventHandler();
-	[Signal]
-	public delegate void PlayerDamagedEventHandler(HurtBox hurtBox);
-	[Signal]
-	public delegate void PlayerDirectionChangedEventHandler(Vector2 newDirection);
-
-	// private
-	private AnimationPlayer attackAnimationPlayer;
-	private HurtBox attackHurtBox;
-	private HurtBox chargeAttackHurtBox;
-	public Vector2 CardinalDirection { get; private set; } = Vector2.Down;
-	private PlayerStateMachine stateMachine;
-	private bool invulnerable = false;
-	private HitBox hitBox;
-	private Node2D heldItems;
-	private LiftState liftState;
-	private IdleState idleState;
-	private int attack = 1;
-
-
-	// properties
-	public Sprite2D Sprite2D { get; private set; }
-	public int[] LevelUpXpRequirements { get; private set; } = new int[4] { 0, 50, 100, 200 };
-	public AnimationPlayer AnimationPlayer { get; private set; }
-	public int Hp { get; private set; } = 4;
-	public int MaxHp { get; private set; } = 6;
-	public int Level { get; set; } = 1;
-	public int Xp { get; set; } = 0;
-	public int Defence { get; set; } = 1;
-	public int Attack
+	public partial class Player : CharacterBody2D
 	{
-		get => attack;
-		set
+		// Signals
+		[Signal]
+		public delegate void AttackAnimationOverEventHandler();
+		[Signal]
+		public delegate void PlayerDamagedEventHandler(HurtBox hurtBox);
+		[Signal]
+		public delegate void PlayerDirectionChangedEventHandler(Vector2 newDirection);
+
+		// private
+		private AnimationPlayer attackAnimationPlayer;
+		private HurtBox attackHurtBox;
+		private HurtBox chargeAttackHurtBox;
+		public Vector2 CardinalDirection { get; private set; } = Vector2.Down;
+		private PlayerStateMachine stateMachine;
+		private bool invulnerable = false;
+		private HitBox hitBox;
+		private Node2D heldItems;
+		private LiftState liftState;
+		private IdleState idleState;
+		private int attack = 1;
+
+
+		// properties
+		public Sprite2D Sprite2D { get; private set; }
+		public int[] LevelUpXpRequirements { get; private set; } = new int[4] { 0, 50, 100, 200 };
+		public AnimationPlayer AnimationPlayer { get; private set; }
+		public int Hp { get; private set; } = 4;
+		public int MaxHp { get; private set; } = 6;
+		public int Level { get; set; } = 1;
+		public int Xp { get; set; } = 0;
+		public int Defence { get; set; } = 1;
+		public int Attack
 		{
-			attack = value;
+			get => attack;
+			set
+			{
+				attack = value;
 
-			if (attackHurtBox != null)
-				attackHurtBox.Damage = attack;
+				if (attackHurtBox != null)
+					attackHurtBox.Damage = attack;
 
-			if (chargeAttackHurtBox != null)
-				chargeAttackHurtBox.Damage = attack * 2;
+				if (chargeAttackHurtBox != null)
+					chargeAttackHurtBox.Damage = attack * 2;
+			}
 		}
-	}
-	public int Bombs = 10;
-	public int Arrows = 10;
-	public Vector2 Direction { get; private set; } = Vector2.Zero;
-	public AnimationPlayer EffectAnimationPlayer { get; private set; }
-	public Throwable Throwable { get; set; }
+		public int Bombs = 10;
+		public int Arrows = 10;
+		public Vector2 Direction { get; private set; } = Vector2.Zero;
+		public AnimationPlayer EffectAnimationPlayer { get; private set; }
+		public Throwable Throwable { get; set; }
 
-	// methods
-	public override void _Ready()
-	{
-		UpdateHP(MaxHp);
-
-		AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-		attackAnimationPlayer = GetNode<AnimationPlayer>("Sprite2D/AttackEffects/AnimationPlayer");
-		EffectAnimationPlayer = GetNode<AnimationPlayer>("EffectAnimationPlayer");
-		Sprite2D = GetNode<Sprite2D>("Sprite2D");
-		attackHurtBox = Sprite2D.GetNode<HurtBox>("HurtBox");
-		chargeAttackHurtBox = Sprite2D.GetNode<HurtBox>("ChargeHurtBox");
-		stateMachine = GetNode<PlayerStateMachine>("PlayerStateMachine");
-		liftState = GetNode<LiftState>("PlayerStateMachine/LiftState");
-		idleState = GetNode<IdleState>("PlayerStateMachine/IdleState");
-		hitBox = GetNode<HitBox>("HitBox");
-		heldItems = GetNode<Node2D>("Sprite2D/HeldItems");
-
-		hitBox.Connect(HitBox.SignalName.Damaged, new(this, MethodName.OnHitBoxDamaged));
-		AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
-		GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoaded, new(this, MethodName.OnLevelLoaded));
-
-		stateMachine.Initialize(this);
-	}
-
-	private void OnLevelLoaded()
-	{
-		// VERY IMPORTANT
-		// needed for level transition direction reset on new level load
-		if (!(Input.IsActionPressed("ui_right") || Input.IsActionPressed("ui_left") || Input.IsActionPressed("ui_down") || Input.IsActionPressed("ui_up")))
-			Direction = Vector2.Zero;
-	}
-
-	private void OnAnimationPlayerAnimationFinished(string animationName)
-	{
-		if (animationName == "attackDown" || animationName == "attackUp" || animationName == "attackSide")
-			EmitSignal(SignalName.AttackAnimationOver);
-	}
-
-	public override void _UnhandledInput(InputEvent @event)
-	{
-		Direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
-	}
-
-	public override void _PhysicsProcess(double delta)
-	{
-		MoveAndSlide();
-
-		if (GetSlideCollisionCount() == 0)
-			return;
-
-		KinematicCollision2D collision = GetSlideCollision(0);
-
-		if (collision.GetCollider() is RigidBody2D body2D)
-			body2D.ApplyCentralImpulse(Direction * 1000.0f);
-	}
-
-	public void UpdateAnimation(string state)
-	{
-		AnimationPlayer.Play($"{state}{AnimationDirection()}");
-
-		if (state == "attack")
-			attackAnimationPlayer.Play($"attack{AnimationDirection()}");
-	}
-
-	private string AnimationDirection()
-	{
-		if (CardinalDirection == Vector2.Down)
-			return "Down";
-		else if (CardinalDirection == Vector2.Up)
-			return "Up";
-
-		return "Side";
-	}
-
-	public bool SetDirection()
-	{
-		if (Direction == Vector2.Zero)
-			return false;
-
-		if (Direction.X != 0)
-			CardinalDirection = Direction.X > 0 ? Vector2.Right : Vector2.Left;
-		else
-			CardinalDirection = Direction.Y >= 0 ? Vector2.Down : Vector2.Up;
-
-		EmitSignal(SignalName.PlayerDirectionChanged, CardinalDirection);
-
-		if (CardinalDirection.X < 0)
-			Sprite2D.Scale = new(-1, 1);
-		else
-			Sprite2D.Scale = new(1, 1);
-
-		return true;
-	}
-
-	private void OnHitBoxDamaged(HurtBox hurtBox)
-	{
-		if (invulnerable)
-			return;
-
-		int oldHp = Hp;
-		UpdateHP(-Mathf.Clamp(hurtBox.Damage - Defence, 1, hurtBox.Damage));
-
-		if (oldHp > 0)
-			EmitSignal(SignalName.PlayerDamaged, hurtBox);
-	}
-
-	public void UpdateHP(int delta)
-	{
-		Hp = Mathf.Clamp(Hp + delta, 0, MaxHp);
-		PlayerHUD.Instance.UpdateHP(Hp, MaxHp);
-	}
-
-	public void UpdateXP(int delta)
-	{
-		Xp = Mathf.Clamp(Xp + delta, 0, LevelUpXpRequirements.Last());
-
-		while (Level < LevelUpXpRequirements.Length && Xp > LevelUpXpRequirements[Level])
+		// methods
+		public override void _Ready()
 		{
-			Level++;
-			Attack++;
-			Defence++;
-			EffectAnimationPlayer.Queue("levelUp");
 			UpdateHP(MaxHp);
-			PlayerHUD.Instance.QueueNotification("Leveled Up!", $"You reached Level {Level}");
+
+			AnimationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+			attackAnimationPlayer = GetNode<AnimationPlayer>("Sprite2D/AttackEffects/AnimationPlayer");
+			EffectAnimationPlayer = GetNode<AnimationPlayer>("EffectAnimationPlayer");
+			Sprite2D = GetNode<Sprite2D>("Sprite2D");
+			attackHurtBox = Sprite2D.GetNode<HurtBox>("HurtBox");
+			chargeAttackHurtBox = Sprite2D.GetNode<HurtBox>("ChargeHurtBox");
+			stateMachine = GetNode<PlayerStateMachine>("PlayerStateMachine");
+			liftState = GetNode<LiftState>("PlayerStateMachine/LiftState");
+			idleState = GetNode<IdleState>("PlayerStateMachine/IdleState");
+			hitBox = GetNode<HitBox>("HitBox");
+			heldItems = GetNode<Node2D>("Sprite2D/HeldItems");
+
+			hitBox.Connect(HitBox.SignalName.Damaged, new(this, MethodName.OnHitBoxDamaged));
+			AnimationPlayer.Connect(AnimationMixer.SignalName.AnimationFinished, new(this, MethodName.OnAnimationPlayerAnimationFinished));
+			GlobalLevelManager.Instance.Connect(GlobalLevelManager.SignalName.LevelLoaded, new(this, MethodName.OnLevelLoaded));
+
+			stateMachine.Initialize(this);
 		}
 
-		if (Level == LevelUpXpRequirements.Length)
-			Level--;
+		private void OnLevelLoaded()
+		{
+			// VERY IMPORTANT
+			// needed for level transition direction reset on new level load
+			if (!(Input.IsActionPressed("ui_right") || Input.IsActionPressed("ui_left") || Input.IsActionPressed("ui_down") || Input.IsActionPressed("ui_up")))
+				Direction = Vector2.Zero;
+		}
 
-		PauseMenu.Instance.Stats.Display();
-	}
+		private void OnAnimationPlayerAnimationFinished(string animationName)
+		{
+			if (animationName == "attackDown" || animationName == "attackUp" || animationName == "attackSide")
+				EmitSignal(SignalName.AttackAnimationOver);
+		}
 
-	public void SetHP(int hp, int maxHp)
-	{
-		MaxHp = maxHp;
-		UpdateHP(hp);
-	}
+		public override void _UnhandledInput(InputEvent @event)
+		{
+			Direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
+		}
 
-	public void MakeInvulnerable(float stunDuration)
-	{
-		invulnerable = true;
-		hitBox.SetDeferred(Area2D.PropertyName.Monitoring, false);
-		GetTree().CreateTimer(stunDuration, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.MakeInvulnerable2));
-	}
+		public override void _PhysicsProcess(double delta)
+		{
+			MoveAndSlide();
 
-	private void MakeInvulnerable2()
-	{
-		invulnerable = false;
-		hitBox.SetDeferred(Area2D.PropertyName.Monitoring, true);
-	}
+			if (GetSlideCollisionCount() == 0)
+				return;
 
-	public void PickupItem(Throwable throwable, Node2D throwableParent)
-	{
-		// reset position
-		Throwable = throwable;
-		heldItems.AddChild(throwableParent.GetParent());
-		throwableParent.GlobalPosition = heldItems.GlobalPosition;
-		stateMachine.ChangeState(liftState);
-	}
+			KinematicCollision2D collision = GetSlideCollision(0);
 
-	public void RevivePlayer()
-	{
-		UpdateHP(MaxHp);
-		stateMachine.ChangeState(idleState);
-	}
+			if (collision.GetCollider() is RigidBody2D body2D)
+				body2D.ApplyCentralImpulse(Direction * 1000.0f);
+		}
 
-	public void ChangeStateToIdle()
-	{
-		Direction = Vector2.Zero;
-	}
+		public void UpdateAnimation(string state)
+		{
+			AnimationPlayer.Play($"{state}{AnimationDirection()}");
 
-	public State GetCurrentState()
-	{
-		return stateMachine.GetCurrentState();
-	}
+			if (state == "attack")
+				attackAnimationPlayer.Play($"attack{AnimationDirection()}");
+		}
 
-	public void SetCurrentState(State state)
-	{
-		stateMachine.ChangeState(state);
+		private string AnimationDirection()
+		{
+			if (CardinalDirection == Vector2.Down)
+				return "Down";
+			else if (CardinalDirection == Vector2.Up)
+				return "Up";
+
+			return "Side";
+		}
+
+		public bool SetDirection()
+		{
+			if (Direction == Vector2.Zero)
+				return false;
+
+			if (Direction.X != 0)
+				CardinalDirection = Direction.X > 0 ? Vector2.Right : Vector2.Left;
+			else
+				CardinalDirection = Direction.Y >= 0 ? Vector2.Down : Vector2.Up;
+
+			EmitSignal(SignalName.PlayerDirectionChanged, CardinalDirection);
+
+			if (CardinalDirection.X < 0)
+				Sprite2D.Scale = new(-1, 1);
+			else
+				Sprite2D.Scale = new(1, 1);
+
+			return true;
+		}
+
+		private void OnHitBoxDamaged(HurtBox hurtBox)
+		{
+			if (invulnerable)
+				return;
+
+			int oldHp = Hp;
+			UpdateHP(-Mathf.Clamp(hurtBox.Damage - Defence, 1, hurtBox.Damage));
+
+			if (oldHp > 0)
+				EmitSignal(SignalName.PlayerDamaged, hurtBox);
+		}
+
+		public void UpdateHP(int delta)
+		{
+			Hp = Mathf.Clamp(Hp + delta, 0, MaxHp);
+			PlayerHUD.Instance.UpdateHP(Hp, MaxHp);
+		}
+
+		public void UpdateXP(int delta)
+		{
+			Xp = Mathf.Clamp(Xp + delta, 0, LevelUpXpRequirements.Last());
+
+			while (Level < LevelUpXpRequirements.Length && Xp > LevelUpXpRequirements[Level])
+			{
+				Level++;
+				Attack++;
+				Defence++;
+				EffectAnimationPlayer.Queue("levelUp");
+				UpdateHP(MaxHp);
+				PlayerHUD.Instance.QueueNotification("Leveled Up!", $"You reached Level {Level}");
+			}
+
+			if (Level == LevelUpXpRequirements.Length)
+				Level--;
+
+			PauseMenu.Instance.Stats.Display();
+		}
+
+		public void SetHP(int hp, int maxHp)
+		{
+			MaxHp = maxHp;
+			UpdateHP(hp);
+		}
+
+		public void MakeInvulnerable(float stunDuration)
+		{
+			invulnerable = true;
+			hitBox.SetDeferred(Area2D.PropertyName.Monitoring, false);
+			GetTree().CreateTimer(stunDuration, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.MakeInvulnerable2));
+		}
+
+		private void MakeInvulnerable2()
+		{
+			invulnerable = false;
+			hitBox.SetDeferred(Area2D.PropertyName.Monitoring, true);
+		}
+
+		public void PickupItem(Throwable throwable, Node2D throwableParent)
+		{
+			// reset position
+			Throwable = throwable;
+			heldItems.AddChild(throwableParent.GetParent());
+			throwableParent.GlobalPosition = heldItems.GlobalPosition;
+			stateMachine.ChangeState(liftState);
+		}
+
+		public void RevivePlayer()
+		{
+			UpdateHP(MaxHp);
+			stateMachine.ChangeState(idleState);
+		}
+
+		public void ChangeStateToIdle()
+		{
+			Direction = Vector2.Zero;
+		}
+
+		public State GetCurrentState()
+		{
+			return stateMachine.GetCurrentState();
+		}
+
+		public void SetCurrentState(State state)
+		{
+			stateMachine.ChangeState(state);
+		}
 	}
 }

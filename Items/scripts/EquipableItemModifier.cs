@@ -1,45 +1,48 @@
 using Godot;
 
-[Tool]
-[GlobalClass]
-public partial class EquipableItemModifier : Resource
+namespace Rpg
 {
-    // Exports
-    [Export]
-    public Type EquipmentType
+    [Tool]
+    [GlobalClass]
+    public partial class EquipableItemModifier : Resource
     {
-        get => equipmentType;
-        set
+        // Exports
+        [Export]
+        public Type EquipmentType
         {
-            equipmentType = value;
+            get => equipmentType;
+            set
+            {
+                equipmentType = value;
 
-            if (Engine.IsEditorHint())
-                EmitSignal(Resource.SignalName.Changed);
+                if (Engine.IsEditorHint())
+                    EmitSignal(Resource.SignalName.Changed);
+            }
         }
-    }
-    [Export]
-    public int Value
-    {
-        get => _value;
-        set
+        [Export]
+        public int Value
         {
-            _value = value;
+            get => _value;
+            set
+            {
+                _value = value;
 
-            if (Engine.IsEditorHint())
-                EmitSignal(Resource.SignalName.Changed);
+                if (Engine.IsEditorHint())
+                    EmitSignal(Resource.SignalName.Changed);
+            }
         }
-    }
 
-    // private
-    private Type equipmentType = Type.Health;
-    private int _value = 1;
+        // private
+        private Type equipmentType = Type.Health;
+        private int _value = 1;
 
-    // properties
-    public enum Type
-    {
-        Attack,
-        Defence,
-        Health,
-        Speed
+        // properties
+        public enum Type
+        {
+            Attack,
+            Defence,
+            Health,
+            Speed
+        }
     }
 }

@@ -1,64 +1,67 @@
 using Godot;
 
-public partial class CarryState : State
+namespace Rpg
 {
-    // Exports
-    [Export]
-    private int speed = 100;
-    [Export]
-    private AudioStream throwAudio;
-
-    // private
-    private IdleState idleState;
-    private StunState stunState;
-    private AudioStreamPlayer2D audioStreamPlayer2D;
-
-    // methods
-    public override void _Ready()
+    public partial class CarryState : State
     {
-        idleState = GetNode<IdleState>("../IdleState");
-        stunState = GetNode<StunState>("../StunState");
-        audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("../../Audio/AttackSound");
-    }
+        // Exports
+        [Export]
+        private int speed = 100;
+        [Export]
+        private AudioStream throwAudio;
 
-    public override void Enter()
-    {
-        Player.UpdateAnimation("carry");
-    }
+        // private
+        private IdleState idleState;
+        private StunState stunState;
+        private AudioStreamPlayer2D audioStreamPlayer2D;
 
-    public override void Exit()
-    {
-        if (StateMachine.NextState == stunState)
+        // methods
+        public override void _Ready()
         {
-            Player.Throwable.SetState("drop", Vector2.Zero);
-            return;
+            idleState = GetNode<IdleState>("../IdleState");
+            stunState = GetNode<StunState>("../StunState");
+            audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("../../Audio/AttackSound");
         }
 
-        audioStreamPlayer2D.Stream = throwAudio;
-        audioStreamPlayer2D.Play();
-        Player.Throwable.SetState("throw", Player.Direction == Vector2.Zero ? Player.CardinalDirection : Player.Direction);
-    }
-
-    public override State Process(float delta)
-    {
-        Player.Velocity = Player.Direction * speed;
-
-        if (Player.SetDirection())
+        public override void Enter()
         {
-            Player.UpdateAnimation("carryWalk");
+            Player.UpdateAnimation("carry");
+        }
+
+        public override void Exit()
+        {
+            if (StateMachine.NextState == stunState)
+            {
+                Player.Throwable.SetState("drop", Vector2.Zero);
+                return;
+            }
+
+            audioStreamPlayer2D.Stream = throwAudio;
+            audioStreamPlayer2D.Play();
+            Player.Throwable.SetState("throw", Player.Direction == Vector2.Zero ? Player.CardinalDirection : Player.Direction);
+        }
+
+        public override State Process(float delta)
+        {
+            Player.Velocity = Player.Direction * speed;
+
+            if (Player.SetDirection())
+            {
+                Player.UpdateAnimation("carryWalk");
+                return null;
+            }
+
+            Player.UpdateAnimation("carry");
+
             return null;
         }
 
-        Player.UpdateAnimation("carry");
+        public override State HandleInput(InputEvent _event)
+        {
+            if (_event.IsActionPressed("interact"))
+                return idleState;
 
-        return null;
-    }
-
-    public override State HandleInput(InputEvent _event)
-    {
-        if (_event.IsActionPressed("interact"))
-            return idleState;
-
-        return null;
+            return null;
+        }
     }
 }

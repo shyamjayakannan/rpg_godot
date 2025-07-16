@@ -1,59 +1,62 @@
 using System.Collections.Generic;
 using Godot;
 
-public partial class EnemyStateMachine : Node
+namespace Rpg
 {
-	// private
-	private List<EnemyState> states;
-
-	// public
-	public EnemyState CurrentState { get; private set; }
-
-	// methods
-	public override void _Ready()
+	public partial class EnemyStateMachine : Node
 	{
-		ProcessMode = ProcessModeEnum.Disabled;
-	}
+		// private
+		private List<EnemyState> states;
 
-	public override void _Process(double delta)
-	{
-		ChangeState(CurrentState.Process(delta));
-	}
+		// public
+		public EnemyState CurrentState { get; private set; }
 
-	public override void _PhysicsProcess(double delta)
-	{
-		ChangeState(CurrentState.PhysicsProcess(delta));
-	}
-
-	public void Initialize(Enemy enemy)
-	{
-		states = new();
-
-		foreach (Node child in GetChildren())
+		// methods
+		public override void _Ready()
 		{
-			if (child is EnemyState state)
+			ProcessMode = ProcessModeEnum.Disabled;
+		}
+
+		public override void _Process(double delta)
+		{
+			ChangeState(CurrentState.Process(delta));
+		}
+
+		public override void _PhysicsProcess(double delta)
+		{
+			ChangeState(CurrentState.PhysicsProcess(delta));
+		}
+
+		public void Initialize(Enemy enemy)
+		{
+			states = new();
+
+			foreach (Node child in GetChildren())
 			{
-				state.Enemy = enemy;
-				state.StateMachine = this;
-				state.Init();
-				states.Add(state);
+				if (child is EnemyState state)
+				{
+					state.Enemy = enemy;
+					state.StateMachine = this;
+					state.Init();
+					states.Add(state);
+				}
+			}
+
+			if (states.Count > 0)
+			{
+				ChangeState(states[0]);
+				ProcessMode = ProcessModeEnum.Inherit; // Set pause mode to inherit so it pauses when the game is paused
 			}
 		}
 
-		if (states.Count > 0)
+		public void ChangeState(EnemyState newState)
 		{
-			ChangeState(states[0]);
-			ProcessMode = ProcessModeEnum.Inherit; // Set pause mode to inherit so it pauses when the game is paused
+			if (newState == null || newState == CurrentState)
+				return;
+
+			CurrentState?.Exit();
+			CurrentState = newState;
+			CurrentState.Enter();
 		}
-	}
-
-	public void ChangeState(EnemyState newState)
-	{
-		if (newState == null || newState == CurrentState)
-			return;
-
-		CurrentState?.Exit();
-		CurrentState = newState;
-		CurrentState.Enter();
 	}
 }

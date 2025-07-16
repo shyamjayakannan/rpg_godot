@@ -1,54 +1,57 @@
 using Godot;
 
-public partial class EnergyOrb : Node2D
+namespace Rpg
 {
-	// Exports
-	[Export]
-	private float speed = 100;
-	[Export]
-	private AudioStream shootSound;
-	[Export]
-	private AudioStream hitSound;
-
-	// private
-	private Vector2 direction = Vector2.Down;
-	private HurtBox hurtBox;
-	private AudioStreamPlayer2D audioStreamPlayer2D;
-
-	public override void _Ready()
+	public partial class EnergyOrb : Node2D
 	{
-		hurtBox = GetNode<HurtBox>("HurtBox");
-		audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
+		// Exports
+		[Export]
+		private float speed = 100;
+		[Export]
+		private AudioStream shootSound;
+		[Export]
+		private AudioStream hitSound;
 
-		hurtBox.Connect(HurtBox.SignalName.DidDamage, new(this, MethodName.OnHurtBoxDidDamage));
-		PlayAudio(shootSound);
-		direction = GlobalPosition.DirectionTo(GlobalPlayerManager.Instance.Player.GlobalPosition);
-		GetTree().CreateTimer(4, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Destroy));
-	}
+		// private
+		private Vector2 direction = Vector2.Down;
+		private HurtBox hurtBox;
+		private AudioStreamPlayer2D audioStreamPlayer2D;
 
-	public override void _Process(double delta)
-	{
-		Position += direction * speed * (float)delta;
-	}
+		public override void _Ready()
+		{
+			hurtBox = GetNode<HurtBox>("HurtBox");
+			audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
 
-	private void Destroy()
-	{
-		SetProcess(false);
-		QueueFree();
-	}
+			hurtBox.Connect(HurtBox.SignalName.DidDamage, new(this, MethodName.OnHurtBoxDidDamage));
+			PlayAudio(shootSound);
+			direction = GlobalPosition.DirectionTo(GlobalPlayerManager.Instance.Player.GlobalPosition);
+			GetTree().CreateTimer(4, false).Connect(SceneTreeTimer.SignalName.Timeout, new(this, MethodName.Destroy));
+		}
 
-	// signal callbacks cannot be async, so we use an async void method inside
-	private void OnHurtBoxDidDamage()
-	{
-		PlayAudio(hitSound);
-		Hide();
-		SetProcess(false);
-		audioStreamPlayer2D.Connect(AudioStreamPlayer2D.SignalName.Finished, new(this, Node.MethodName.QueueFree));
-	}
+		public override void _Process(double delta)
+		{
+			Position += direction * speed * (float)delta;
+		}
 
-	private void PlayAudio(AudioStream stream)
-	{
-		audioStreamPlayer2D.Stream = stream;
-		audioStreamPlayer2D.Play();
+		private void Destroy()
+		{
+			SetProcess(false);
+			QueueFree();
+		}
+
+		// signal callbacks cannot be async, so we use an async void method inside
+		private void OnHurtBoxDidDamage()
+		{
+			PlayAudio(hitSound);
+			Hide();
+			SetProcess(false);
+			audioStreamPlayer2D.Connect(AudioStreamPlayer2D.SignalName.Finished, new(this, Node.MethodName.QueueFree));
+		}
+
+		private void PlayAudio(AudioStream stream)
+		{
+			audioStreamPlayer2D.Stream = stream;
+			audioStreamPlayer2D.Play();
+		}
 	}
 }

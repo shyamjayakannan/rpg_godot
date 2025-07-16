@@ -1,19 +1,22 @@
 using Godot;
 
-public partial class YSortAnchor : Area2D
+namespace Rpg
 {
-    // Exports
-    [Export]
-    public float DefaultDifference { get; private set; }
-
-    // methods
-    public override void _Ready()
+    public partial class YSortAnchor : Area2D
     {
-        CallDeferred(MethodName.SetDifference, DefaultDifference);
-    }
+        // Exports
+        [Export]
+        public float DefaultDifference { get; private set; }
 
-    private void SetDifference(float difference)
-    {
-        ((YSortHandler)GetParent().GetParent()).SetDifference(difference);
+        // methods
+        public override void _Ready()
+        {
+            CallDeferred(MethodName.SetDifference, DefaultDifference);
+        }
+
+        private void SetDifference(float difference)
+        {
+            ((YSortHandler)GetParent().GetParent()).SetDifference(difference);
+        }
     }
 }

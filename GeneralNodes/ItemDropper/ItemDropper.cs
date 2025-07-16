@@ -1,85 +1,88 @@
 using Godot;
 
-[Tool]
 /// MAKE SURE ITEMDROPPER IS ABOVE ENEMYCOUNTER IN THE SCENETREE BECAUSE ITS ONREADY NEEDS TO BE CALLED FIRST.
 /// THIS IS BECAUSE ITEMDROPPER'S ONREADY CONNECTS TO THE SIGNAL THAT IS FIRED BY THE GETVALUE CALL IN
 /// ENEMYCOUNTER'S ONREADY. SIGNAL NEEDS TO BE CONNECTED BEFORE FIRING OTHERWISE WONT CATCH
-public partial class ItemDropper : Node2D
+namespace Rpg
 {
-    // Signals
-    [Signal]
-    private delegate void ItemPickedUpEventHandler();
-
-    // Exports
-    [Export]
-    public Items Item
+    [Tool]
+    public partial class ItemDropper : Node2D
     {
-        get => item;
-        set
+        // Signals
+        [Signal]
+        private delegate void ItemPickedUpEventHandler();
+
+        // Exports
+        [Export]
+        public Items Item
         {
-            item = value;
+            get => item;
+            set
+            {
+                item = value;
+
+                if (Engine.IsEditorHint())
+                    UpdateTexture();
+            }
+        }
+
+        // private
+        private Items item;
+        private Sprite2D sprite;
+        private AudioStreamPlayer audioStreamPlayer;
+        private PackedScene itemPickupScene = GD.Load<PackedScene>("res://Items/itemPickup/ItemPickup.tscn");
+        private bool hasDropped = false;
+        private PersistentDataHandler persistentDataHandler;
+
+        // methods
+        public override void _Ready()
+        {
+            sprite = GetNode<Sprite2D>("Sprite2D");
+            audioStreamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
+            persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
 
             if (Engine.IsEditorHint())
+            {
                 UpdateTexture();
+                return;
+            }
+
+            sprite.Hide();
+            GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.EnemiesDestroyed, new(this, MethodName.OnEnemiesDestroyed));
+
+            persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetHasDropped));
+            persistentDataHandler.GetValue();
         }
-    }
 
-    // private
-    private Items item;
-    private Sprite2D sprite;
-    private AudioStreamPlayer audioStreamPlayer;
-    private PackedScene itemPickupScene = GD.Load<PackedScene>("res://Items/itemPickup/ItemPickup.tscn");
-    private bool hasDropped = false;
-    private PersistentDataHandler persistentDataHandler;
-
-    // methods
-    public override void _Ready()
-    {
-        sprite = GetNode<Sprite2D>("Sprite2D");
-        audioStreamPlayer = GetNode<AudioStreamPlayer>("AudioStreamPlayer");
-        persistentDataHandler = GetNode<PersistentDataHandler>("PersistentDataHandler");
-
-        if (Engine.IsEditorHint())
+        private void UpdateTexture()
         {
-            UpdateTexture();
-            return;
+            if (sprite != null)
+                sprite.Texture = Item.Texture2D;
         }
 
-        sprite.Hide();
-        GlobalSignalManager.Instance.Connect(GlobalSignalManager.SignalName.EnemiesDestroyed, new(this, MethodName.OnEnemiesDestroyed));
+        private void SetHasDropped(bool value)
+        {
+            hasDropped = value;
+        }
 
-        persistentDataHandler.Connect(PersistentDataHandler.SignalName.DataLoaded, new(this, MethodName.SetHasDropped));
-        persistentDataHandler.GetValue();
-    }
+        private void OnEnemiesDestroyed(bool alreadyDestroyed)
+        {
+            if (hasDropped)
+                return;
 
-    private void UpdateTexture()
-    {
-        if (sprite != null)
-            sprite.Texture = Item.Texture2D;
-    }
+            if (!alreadyDestroyed)
+                audioStreamPlayer.Play();
 
-    private void SetHasDropped(bool value)
-    {
-        hasDropped = value;
-    }
+            ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
+            itemPickup.Item = item;
+            itemPickup.Connect(ItemPickup.SignalName.PickedUp, new(this, MethodName.OnPickedUp));
+            AddChild(itemPickup);
+        }
 
-    private void OnEnemiesDestroyed(bool alreadyDestroyed)
-    {
-        if (hasDropped)
-            return;
-
-        if (!alreadyDestroyed)
-            audioStreamPlayer.Play();
-
-        ItemPickup itemPickup = (ItemPickup)itemPickupScene.Instantiate();
-        itemPickup.Item = item;
-        itemPickup.Connect(ItemPickup.SignalName.PickedUp, new(this, MethodName.OnPickedUp));
-        AddChild(itemPickup);
-    }
-
-    private void OnPickedUp()
-    {
-        persistentDataHandler.SetValue();
-        EmitSignal(SignalName.ItemPickedUp);
+        private void OnPickedUp()
+        {
+            persistentDataHandler.SetValue();
+            EmitSignal(SignalName.ItemPickedUp);
+        }
     }
 }

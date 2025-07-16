@@ -1,86 +1,89 @@
 using Godot;
 
-public partial class Boomerang : Node2D
+namespace Rpg
 {
-    // Exports
-    [Export]
-    private float acceleration = 500.0f;
-    [Export]
-    private float maxSpeed = 400.0f;
-
-    // private
-    private float speed = 0;
-    private Vector2 direction;
-    private AnimationPlayer animationPlayer;
-    private AudioStreamPlayer2D audioStreamPlayer2D;
-    private HurtBox hurtBox;
-    private ItemMagnet itemMagnet;
-
-    // public
-    public enum State
+    public partial class Boomerang : Node2D
     {
-        INACTIVE,
-        THROW,
-        RETURN
-    }
-    public State BoomerangState { get; private set; } = State.INACTIVE;
+        // Exports
+        [Export]
+        private float acceleration = 500.0f;
+        [Export]
+        private float maxSpeed = 400.0f;
 
-    // methods
-    public override void _Ready()
-    {
-        animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-        audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D2");
-        hurtBox = GetNode<HurtBox>("HurtBox");
-        itemMagnet = GetNode<ItemMagnet>("ItemMagnet");
-        audioStreamPlayer2D.Stream = GD.Load<AudioStream>("res://Player/audio/catch.wav");
+        // private
+        private float speed = 0;
+        private Vector2 direction;
+        private AnimationPlayer animationPlayer;
+        private AudioStreamPlayer2D audioStreamPlayer2D;
+        private HurtBox hurtBox;
+        private ItemMagnet itemMagnet;
 
-        Hide();
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        switch (BoomerangState)
+        // public
+        public enum State
         {
-            case State.INACTIVE:
-                return;
+            INACTIVE,
+            THROW,
+            RETURN
+        }
+        public State BoomerangState { get; private set; } = State.INACTIVE;
 
-            case State.THROW:
-                speed -= acceleration * (float)delta;
+        // methods
+        public override void _Ready()
+        {
+            animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+            audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D2");
+            hurtBox = GetNode<HurtBox>("HurtBox");
+            itemMagnet = GetNode<ItemMagnet>("ItemMagnet");
+            audioStreamPlayer2D.Stream = GD.Load<AudioStream>("res://Player/audio/catch.wav");
 
-                if (speed <= 0)
-                    BoomerangState = State.RETURN;
-
-                break;
-
-            case State.RETURN:
-                Vector2 globalPosition = GlobalPlayerManager.Instance.Player.GlobalPosition;
-
-                if (globalPosition.DistanceTo(GlobalPosition) <= 10)
-                {
-                    Hide();
-                    BoomerangState = State.INACTIVE;
-                    animationPlayer.Stop();
-                    audioStreamPlayer2D.Play();
-                    hurtBox.Monitorable = false;
-                    itemMagnet.Monitoring = false;
-                }
-
-                speed += acceleration * (float)delta;
-                direction = GlobalPosition.DirectionTo(globalPosition);
-                break;
+            Hide();
         }
 
-        Position += speed * direction * (float)delta;
-    }
+        public override void _PhysicsProcess(double delta)
+        {
+            switch (BoomerangState)
+            {
+                case State.INACTIVE:
+                    return;
 
-    public void Throw(Vector2 throwDirection)
-    {
-        direction = throwDirection;
-        speed = maxSpeed;
-        animationPlayer.Play("boomerang");
-        hurtBox.Monitorable = true;
-        itemMagnet.Monitoring = true;
-        BoomerangState = State.THROW;
-        Show();
+                case State.THROW:
+                    speed -= acceleration * (float)delta;
+
+                    if (speed <= 0)
+                        BoomerangState = State.RETURN;
+
+                    break;
+
+                case State.RETURN:
+                    Vector2 globalPosition = GlobalPlayerManager.Instance.Player.GlobalPosition;
+
+                    if (globalPosition.DistanceTo(GlobalPosition) <= 10)
+                    {
+                        Hide();
+                        BoomerangState = State.INACTIVE;
+                        animationPlayer.Stop();
+                        audioStreamPlayer2D.Play();
+                        hurtBox.Monitorable = false;
+                        itemMagnet.Monitoring = false;
+                    }
+
+                    speed += acceleration * (float)delta;
+                    direction = GlobalPosition.DirectionTo(globalPosition);
+                    break;
+            }
+
+            Position += speed * direction * (float)delta;
+        }
+
+        public void Throw(Vector2 throwDirection)
+        {
+            direction = throwDirection;
+            speed = maxSpeed;
+            animationPlayer.Play("boomerang");
+            hurtBox.Monitorable = true;
+            itemMagnet.Monitoring = true;
+            BoomerangState = State.THROW;
+            Show();
+        }
     }
 }

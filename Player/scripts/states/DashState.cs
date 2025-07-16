@@ -1,78 +1,81 @@
 using Godot;
 
-public partial class DashState : State
+namespace Rpg
 {
-    // Exports
-    [Export]
-    private float moveSpeed = 250;
-    [Export]
-    private float effectDelay = 0.05f;
-    [Export]
-    private AudioStream dashSound;
-
-    // private
-    private State idleState;
-    private State nextState = null;
-    private Vector2 direction = Vector2.Zero;
-    private float effectTimer = 0;
-    private AudioStreamPlayer2D audioStreamPlayer2D;
-
-    // methods
-    public override void _Ready()
+    public partial class DashState : State
     {
-        idleState = GetNode<IdleState>("../IdleState");
-        audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("../../Audio/AttackSound");
-    }
+        // Exports
+        [Export]
+        private float moveSpeed = 250;
+        [Export]
+        private float effectDelay = 0.05f;
+        [Export]
+        private AudioStream dashSound;
 
-    public override void Enter()
-    {
-        Player.UpdateAnimation("dash");
-        Player.MakeInvulnerable((float)Player.AnimationPlayer.CurrentAnimationLength);
-        direction = Player.Direction == Vector2.Zero ? Player.CardinalDirection : Player.Direction;
-        audioStreamPlayer2D.Stream = dashSound;
-        audioStreamPlayer2D.Play();
-        effectTimer = effectDelay;
+        // private
+        private State idleState;
+        private State nextState = null;
+        private Vector2 direction = Vector2.Zero;
+        private float effectTimer = 0;
+        private AudioStreamPlayer2D audioStreamPlayer2D;
 
-        GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => nextState = idleState));
-    }
-
-    public override State Process(float delta)
-    {
-        Player.Velocity = moveSpeed * direction;
-        effectTimer += delta;
-
-        if (effectTimer >= effectDelay)
+        // methods
+        public override void _Ready()
         {
-            SpawnEffect();
-            effectTimer = 0;
+            idleState = GetNode<IdleState>("../IdleState");
+            audioStreamPlayer2D = GetNode<AudioStreamPlayer2D>("../../Audio/AttackSound");
         }
 
-        return nextState;
-    }
+        public override void Enter()
+        {
+            Player.UpdateAnimation("dash");
+            Player.MakeInvulnerable((float)Player.AnimationPlayer.CurrentAnimationLength);
+            direction = Player.Direction == Vector2.Zero ? Player.CardinalDirection : Player.Direction;
+            audioStreamPlayer2D.Stream = dashSound;
+            audioStreamPlayer2D.Play();
+            effectTimer = effectDelay;
 
-    public override void Exit()
-    {
-        nextState = null;
-    }
+            GetTree().CreateTimer(Player.AnimationPlayer.CurrentAnimationLength).Connect(SceneTreeTimer.SignalName.Timeout, Callable.From(() => nextState = idleState));
+        }
 
-    public override State HandleInput(InputEvent _event)
-    {
-        if (_event.IsActionPressed("attack"))
-            Player.UpdateAnimation("charge");
+        public override State Process(float delta)
+        {
+            Player.Velocity = moveSpeed * direction;
+            effectTimer += delta;
 
-        return null;
-    }
+            if (effectTimer >= effectDelay)
+            {
+                SpawnEffect();
+                effectTimer = 0;
+            }
 
-    private void SpawnEffect()
-    {
-        Node2D effect = new();
-        YSortHandler.AddToScene(effect, Player);
-        effect.GlobalPosition = Player.GlobalPosition - new Vector2(0, 0.1f);
-        Sprite2D spriteCopy = (Sprite2D)Player.Sprite2D.Duplicate();
-        effect.AddChild(spriteCopy);
-        Tween sceneTreeTween = CreateTween();
-        sceneTreeTween.SetEase(Tween.EaseType.Out);
-        sceneTreeTween.TweenProperty(effect, "modulate", new Color(1, 1, 1, 0), 0.2f);
-        sceneTreeTween.Chain().TweenCallback(Callable.From(effect.GetParent().QueueFree));
+            return nextState;
+        }
+
+        public override void Exit()
+        {
+            nextState = null;
+        }
+
+        public override State HandleInput(InputEvent _event)
+        {
+            if (_event.IsActionPressed("attack"))
+                Player.UpdateAnimation("charge");
+
+            return null;
+        }
+
+        private void SpawnEffect()
+        {
+            Node2D effect = new();
+            YSortHandler.AddToScene(effect, Player);
+            effect.GlobalPosition = Player.GlobalPosition - new Vector2(0, 0.1f);
+            Sprite2D spriteCopy = (Sprite2D)Player.Sprite2D.Duplicate();
+            effect.AddChild(spriteCopy);
+            Tween sceneTreeTween = CreateTween();
+            sceneTreeTween.SetEase(Tween.EaseType.Out);
+            sceneTreeTween.TweenProperty(effect, "modulate", new Color(1, 1, 1, 0), 0.2f);
+            sceneTreeTween.Chain().TweenCallback(Callable.From(effect.GetParent().QueueFree));
+        }
     }
 }

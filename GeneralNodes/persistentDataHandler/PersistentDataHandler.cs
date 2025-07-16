@@ -1,39 +1,42 @@
 using Godot;
 
-public partial class PersistentDataHandler : Node
+namespace Rpg
 {
-    // Signals
-    [Signal]
-    public delegate void DataLoadedEventHandler(bool value);
-
-    // private
-    private bool value = false;
-
-    // methods
-    public override void _Ready()
+    public partial class PersistentDataHandler : Node
     {
-        GetValue();
-    }
+        // Signals
+        [Signal]
+        public delegate void DataLoadedEventHandler(bool value);
 
-    public void SetValue()
-    {
-        GlobalSaveManager.Instance.AddPersistentValue(GetItemName());
-    }
+        // private
+        private bool value = false;
 
-    public void UnsetValue()
-    {
-        if (IsInsideTree())
-            GlobalSaveManager.Instance.RemovePersistentValue(GetItemName());
-    }
+        // methods
+        public override void _Ready()
+        {
+            GetValue();
+        }
 
-    public void GetValue()
-    {
-        value = GlobalSaveManager.Instance.CheckPersistentValue(GetItemName());
-        EmitSignal(SignalName.DataLoaded, value);
-    }
+        public void SetValue()
+        {
+            GlobalSaveManager.Instance.AddPersistentValue(GetItemName());
+        }
 
-    private string GetItemName()
-    {
-        return $"{GetTree().CurrentScene.SceneFilePath}/{GetParent().Name}/{Name}";
+        public void UnsetValue()
+        {
+            if (IsInsideTree())
+                GlobalSaveManager.Instance.RemovePersistentValue(GetItemName());
+        }
+
+        public void GetValue()
+        {
+            value = GlobalSaveManager.Instance.CheckPersistentValue(GetItemName());
+            EmitSignal(SignalName.DataLoaded, value);
+        }
+
+        private string GetItemName()
+        {
+            return $"{GetTree().CurrentScene.SceneFilePath}/{GetParent().Name}/{Name}";
+        }
     }
 }
